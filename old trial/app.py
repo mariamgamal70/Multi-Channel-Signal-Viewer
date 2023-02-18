@@ -16,6 +16,7 @@ def getpath():
             signal = pd.read_csv(filename, header=None) #dataframeobject
         elif filename[-3:]=='dat' or filename[-3:]=='hea':
             signal = wfdb.rdrecord(filename) #record object
+            print(signal)
         # sample that data after reading it
         #ONE WAY IS TO USE CHART.JS , ANOTHER WAY IT TO USE plotly.graph_objs AND plotly.express USING PYTHON AND CONVERT IT INTO AN HTML STRING THAT CONTAINS THE PLOT
         # transform that data into json (jsonify it )

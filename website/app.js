@@ -1,5 +1,7 @@
 originalSignal = document.getElementById("originalsignal");
 sampledSignal = document.getElementById("sampledsignal");
+
+
 Plotly.plot(
   originalSignal,
   [

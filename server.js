@@ -48,4 +48,5 @@ app.listen(port,()=>{console.log(`server is on http://localhost:${port}`);});
 //npm install fs
 //npm install csv-parser
 //npm install path
+//npm install plotly.js
 //start server using node -serversidefilename-

@@ -6,22 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css
 ">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js
 "></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>Signal viewer</title>
 </head>
 <body>
-    <div class="container">
-        <div id="innertext" class="p-4">
+    <div class="container-fluid">
+        <div class="p-4">
+            <div class="d-flex flex-column justify-content-center">
             <h1 class="text-center">Signal Viewer</h1>
-            <div class="input-group mb-3">
+            <div class="input-group mx-auto mt-3 mb-5 w-auto">
                 <form action="/upload" method="POST" enctype="multipart/form-data">
                     <div class="input-group">
                         <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04"
                             aria-label="Upload" name="uploadedsignal">
-                        <input type="submit" value="upload" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">
-                    </div>
+                            <input type="submit" value="upload" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">
+                        </div>
                 </form>
+            </div>
+            <div class="d-flex flex-row justify-content-around">
+                <div class="mx-auto">
+                    <h2 class="text-center">Original Signal</h2>
+                <div id="originalsignal" style="width:600px;height:350px;"></div>
+                </div>
+                <div class="mx-auto">
+                    <h2 class="text-center">Sampled Signal</h2>
+                <div id="sampledsignal" style="width:600px;height:350px;margin:auto;"></div>
+                </div>
+            </div>
         </div>
         </div>
     </div>
@@ -32,6 +45,7 @@
                 const filePath = event.target.value;
                 // Send the filePath to the server using an HTTP request
             });
-            </script> -->
-</body>
-</html>
+        </script> -->
+        <script src="app.js"></script>
+    </body>
+    </html>

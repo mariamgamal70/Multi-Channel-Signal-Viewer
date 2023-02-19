@@ -1,21 +1,26 @@
 let originalSignalData;
 let sampledSignalData;
-const uploadForm=document.getElementById("uploadfile")
-const originalSignal = document.getElementById("originalsignal");
-const sampledSignal = document.getElementById("sampledsignal");
-const fileElement=document.getElementById("fileinput");
-const submitBtn=document.getElementById("submitbtn");
 
+const normalUploadForm=document.getElementById("normalsignalform");
+const abnormalUploadForm = document.getElementById("abnormalsignalform");
 
-uploadForm.addEventListener('submit',(submission)=>{
+const normalSignalGraph = document.getElementById("normalsignalgraph");
+const abnormalSignalGraph = document.getElementById("abnormalsignalgraph");
+
+const normalInputElement = document.getElementById("normalsignalinput");
+const abnormalInputElement = document.getElementById("abnormalsignalinput");
+
+const normalSubmitBtn = document.getElementById("normalsubmitbtn");
+const abnormalSubmitBtn = document.getElementById("abnormalsubmitbtn");
+
+normalUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
-  const file=fileElement.files[0];
-  if(!file){
+  const file = normalInputElement.files[0];
+  if (!file) {
     alert("No file selected");
-  }
-  else{
+  } else {
     const formDataObject = new FormData();
-    formDataObject.append("signalfile", file);
+    formDataObject.append("normalsignalinput", file);
     fetch("/", {
       maxContentLength: 10000000,
       maxBodyLength: 10000000,
@@ -30,7 +35,32 @@ uploadForm.addEventListener('submit',(submission)=>{
         console.log(responseMsg);
       })
       .catch((error) => console.error(error));
-    }
+  }
+});
+
+abnormalUploadForm.addEventListener("submit", (submission) => {
+  submission.preventDefault();
+  const file = abnormalInputElement.files[0];
+  if (!file) {
+    alert("No file selected");
+  } else {
+    const formDataObject = new FormData();
+    formDataObject.append("abnormalsignalinput", file);
+    fetch("/", {
+      maxContentLength: 10000000,
+      maxBodyLength: 10000000,
+      method: "POST",
+      credentials: "same-origin",
+      body: formDataObject,
+    })
+      .then((response) => {
+        return response.text();
+      })
+      .then((responseMsg) => {
+        console.log(responseMsg);
+      })
+      .catch((error) => console.error(error));
+  }
 });
 // Plotly.plot(
 //   originalSignal,

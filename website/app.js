@@ -16,8 +16,6 @@ uploadForm.addEventListener('submit',(submission)=>{
   else{
     const formDataObject = new FormData();
     formDataObject.append("signalfile", file);
-    console.log(file.name);
-    console.log(formDataObject);
     fetch("/", {
       maxContentLength: 10000000,
       maxBodyLength: 10000000,
@@ -26,7 +24,6 @@ uploadForm.addEventListener('submit',(submission)=>{
       body: formDataObject,
     })
       .then((response) => {
-        console.log(response);
         return response.text();
       })
       .then((responseMsg) => {

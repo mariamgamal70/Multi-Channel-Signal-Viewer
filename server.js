@@ -30,7 +30,6 @@ app.post("/", upload.single("signalfile"), (req, res) => {
     else{
         const file = req.file; //multer reads the file and saves it in object called file
         const fileExtension = path.extname(file.originalname);
-        console.log(file);
         if (fileExtension == ".csv") {
             //data is an array of objects
             fs.createReadStream(file.path)

@@ -62,6 +62,8 @@ abnormalUploadForm.addEventListener("submit", (submission) => {
       .catch((error) => console.error(error));
   }
 });
+
+
 // Plotly.plot(
 //   originalSignal,
 //   [

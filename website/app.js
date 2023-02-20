@@ -1,26 +1,26 @@
 let originalSignalData;
 let sampledSignalData;
 
-const normalUploadForm=document.getElementById("normalsignalform");
-const abnormalUploadForm = document.getElementById("abnormalsignalform");
+const firstUploadForm = document.getElementById("firstsignalform");
+const secondUploadForm = document.getElementById("secondsignalform");
 
-const normalSignalGraph = document.getElementById("normalsignalgraph");
-const abnormalSignalGraph = document.getElementById("abnormalsignalgraph");
+const firstSignalGraph = document.getElementById("firstsignalgraph");
+const secondSignalGraph = document.getElementById("secondsignalgraph");
 
-const normalInputElement = document.getElementById("normalsignalinput");
-const abnormalInputElement = document.getElementById("abnormalsignalinput");
+const firstInputElement = document.getElementById("firstsignalinput");
+const secondInputElement = document.getElementById("secondsignalinput");
 
-const normalSubmitBtn = document.getElementById("normalsubmitbtn");
-const abnormalSubmitBtn = document.getElementById("abnormalsubmitbtn");
+const firstSubmitBtn = document.getElementById("firstsubmitbtn");
+const secondSubmitBtn = document.getElementById("secondsubmitbtn");
 
-normalUploadForm.addEventListener("submit", (submission) => {
+firstUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
-  const file = normalInputElement.files[0];
+  const file = firstInputElement.files[0];
   if (!file) {
     alert("No file selected");
   } else {
     const formDataObject = new FormData();
-    formDataObject.append("normalsignalinput", file);
+    formDataObject.append("firstsignalinput", file);
     fetch("/", {
       maxContentLength: 10000000,
       maxBodyLength: 10000000,
@@ -38,14 +38,14 @@ normalUploadForm.addEventListener("submit", (submission) => {
   }
 });
 
-abnormalUploadForm.addEventListener("submit", (submission) => {
+secondUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
-  const file = abnormalInputElement.files[0];
+  const file = secondInputElement.files[0];
   if (!file) {
     alert("No file selected");
   } else {
     const formDataObject = new FormData();
-    formDataObject.append("abnormalsignalinput", file);
+    formDataObject.append("secondsignalinput", file);
     fetch("/", {
       maxContentLength: 10000000,
       maxBodyLength: 10000000,

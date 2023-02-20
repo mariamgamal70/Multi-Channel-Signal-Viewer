@@ -1,6 +1,6 @@
-const port = 5500;
-let normalResults = [];
-let abnormalResults = [];
+const port = 5501;
+let firstResults = [];
+let secondResults = [];
 
 /*INCLUDE MODULES*/
 const express = require("express");
@@ -22,32 +22,33 @@ app.use(cors());
 app.use(express.static("website"));
 
 /*ENDPOINTS*/
-app.post("/", upload.fields([{name:"normalsignalinput", maxCount: 1},{name:"abnormalsignalinput", maxCount: 1}]), (req, res) => {
-    if (req.files["normalsignalinput"]) {
-        let normalFile = req.files["normalsignalinput"][0];
-        let fileExtension = path.extname(normalFile.originalname);
+app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secondsignalinput", maxCount: 1}]), (req, res) => {
+    if (req.files["firstsignalinput"]) {
+        let firstFile = req.files["firstsignalinput"][0];
+        console.log(firstFile);
+        let fileExtension = path.extname(firstFile.originalname);
             if (fileExtension == ".csv") {//data is an array of objects
-                fs.createReadStream(normalFile.path)
+                fs.createReadStream(firstFile.path)
                     .pipe(csv())
-                    .on("data", (data) => normalResults.push(data))
+                    .on("data", (data) => firstResults.push(data))
                     .on("end", () => {
                     // Do something with the parsed CSV data
-                    console.log(normalResults);
-                    res.status(200).send(`Uploaded file '${normalFile.originalname}' was processed successfully`);
+                    console.log(firstResults);
+                    res.status(200).send(`Uploaded file '${firstFile.originalname}' was processed successfully`);
                     });
                 }
             } 
-            else if (req.files["abnormalsignalinput"]) {
-                let abnormalFile = req.files["abnormalsignalinput"][0];
-                let fileExtension = path.extname(abnormalFile.originalname);
+            else if (req.files["secondsignalinput"]) {
+                let secondFile = req.files["secondsignalinput"][0];
+                let fileExtension = path.extname(secondFile.originalname);
                 if (fileExtension == ".csv") {
-                    fs.createReadStream(abnormalFile.path)
+                    fs.createReadStream(secondFile.path)
                         .pipe(csv())
-                        .on("data", (data) => abnormalResults.push(data))
+                        .on("data", (data) => secondResults.push(Object.values(data)))
                         .on("end", () => {
                     // Do something with the parsed CSV data
-                    console.log(abnormalResults);
-                    res.status(200).send(`Uploaded file '${abnormalFile.originalname}' was processed successfully`);
+                    console.log(secondResults);
+                    res.status(200).send(`Uploaded file '${secondFile.originalname}' was processed successfully`);
                     });
                 }
             }
@@ -56,7 +57,7 @@ app.post("/", upload.fields([{name:"normalsignalinput", maxCount: 1},{name:"abno
 app.listen(port, () => {console.log(`server is on http://localhost:${port}`);});
 
 //npm install express
-//npm install cors
+//npm install corst
 //npm install body-parser
 //npm install node
 //npm install fs

@@ -17,30 +17,30 @@
             <h1 class="text-center">Signal Viewer</h1>
             <div class="d-flex flex-row justify-content-center">
             <div class="d-flex flex-column justify-content-center">
-            <h2 class="text-center">Original Signal</h2>
+            <h2 class="text-center">First Signal</h2>
             <div class="input-group mx-auto mt-3 mb-5 w-auto">
-                <form action="/" method="post" enctype="multipart/form-data" id="normalsignalform">
+                <form action="/" method="post" enctype="multipart/form-data" id="firstsignalform">
                     <div class="input-group">
-                        <input type="file" class="form-control" id="normalsignalinput" name="normalsignalinput" aria-describedby="inputGroupFileAddon04"
+                        <input type="file" class="form-control" id="firstsignalinput" name="firstsignalinput" aria-describedby="inputGroupFileAddon04"
                             aria-label="Upload" >
-                            <input value="Upload" type="submit" class="btn btn-outline-secondary" id="normalsubmitbtn">
+                            <input value="Upload" type="submit" class="btn btn-outline-secondary" id="firstsubmitbtn">
                         </div>
                 </form>
             </div>
-            <div id="normalsignalgraph" style="width:600px;height:350px;"></div>
+            <div id="firstsignalgraph" style="width:600px;height:350px;"></div>
         </div>
             <div class="d-flex flex-column justify-content-center">
-                <h2 class="text-center">Abnormal Signal</h2>
+                <h2 class="text-center">second Signal</h2>
                 <div class="input-group mx-auto mt-3 mb-5 w-auto">
-                    <form action="/" method="post" enctype="multipart/form-data" id="abnormalsignalform" >
+                    <form action="/" method="post" enctype="multipart/form-data" id="secondsignalform" >
                         <div class="input-group">
-                            <input type="file" class="form-control" id="abnormalsignalinput" name="abnormalsignalinput"
+                            <input type="file" class="form-control" id="secondsignalinput" name="secondsignalinput"
                                 aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                            <input value="Upload" type="submit" class="btn btn-outline-secondary" id="abnormalsubmitbtn">
+                            <input value="Upload" type="submit" class="btn btn-outline-secondary" id="secondsubmitbtn">
                         </div>
                     </form>
                 </div>
-                <div id="abnormalsignalgraph" style="width:600px;height:350px;"></div>
+                <div id="secondsignalgraph" style="width:600px;height:350px;"></div>
             </div>
         </div>
         <div class="d-grid gap-2 col-6 mx-auto">

@@ -1,5 +1,5 @@
-let originalSignalData;
-let sampledSignalData;
+let firstSignalData;
+let secondSignalData;
 
 const firstUploadForm = document.getElementById("firstsignalform");
 const secondUploadForm = document.getElementById("secondsignalform");
@@ -32,7 +32,7 @@ firstUploadForm.addEventListener("submit", (submission) => {
         return response.text();
       })
       .then((responseMsg) => {
-        console.log(responseMsg);
+        firstSignalData = responseMsg;
       })
       .catch((error) => console.error(error));
   }
@@ -57,7 +57,7 @@ secondUploadForm.addEventListener("submit", (submission) => {
         return response.text();
       })
       .then((responseMsg) => {
-        console.log(responseMsg);
+        secondSignalData = responseMsg;
       })
       .catch((error) => console.error(error));
   }

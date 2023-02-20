@@ -27,7 +27,6 @@ app.use(express.static("website"));
 app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secondsignalinput", maxCount: 1}]), (req, res) => {
     if (req.files["firstsignalinput"]) {
         let firstFile = req.files["firstsignalinput"][0];
-        console.log(firstFile);
         let fileExtension = path.extname(firstFile.originalname);
             if (fileExtension == ".csv") {//data is an array of objects
                 fs.createReadStream(firstFile.path)
@@ -37,8 +36,7 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                     .on("end", () => {
                     // Do something with the parsed CSV data
                     firstResultArr = firstResultObj.map((obj) => Object.values(obj));
-                    console.log(firstResultArr);
-                    res.status(200).send(`Uploaded file '${firstFile.originalname}' was processed successfully`);
+                    res.send(firstResultArr);
                     });
                 }
             } 
@@ -52,8 +50,7 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                         .on("end", () => {
                     // Do something with the parsed CSV data
                     secondResultArr = secondResultObj.map((obj) => Object.values(obj));
-                    console.log(secondResultArr);
-                    res.status(200).send(`Uploaded file '${secondFile.originalname}' was processed successfully`);
+                    res.send(secondResultArr);
                     });
                 }
             }

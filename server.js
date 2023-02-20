@@ -1,6 +1,8 @@
 const port = 5501;
-let firstResults = [];
-let secondResults = [];
+let firstResultObj = [];
+let firstResultArr = [];
+let secondResultObj = [];
+let secondResultArr= [];
 
 /*INCLUDE MODULES*/
 const express = require("express");
@@ -30,10 +32,12 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
             if (fileExtension == ".csv") {//data is an array of objects
                 fs.createReadStream(firstFile.path)
                     .pipe(csv())
-                    .on("data", (data) => firstResults.push(data))
+                    .on("data", (data) => {
+                        firstResultObj.push(data)})
                     .on("end", () => {
                     // Do something with the parsed CSV data
-                    console.log(firstResults);
+                    firstResultArr = firstResultObj.map((obj) => Object.values(obj));
+                    console.log(firstResultArr);
                     res.status(200).send(`Uploaded file '${firstFile.originalname}' was processed successfully`);
                     });
                 }
@@ -44,10 +48,11 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                 if (fileExtension == ".csv") {
                     fs.createReadStream(secondFile.path)
                         .pipe(csv())
-                        .on("data", (data) => secondResults.push(Object.values(data)))
+                        .on("data", (data) => secondResultObj.push(data))
                         .on("end", () => {
                     // Do something with the parsed CSV data
-                    console.log(secondResults);
+                    secondResultArr = secondResultObj.map((obj) => Object.values(obj));
+                    console.log(secondResultArr);
                     res.status(200).send(`Uploaded file '${secondFile.originalname}' was processed successfully`);
                     });
                 }

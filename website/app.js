@@ -62,32 +62,13 @@ secondUploadForm.addEventListener("submit", (submission) => {
       .catch((error) => console.error(error));
   }
 });
-// Plotly.plot(
-//   originalSignal,
-//   [
-//     {
-//       x: [1, 2, 3, 4, 5],
-//       y: [1, 2, 4, 8, 16],
-//     },
-//   ],
-//   {
-//     margin: { t: 0 },
-//   },
-//   { showSendToCloud: true }
-// );
 
-// Plotly.plot(
-//   sampledSignal,
-//   [
-//     {
-//       x: [1, 2, 3, 4, 5],
-//       y: [1, 2, 4, 8, 16],
-//     },
-//   ],
-//   {
-//     margin: { t: 0 },
-//   },
-//   { showSendToCloud: true }
-// );
-// /* Current Plotly.js version */
-// console.log(Plotly.BUILD);
+//EXAMPLE OF PLOTLY
+const x = [1, 2, 3, 4, 5];
+const y = [1, 4, 9, 16, 25];
+const data = [{ x: x, y: y, mode: "markers", type: "scatter" }];
+const layout = { title: "My Scatter Plot" };
+Plotly.newPlot("firstsignalgraph", data, layout);
+//use animate property of plotly or extendTraces , figure out the correct way
+
+// REMAINING : PLOT, INTERACTIVE BUTTONS , PDF FILE REPORT

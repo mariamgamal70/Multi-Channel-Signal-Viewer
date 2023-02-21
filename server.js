@@ -35,7 +35,7 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                         firstResultObj.push(data)})
                     .on("end", () => {
                     // Do something with the parsed CSV data
-                    firstResultArr = firstResultObj.map((obj) => Object.values(obj));
+                    firstResultArr = firstResultObj.map((obj) => Object.values(obj).map(Number));//2 for loops
                     res.send(firstResultArr);
                     });
                 }
@@ -49,7 +49,7 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                         .on("data", (data) => secondResultObj.push(data))
                         .on("end", () => {
                     // Do something with the parsed CSV data
-                    secondResultArr = secondResultObj.map((obj) => Object.values(obj));
+                    secondResultArr = secondResultObj.map((obj) => Object.values(obj).map(Number));
                     res.send(secondResultArr);
                     });
                 }

@@ -13,6 +13,8 @@ const secondInputElement = document.getElementById("secondsignalinput");
 const firstSubmitBtn = document.getElementById("firstsubmitbtn");
 const secondSubmitBtn = document.getElementById("secondsubmitbtn");
 
+const linkSignalsButton=document.getElementById("linksignal");
+
 firstUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
@@ -66,23 +68,17 @@ secondUploadForm.addEventListener("submit", (submission) => {
 });
 
 function plotSignal(data, graphElement) {
+  // Create a data array to hold your trace
   let trace = {
     x: [], // array to hold the x values
     y: [], // array to hold the y values
     type: "scatter", // set the chart type
   };
-  for (let dataFirstRow = 0; dataFirstRow < data.length; dataFirstRow++) {
-    let fRow = data[dataFirstRow];
-    trace.x.push(fRow[0]); // append the x value from the CSV row to the x array
-    trace.y.push(fRow[1]); // append the y value from the CSV row to the y array
+  for (let dataRow = 0; dataRow < data.length; dataRow++) {
+    let Row = data[dataRow];
+    trace.x.push(Row[0]); // append the x value from the CSV row to the x array
+    trace.y.push(Row[1]); // append the y value from the CSV row to the y array
   }
-  // for (let dataSecondRow = 0; dataSecondRow < secondResultArr.length; dataSecondRow++) {
-  //   let sRow = secondResultArr[dataSecondRow];
-  //   trace.x.push(sRow[0]); // append the x value from the CSV row to the x array
-  //   trace.y.push(sRow[1]); // append the y value from the CSV row to the y array
-  // }
-
-  // Create a data array to hold your trace
   // Create a layout object
   let layout = {
     title: "Signal Plot",
@@ -98,15 +94,26 @@ function plotSignal(data, graphElement) {
 
 function addChannel() {}
 
+
+// function link(){
+//   console.log('CLICKED')
+//   firstSignalGraph.on('plotly_hover', function(data) {
+//   console.log('HOVERED');
+//   var pointID = data.points[0].pointNumber;
+//   Plotly.Fx.hover('secondSignalGraph', [{ curveNumber: 0, pointNumber: pointID }]);
+//     });
+//     // add hover event listener to plot 2
+//   secondSignalGraph.on('plotly_hover', function(data) {
+//   var pointID = data.points[0].pointNumber;
+//   Plotly.Fx.hover('firstSignalGraph', [{ curveNumber: 0, pointNumber: pointID }]);
+// });
+// }
+// add hover event listener to plot 1
+// linkSignals.addEventListener('click', link);
+
 // Call Plotly.newPlot to create the plot
 // let newData = { x: [newXValue], y: [newYValue] };
 // Plotly.extendTraces("plot", newData, [0]);
 
-//EXAMPLE OF PLOTLY
-// const x = [1, 2, 3, 4, 5];
-// const y = [1, 4, 9, 16, 25];
-// const data = [{ x: x, y: y, mode: "markers", type: "line" }];
-// const layout = { title: "My Scatter Plot" };
-// Plotly.newPlot("firstsignalgraph", data, layout);
 //use animate property of plotly or extendTraces , figure out the correct way
 // REMAINING : PLOT, INTERACTIVE BUTTONS , PDF FILE REPORT

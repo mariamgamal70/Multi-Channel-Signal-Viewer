@@ -1,6 +1,8 @@
 const port = 5501;
-let firstResults = [];
-let secondResults = [];
+let firstResultObj = [];
+let firstResultArr = [];
+let secondResultObj = [];
+let secondResultArr= [];
 
 /*INCLUDE MODULES*/
 const express = require("express");
@@ -25,16 +27,16 @@ app.use(express.static("website"));
 app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secondsignalinput", maxCount: 1}]), (req, res) => {
     if (req.files["firstsignalinput"]) {
         let firstFile = req.files["firstsignalinput"][0];
-        console.log(firstFile);
         let fileExtension = path.extname(firstFile.originalname);
             if (fileExtension == ".csv") {//data is an array of objects
                 fs.createReadStream(firstFile.path)
                     .pipe(csv())
-                    .on("data", (data) => firstResults.push(data))
+                    .on("data", (data) => {
+                        firstResultObj.push(data)})
                     .on("end", () => {
                     // Do something with the parsed CSV data
-                    console.log(firstResults);
-                    res.status(200).send(`Uploaded file '${firstFile.originalname}' was processed successfully`);
+                    firstResultArr = firstResultObj.map((obj) => Object.values(obj));
+                    res.send(firstResultArr);
                     });
                 }
             } 
@@ -44,11 +46,11 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                 if (fileExtension == ".csv") {
                     fs.createReadStream(secondFile.path)
                         .pipe(csv())
-                        .on("data", (data) => secondResults.push(Object.values(data)))
+                        .on("data", (data) => secondResultObj.push(data))
                         .on("end", () => {
                     // Do something with the parsed CSV data
-                    console.log(secondResults);
-                    res.status(200).send(`Uploaded file '${secondFile.originalname}' was processed successfully`);
+                    secondResultArr = secondResultObj.map((obj) => Object.values(obj));
+                    res.send(secondResultArr);
                     });
                 }
             }

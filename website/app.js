@@ -1,5 +1,5 @@
-let originalSignalData;
-let sampledSignalData;
+ let firstSignalData;
+ let secondSignalData;
 
 const firstUploadForm = document.getElementById("firstsignalform");
 const secondUploadForm = document.getElementById("secondsignalform");
@@ -29,10 +29,10 @@ firstUploadForm.addEventListener("submit", (submission) => {
       body: formDataObject,
     })
       .then((response) => {
-        return response.text();
+        return response.text(); //arrive as string
       })
       .then((responseMsg) => {
-        console.log(responseMsg);
+       firstSignalData = JSON.parse(responseMsg); //converts it to js object
       })
       .catch((error) => console.error(error));
   }
@@ -57,39 +57,52 @@ secondUploadForm.addEventListener("submit", (submission) => {
         return response.text();
       })
       .then((responseMsg) => {
-        console.log(responseMsg);
+        secondSignalData = JSON.parse(responseMsg);
       })
       .catch((error) => console.error(error));
   }
 });
 
 
-// Plotly.plot(
-//   originalSignal,
-//   [
-//     {
-//       x: [1, 2, 3, 4, 5],
-//       y: [1, 2, 4, 8, 16],
-//     },
-//   ],
-//   {
-//     margin: { t: 0 },
-//   },
-//   { showSendToCloud: true }
-// );
+let trace = {
+  x: [], // array to hold the x values
+  y: [], // array to hold the y values
+  type: 'scatter' // set the chart type
+};
 
-// Plotly.plot(
-//   sampledSignal,
-//   [
-//     {
-//       x: [1, 2, 3, 4, 5],
-//       y: [1, 2, 4, 8, 16],
-//     },
-//   ],
-//   {
-//     margin: { t: 0 },
-//   },
-//   { showSendToCloud: true }
-// );
-// /* Current Plotly.js version */
-// console.log(Plotly.BUILD);
+for (let dataFirstRow = 0; dataFirstRow < firstSignalData.length; dataFirstRow++) {
+  let fRow = firstSignalData[dataFirstRow];
+  trace.x.push(fRow[0]); // append the x value from the CSV row to the x array
+  trace.y.push(fRow[1]); // append the y value from the CSV row to the y array
+
+  console.log(fRow)
+}
+
+// for (let dataSecondRow = 0; dataSecondRow < secondResultArr.length; dataSecondRow++) {
+//   let sRow = secondResultArr[dataSecondRow];
+//   trace.x.push(sRow[0]); // append the x value from the CSV row to the x array
+//   trace.y.push(sRow[1]); // append the y value from the CSV row to the y array
+// }
+
+// Create a data array to hold your trace
+let data = [trace];
+
+// Create a layout object
+let layout = {
+  title: 'Signal Plot'
+};
+
+// Call Plotly.newPlot to create the plot
+Plotly.newPlot('plot', data, layout);
+
+
+
+
+//EXAMPLE OF PLOTLY
+// const x = [1, 2, 3, 4, 5];
+// const y = [1, 4, 9, 16, 25];
+// const data = [{ x: x, y: y, mode: "markers", type: "line" }];
+// const layout = { title: "My Scatter Plot" };
+// Plotly.newPlot("firstsignalgraph", data, layout);
+//use animate property of plotly or extendTraces , figure out the correct way
+// REMAINING : PLOT, INTERACTIVE BUTTONS , PDF FILE REPORT

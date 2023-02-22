@@ -14,6 +14,8 @@ const csv = require("csv-parser");
 const fs = require("fs");
 const path = require("path");
 const app = express();
+const PDFDocument = require('pdfkit');
+
 
 /*USING MIDDLEWARES*/
 app.use(bodyParser.json());
@@ -67,4 +69,5 @@ app.listen(port, () => {console.log(`server is on http://localhost:${port}`);});
 //npm install path
 //npm install plotly.js
 //npm install binary-parser
+//npm install pdfkit
 //start server using node -serversidefilename-

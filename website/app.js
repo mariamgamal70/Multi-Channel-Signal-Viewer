@@ -94,6 +94,13 @@ function plotSignal(data, graphElement) {
 
 function addChannel() {}
 
+const doc = new PDFDocument();
+doc.info.Title = 'My PDF Document';
+doc.text('Hello, World!');
+doc.pipe(fs.createWriteStream('output.pdf'));
+doc.end();
+
+
 
 // function link(){
 //   console.log('CLICKED')

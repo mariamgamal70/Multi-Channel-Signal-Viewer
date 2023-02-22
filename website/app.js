@@ -29,10 +29,11 @@ firstUploadForm.addEventListener("submit", (submission) => {
       body: formDataObject,
     })
       .then((response) => {
-        return response.text();
+        return response.text(); //arrive as string
       })
       .then((responseMsg) => {
-        firstSignalData = responseMsg;
+        firstSignalData = JSON.parse(responseMsg); //converts it to js object
+        plotSignal(firstSignalData, firstSignalGraph);
       })
       .catch((error) => console.error(error));
   }
@@ -57,18 +58,55 @@ secondUploadForm.addEventListener("submit", (submission) => {
         return response.text();
       })
       .then((responseMsg) => {
-        secondSignalData = responseMsg;
+        secondSignalData = JSON.parse(responseMsg);
+        plotSignal(secondSignalData, secondSignalGraph);
       })
       .catch((error) => console.error(error));
   }
 });
 
-//EXAMPLE OF PLOTLY
-const x = [1, 2, 3, 4, 5];
-const y = [1, 4, 9, 16, 25];
-const data = [{ x: x, y: y, mode: "markers", type: "scatter" }];
-const layout = { title: "My Scatter Plot" };
-Plotly.newPlot("firstsignalgraph", data, layout);
-//use animate property of plotly or extendTraces , figure out the correct way
+function plotSignal(data, graphElement) {
+  let trace = {
+    x: [], // array to hold the x values
+    y: [], // array to hold the y values
+    type: "scatter", // set the chart type
+  };
+  for (let dataFirstRow = 0; dataFirstRow < data.length; dataFirstRow++) {
+    let fRow = data[dataFirstRow];
+    trace.x.push(fRow[0]); // append the x value from the CSV row to the x array
+    trace.y.push(fRow[1]); // append the y value from the CSV row to the y array
+  }
+  // for (let dataSecondRow = 0; dataSecondRow < secondResultArr.length; dataSecondRow++) {
+  //   let sRow = secondResultArr[dataSecondRow];
+  //   trace.x.push(sRow[0]); // append the x value from the CSV row to the x array
+  //   trace.y.push(sRow[1]); // append the y value from the CSV row to the y array
+  // }
 
+  // Create a data array to hold your trace
+  // Create a layout object
+  let layout = {
+    title: "Signal Plot",
+    xaxis: {
+      title: "Time (s)",
+    },
+    yaxis: {
+      title: "Amplitude",
+    },
+  };
+  Plotly.newPlot(graphElement, [trace], layout);
+}
+
+function addChannel() {}
+
+// Call Plotly.newPlot to create the plot
+// let newData = { x: [newXValue], y: [newYValue] };
+// Plotly.extendTraces("plot", newData, [0]);
+
+//EXAMPLE OF PLOTLY
+// const x = [1, 2, 3, 4, 5];
+// const y = [1, 4, 9, 16, 25];
+// const data = [{ x: x, y: y, mode: "markers", type: "line" }];
+// const layout = { title: "My Scatter Plot" };
+// Plotly.newPlot("firstsignalgraph", data, layout);
+//use animate property of plotly or extendTraces , figure out the correct way
 // REMAINING : PLOT, INTERACTIVE BUTTONS , PDF FILE REPORT

@@ -94,11 +94,26 @@ function plotSignal(data, graphElement) {
 
 function addChannel() {}
 
-const doc = new PDFDocument();
-doc.info.Title = 'My PDF Document';
-doc.text('Hello, World!');
-doc.pipe(fs.createWriteStream('output.pdf'));
-doc.end();
+linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
+function createPDF(){
+fetch("/download", {
+  method: "POST",
+  headers:{'Content-Type':'application/json'},
+  body: JSON.stringify({data:'helloooo'}),
+  credentials: "same-origin",
+})
+  .then((response) => {
+    return response.blob();
+  })
+  .then((blob) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "output.pdf";
+    a.click();
+  });
+}
+
 
 
 

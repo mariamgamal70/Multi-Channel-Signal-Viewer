@@ -15,6 +15,8 @@ const fs = require("fs");
 const path = require("path");
 const app = express();
 const PDFDocument = require('pdfkit');
+const Papa = require("papaparse");
+
 
 
 /*USING MIDDLEWARES*/
@@ -57,6 +59,13 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
                 }
             }
         });
+app.post("/download",(req,res)=>{
+    const doc = new PDFDocument();
+    doc.pipe(fs.createWriteStream("output.pdf"));
+    doc.fontSize(20).text(JSON.stringify(req.body));
+    doc.end();
+    res.download("output.pdf");
+});
 /*upload.single('file') -> file in here is supposed to be file name, next is a reference to the next middleware in the chain (chains middleware)*/
 app.listen(port, () => {console.log(`server is on http://localhost:${port}`);});
 
@@ -70,4 +79,5 @@ app.listen(port, () => {console.log(`server is on http://localhost:${port}`);});
 //npm install plotly.js
 //npm install binary-parser
 //npm install pdfkit
+//npm install papaparse
 //start server using node -serversidefilename-

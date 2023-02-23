@@ -1,8 +1,8 @@
 let firstSignalData;
 let secondSignalData;
 
-const firstUploadForm = document.getElementById("firstsignalform");
-const secondUploadForm = document.getElementById("secondsignalform");
+//const firstUploadForm = document.getElementById("firstsignalform");
+//const secondUploadForm = document.getElementById("secondsignalform");
 
 const firstSignalGraph = document.getElementById("firstsignalgraph");
 const secondSignalGraph = document.getElementById("secondsignalgraph");
@@ -10,17 +10,17 @@ const secondSignalGraph = document.getElementById("secondsignalgraph");
 const firstInputElement = document.getElementById("firstsignalinput");
 const secondInputElement = document.getElementById("secondsignalinput");
 
-const firstSubmitBtn = document.getElementById("firstsubmitbtn");
-const secondSubmitBtn = document.getElementById("secondsubmitbtn");
+//const firstSubmitBtn = document.getElementById("firstsubmitbtn");
+//const secondSubmitBtn = document.getElementById("secondsubmitbtn");
 
-const addFirstSignalChannelBtn=document.getElementById("firstsignaladdchannelbtn");
-const addSecondSignalChannelBtn = document.getElementById("secondsignaladdchannelbtn");
+//const addFirstSignalChannelBtn=document.getElementById("firstsignaladdchannelbtn");
+//const addSecondSignalChannelBtn = document.getElementById("secondsignaladdchannelbtn");
 
 const addFirstSignalChannelInput=document.getElementById("firstsignaladdchannelinput");
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
 
-const addFirstSignalChannelForm = document.getElementById("firstsignaladdchannelform");
-const addSecondSignalChannelForm = document.getElementById("secondsignaladdchannelform");
+//const addFirstSignalChannelForm = document.getElementById("firstsignaladdchannelform");
+//const addSecondSignalChannelForm = document.getElementById("secondsignaladdchannelform");
 
 const linkSignalsButton=document.getElementById("linksignal");
 
@@ -30,7 +30,7 @@ let secondGraphChannelCounter = 0;
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
-firstUploadForm.addEventListener("submit", (submission) => {
+firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
   if (!file) {
@@ -56,7 +56,7 @@ firstUploadForm.addEventListener("submit", (submission) => {
   }
 });
 
-secondUploadForm.addEventListener("submit", (submission) => {
+secondInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
   const file = secondInputElement.files[0];
   if (!file) {
@@ -132,7 +132,7 @@ function plotChannelSignal(data, graphElement,channelCounter) {
   }, 100);
 }
 
-addFirstSignalChannelForm.addEventListener('submit',(submission)=>{ //ADDS SIGNAL TRACE
+addFirstSignalChannelInput.addEventListener('change',(submission)=>{ //ADDS SIGNAL TRACE
   submission.preventDefault();
   const file = addFirstSignalChannelInput.files[0];
   if (!file) {
@@ -166,7 +166,7 @@ addFirstSignalChannelForm.addEventListener('submit',(submission)=>{ //ADDS SIGNA
   }
 })
 
-addSecondSignalChannelForm.addEventListener("submit", (submission) => {
+addSecondSignalChannelInput.addEventListener("change", (submission) => {
   submission.preventDefault();
   const file = addSecondSignalChannelInput.files[0];
   if (!file) {

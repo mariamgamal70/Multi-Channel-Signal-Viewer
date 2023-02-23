@@ -121,8 +121,20 @@ fetch("/download", {
   });
 }
 
+//function signal_statistics(){
 
+// Compute the average of a column
+//const column = results.map((row) => parseFloat(row['Column Name']));
+//const average = column.reduce((sum, value) => sum + value) / column.length;
 
+// Compute the standard deviation of a column
+//const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
+//const standardDeviation = Math.sqrt(variance);
+
+// Compute the minimum and maximum values in a column
+//const minValue = Math.min(...column);
+//const maxValue = Math.max(...column);
+//}
 
 // function link(){
 //   console.log('CLICKED')

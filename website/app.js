@@ -15,6 +15,9 @@ const secondSubmitBtn = document.getElementById("secondsubmitbtn");
 
 const linkSignalsButton=document.getElementById("linksignal");
 
+document.onload = createPlot(firstSignalGraph);
+document.onload = createPlot(secondSignalGraph);
+
 firstUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
@@ -66,6 +69,26 @@ secondUploadForm.addEventListener("submit", (submission) => {
       .catch((error) => console.error(error));
   }
 });
+
+function createPlot(graphElement) {
+  // Create a data array to hold your trace
+  let trace = {
+    x: [], // array to hold the x values
+    y: [], // array to hold the y values
+    type: "scatter", // set the chart type
+  };
+  let layout = {
+    title: "Signal Plot",
+    xaxis: {
+      title: "Time (s)",
+    },
+    yaxis: {
+      title: "Amplitude",
+    },
+  };
+  Plotly.newPlot(graphElement, [trace], layout);
+}
+
 
 function plotSignal(data, graphElement) {
   // Create a data array to hold your trace

@@ -13,10 +13,9 @@ const secondInputElement = document.getElementById("secondsignalinput");
 const firstSubmitBtn = document.getElementById("firstsubmitbtn");
 const secondSubmitBtn = document.getElementById("secondsubmitbtn");
 
-const linkSignalsButton=document.getElementById("linksignal");
+const linkSignalsButton = document.getElementById("linksignal");
 
 document.onload = createPlot(firstSignalGraph);
-document.onload = createPlot(secondSignalGraph);
 
 firstUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
@@ -78,67 +77,65 @@ function createPlot(graphElement) {
     type: "scatter", // set the chart type
   };
   let layout = {
-    title: "Signal Plot",
+    title: { title: 'Click Here<br>to Edit Chart Title' },
     xaxis: {
       title: "Time (s)",
+      zoom: 1000,
     },
     yaxis: {
       title: "Amplitude",
     },
   };
-  Plotly.newPlot(graphElement, [trace], layout);
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true , displaylogo: false});
 }
-
 
 function plotSignal(data, graphElement) {
-  // Create a data array to hold your trace
-  let trace = {
-    x: [], // array to hold the x values
-    y: [], // array to hold the y values
-    type: "scatter", // set the chart type
-  };
   for (let dataRow = 0; dataRow < data.length; dataRow++) {
-    let Row = data[dataRow];
-    trace.x.push(Row[0]); // append the x value from the CSV row to the x array
-    trace.y.push(Row[1]); // append the y value from the CSV row to the y array
+    let row = data[dataRow];
+    //trace.x.push(row[0]); // append the x value from the CSV row to the x array
+    //trace.y.push(row[1]); // append the y value from the CSV row to the y array
+    setTimeout(() => Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]), 100)
+
   }
   // Create a layout object
-  let layout = {
-    title: "Signal Plot",
-    xaxis: {
-      title: "Time (s)",
-    },
-    yaxis: {
-      title: "Amplitude",
-    },
-  };
-  Plotly.newPlot(graphElement, [trace], layout);
 }
 
-function addChannel() {}
+function addChannel() { }
 
 linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
-function createPDF(){
-fetch("/download", {
-  method: "POST",
-  headers:{'Content-Type':'application/json'},
-  body: JSON.stringify({data:'helloooo'}),
-  credentials: "same-origin",
-})
-  .then((response) => {
-    return response.blob();
+function createPDF() {
+  fetch("/download", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data: 'helloooo' }),
+    credentials: "same-origin",
   })
-  .then((blob) => {
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "output.pdf";
-    a.click();
-  });
+    .then((response) => {
+      return response.blob();
+    })
+    .then((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "output.pdf";
+      a.click();
+    });
 }
 
+//function signal_statistics(){
 
+// Compute the average of a column
+//const column = results.map((row) => parseFloat(row['Column Name']));
+//const average = column.reduce((sum, value) => sum + value) / column.length;
 
+// Compute the standard deviation of a column
+//const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
+//const standardDeviation = Math.sqrt(variance);
+
+// Compute the minimum and maximum values in a column
+//const minValue = Math.min(...column);
+//const maxValue = Math.max(...column);
+//}
 
 // function link(){
 //   console.log('CLICKED')
@@ -158,6 +155,10 @@ fetch("/download", {
 
 // Call Plotly.newPlot to create the plot
 // let newData = { x: [newXValue], y: [newYValue] };
+// Plotly.extendTraces("plot", newData, [0]);
+
+//use animate property of plotly or extendTraces , figure out the correct way
+// REMAINING : PLOT, INTERACTIVE BUTTONS , PDF FILE REPORT
 // Plotly.extendTraces("plot", newData, [0]);
 
 //use animate property of plotly or extendTraces , figure out the correct way

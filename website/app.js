@@ -15,6 +15,8 @@ const secondSubmitBtn = document.getElementById("secondsubmitbtn");
 
 const linkSignalsButton=document.getElementById("linksignal");
 
+document.onload = createPlot(firstSignalGraph);
+
 firstUploadForm.addEventListener("submit", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
@@ -67,21 +69,15 @@ secondUploadForm.addEventListener("submit", (submission) => {
   }
 });
 
-function plotSignal(data, graphElement) {
+function createPlot(graphElement) {
   // Create a data array to hold your trace
   let trace = {
     x: [], // array to hold the x values
     y: [], // array to hold the y values
     type: "scatter", // set the chart type
   };
-  for (let dataRow = 0; dataRow < data.length; dataRow++) {
-    let Row = data[dataRow];
-    trace.x.push(Row[0]); // append the x value from the CSV row to the x array
-    trace.y.push(Row[1]); // append the y value from the CSV row to the y array
-  }
-  // Create a layout object
   let layout = {
-    title: "Signal Plot",
+    title: {title: 'Click Here<br>to Edit Chart Title'},
     xaxis: {
       title: "Time (s)",
     },
@@ -89,7 +85,18 @@ function plotSignal(data, graphElement) {
       title: "Amplitude",
     },
   };
-  Plotly.newPlot(graphElement, [trace], layout);
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true });
+}
+
+function plotSignal(data, graphElement) {
+  for (let dataRow = 0; dataRow < data.length; dataRow++) {
+    let row = data[dataRow];
+    //trace.x.push(row[0]); // append the x value from the CSV row to the x array
+    //trace.y.push(row[1]); // append the y value from the CSV row to the y array
+    setTimeout(()=>Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]),100)
+    
+  }
+  // Create a layout object
 }
 
 function addChannel() {}

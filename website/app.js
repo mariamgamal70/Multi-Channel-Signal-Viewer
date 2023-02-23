@@ -237,25 +237,3 @@ addSecondSignalChannelForm.addEventListener("submit", (submission) => {
 //const maxValue = Math.max(...column);
 //}
 
-// function link(){
-//   console.log('CLICKED')
-//   firstSignalGraph.on('plotly_hover', function(data) {
-//   console.log('HOVERED');
-//   var pointID = data.points[0].pointNumber;
-//   Plotly.Fx.hover('secondSignalGraph', [{ curveNumber: 0, pointNumber: pointID }]);
-//     });
-//     // add hover event listener to plot 2
-//   secondSignalGraph.on('plotly_hover', function(data) {
-//   var pointID = data.points[0].pointNumber;
-//   Plotly.Fx.hover('firstSignalGraph', [{ curveNumber: 0, pointNumber: pointID }]);
-// });
-// }
-// add hover event listener to plot 1
-// linkSignals.addEventListener('click', link);
-
-// Call Plotly.newPlot to create the plot
-// let newData = { x: [newXValue], y: [newYValue] };
-// Plotly.extendTraces("plot", newData, [0]);
-
-//use animate property of plotly or extendTraces , figure out the correct way
-// REMAINING : PLOT, INTERACTIVE BUTTONS , PDF FILE REPORT

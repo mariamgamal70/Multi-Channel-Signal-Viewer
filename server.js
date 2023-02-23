@@ -22,42 +22,6 @@ app.use(cors());
 app.use(express.static("website"));
 
 /*ENDPOINTS*/
-// app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secondsignalinput", maxCount: 1}]), (req, res) => {
-//     if (req.files["firstsignalinput"]) {
-//         let firstFile = req.files["firstsignalinput"][0];
-//         let fileExtension = path.extname(firstFile.originalname);
-//         let firstResultObj = [];
-//         let firstResultArr = [];
-//             if (fileExtension == ".csv") {//data is an array of objects
-//                 fs.createReadStream(firstFile.path)
-//                     .pipe(csv())
-//                     .on("data", (data) => {
-//                         firstResultObj.push(data)})
-//                     .on("end", () => {
-//                     // Do something with the parsed CSV data
-//                     firstResultArr = firstResultObj.map((obj) => Object.values(obj).map(Number));//2 for loops
-//                     res.send(firstResultArr);
-//                     });
-//                 }
-//             } 
-//             else if (req.files["secondsignalinput"]) {
-//                 let secondFile = req.files["secondsignalinput"][0];
-//                 let fileExtension = path.extname(secondFile.originalname);
-//                 let secondResultObj = [];
-//                 let secondResultArr = [];
-//                 if (fileExtension == ".csv") {
-//                     fs.createReadStream(secondFile.path)
-//                         .pipe(csv())
-//                         .on("data", (data) => secondResultObj.push(data))
-//                         .on("end", () => {
-//                     // Do something with the parsed CSV data
-//                     secondResultArr = secondResultObj.map((obj) => Object.values(obj).map(Number));
-//                     res.send(secondResultArr);
-//                     });
-//                 }
-//             }
-//         });
-
 app.post("/", upload.fields([{ name: "firstsignalinput", maxCount: 1 }, { name: "secondsignalinput", maxCount: 1 }]), (req, res) => {
     const firstFile = req.files["firstsignalinput"] ? req.files["firstsignalinput"][0] : null;
     const secondFile = req.files["secondsignalinput"] ? req.files["secondsignalinput"][0] : null;

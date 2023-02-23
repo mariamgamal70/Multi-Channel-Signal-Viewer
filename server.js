@@ -70,7 +70,7 @@ app.post("/download",(req,res)=>{
 app.listen(port, () => {console.log(`server is on http://localhost:${port}`);});
 
 //npm install express
-//npm install corst
+//npm install cors
 //npm install body-parser
 //npm install node
 //npm install fs

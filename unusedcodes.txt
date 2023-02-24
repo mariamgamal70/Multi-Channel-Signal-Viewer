@@ -36,3 +36,24 @@ app.post("/", upload.fields([{name:"firstsignalinput", maxCount: 1},{name:"secon
             }
         });
 ------------------------------------------------------------------------------------------------------------
+function plotMainSignal(data, graphElement) {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < data.length) {
+        const row = data[i];
+        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+}
+------------------------------------------------------------------------------------------------------------
+const firstUploadForm = document.getElementById("firstsignalform");
+const secondUploadForm = document.getElementById("secondsignalform");
+const firstSubmitBtn = document.getElementById("firstsubmitbtn");
+const secondSubmitBtn = document.getElementById("secondsubmitbtn")
+const addFirstSignalChannelBtn=document.getElementById("firstsignaladdchannelbtn");
+const addSecondSignalChannelBtn = document.getElementById("secondsignaladdchannelbtn")
+const addFirstSignalChannelForm = document.getElementById("firstsignaladdchannelform");
+const addSecondSignalChannelForm = document.getElementById("secondsignaladdchannelform");

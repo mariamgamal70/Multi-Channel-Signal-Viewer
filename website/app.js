@@ -1,26 +1,14 @@
 let firstSignalData;
 let secondSignalData;
 
-//const firstUploadForm = document.getElementById("firstsignalform");
-//const secondUploadForm = document.getElementById("secondsignalform");
-
 const firstSignalGraph = document.getElementById("firstsignalgraph");
 const secondSignalGraph = document.getElementById("secondsignalgraph");
 
 const firstInputElement = document.getElementById("firstsignalinput");
 const secondInputElement = document.getElementById("secondsignalinput");
 
-//const firstSubmitBtn = document.getElementById("firstsubmitbtn");
-//const secondSubmitBtn = document.getElementById("secondsubmitbtn");
-
-//const addFirstSignalChannelBtn=document.getElementById("firstsignaladdchannelbtn");
-//const addSecondSignalChannelBtn = document.getElementById("secondsignaladdchannelbtn");
-
 const addFirstSignalChannelInput=document.getElementById("firstsignaladdchannelinput");
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
-
-//const addFirstSignalChannelForm = document.getElementById("firstsignaladdchannelform");
-//const addSecondSignalChannelForm = document.getElementById("secondsignaladdchannelform");
 
 const linkSignalsButton=document.getElementById("linksignal");
 
@@ -54,20 +42,7 @@ function createPlot(graphElement) {
   Plotly.newPlot(graphElement, [trace], layout, { editable: true });
 }
 
-function plotMainSignal(data, graphElement) {
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < data.length) {
-        const row = data[i];
-        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]);
-        i++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-}
-
-function plotChannelSignal(data, graphElement,channelCounter) {
+function plotSignal(data, graphElement,channelCounter=0) {
   let i = 0;
   const interval = setInterval(() => {
     if (i < data.length) {
@@ -93,7 +68,7 @@ fetch("/", {
   })
   .then((responseMsg) => {
     dataElement = JSON.parse(responseMsg); //converts it to js object
-    plotMainSignal(dataElement, graphElement);
+    plotSignal(dataElement, graphElement);
   })
   .catch((error) => console.error(error));
 }
@@ -130,7 +105,7 @@ firstInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("firstsignalinput", file);
-    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph);
+    handleSignalFetch(formDataObject, firstSignalData , firstSignalGraph);
   }
 });
 
@@ -170,6 +145,7 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
     handleChannelFetch(formDataObject,secondSignalGraph,secondGraphChannelCounter);
+
   }
 });
 // linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES

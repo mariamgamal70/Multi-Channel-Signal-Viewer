@@ -52,7 +52,7 @@ app.post("/download",(req,res)=>{
     res.download("output.pdf");
 });
 
-app.post("/addSignal",upload.fields([{ name: "firstsignaladdchannelinput"}, { name: "secondsignaladdchannelinput"}]),(req,res)=>{
+app.post("/addChannel",upload.fields([{ name: "firstsignaladdchannelinput"}, { name: "secondsignaladdchannelinput"}]),(req,res)=>{
     let firstsignalchannelfile = req.files["firstsignaladdchannelinput"]?req.files["firstsignaladdchannelinput"][0]:null;
     let secondsignalchannelfile=req.files["secondsignaladdchannelinput"]?req.files["secondsignaladdchannelinput"][0]:null;
     let channelFile=firstsignalchannelfile || secondsignalchannelfile;

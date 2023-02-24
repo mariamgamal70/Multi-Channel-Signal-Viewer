@@ -42,12 +42,20 @@ function createPlot(graphElement) {
   Plotly.newPlot(graphElement, [trace], layout, { editable: true });
 }
 
-function plotSignal(data, graphElement,channelCounter=0) {
+function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
   let i = 0;
+  let startPointFoundFlag=false;
   const interval = setInterval(() => {
     if (i < data.length) {
       const row = data[i];
+      if(channelCounter!=0 && !startPointFoundFlag){
+        if(row[0]>=lastX && row[1]>=lastY){
+          startPointFoundFlag=true;
+          Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+        }
+      }else{
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+      }
       i++;
     } else {
       clearInterval(interval);
@@ -86,13 +94,16 @@ fetch("/addChannel", {
   })
   .then((responseMsg) => {
     let firstGraphChannelData = JSON.parse(responseMsg);
+    const lastTrace = graphElement.data[channelCounter - 1];
+    const lastX = lastTrace.x[lastTrace.x.length - 1];
+    const lastY = lastTrace.y[lastTrace.y.length - 1];
     Plotly.addTraces(graphElement, {
-      x: [],
-      y: [],
+      x: [lastX],
+      y: [lastY],
       name: `Channel ${channelCounter + 1}`,
       type: "scatter",
     });
-    plotChannelSignal(firstGraphChannelData, graphElement, channelCounter);
+    plotSignal(firstGraphChannelData, graphElement, channelCounter,lastX,lastY);
   })
   .catch((error) => console.error(error));
 }

@@ -43,25 +43,18 @@ function createPlot(graphElement) {
     }
   };
   let layout = {
-    title: { title: "Click Here<br>to Edit Chart Title" },
+    title: {title: 'Click Here<br>to Edit Chart Title'},
     xaxis: {
       title: "Time (s)",
     },
     yaxis: {
       title: "Amplitude",
     },
-    editable: true,
-    displayModeBar: false,
   };
-  // let config = {
-  //   editable: true,
-  //   displayModeBar: false,
-  // };
-  Plotly.newPlot(graphElement, [trace], layout);
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true });
 }
 
 function plotMainSignal(data, graphElement) {
-    //Plotly.update(graphElement,{},{displayModeBar: true});
     let i = 0;
     const interval = setInterval(() => {
       if (i < data.length) {
@@ -138,6 +131,7 @@ secondInputElement.addEventListener("change", (submission) => {
       .catch((error) => console.error(error));
   }
 });
+
 
 addFirstSignalChannelInput.addEventListener('change',(submission)=>{ //ADDS SIGNAL TRACE
   submission.preventDefault();

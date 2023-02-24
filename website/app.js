@@ -11,6 +11,10 @@ const addFirstSignalChannelInput=document.getElementById("firstsignaladdchanneli
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
 
 const linkSignalsButton=document.getElementById("linksignal");
+const createpdf=document.getElementById("genPDF")
+
+let firstsignalfirstchannel;
+let firstsignalsecondchannel;
 
 let firstGraphChannelCounter=0;
 let secondGraphChannelCounter = 0;
@@ -76,6 +80,7 @@ fetch("/", {
   })
   .then((responseMsg) => {
     dataElement = JSON.parse(responseMsg); //converts it to js object
+    firstsignalfirstchannel=dataElement;
     plotSignal(dataElement, graphElement);
   })
   .catch((error) => console.error(error));
@@ -159,38 +164,48 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
 
   }
 });
-// linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
-// function createPDF(){
-// fetch("/download", {
-//   method: "POST",
-//   headers:{'Content-Type':'application/json'},
-//   body: JSON.stringify({data:'helloooo'}),
-//   credentials: "same-origin",
-// })
-//   .then((response) => {
-//     return response.blob();
-//   })
-//   .then((blob) => {
-//     const url = window.URL.createObjectURL(blob);
-//     const a = document.createElement("a");
-//     a.href = url;
-//     a.download = "output.pdf";
-//     a.click();
-//   });
-// }
+createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
+async function createPDF (){
+await fetch("/download", {
+  method: "POST",
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify(signal_statistics()),
+  //body: JSON.stringify({data:'helloooo'}),
+  credentials: "same-origin",
 
-//function signal_statistics(){
+})
+  .then((response) => {
+    return response.blob();
+  })
+  .then((blob) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "output.pdf";
+    a.click();
+  });
+}
 
+function signal_statistics(){
+//fetch("/")
 // Compute the average of a column
-//const column = results.map((row) => parseFloat(row['Column Name']));
-//const average = column.reduce((sum, value) => sum + value) / column.length;
+const column = firstsignalfirstchannel.map((row) => parseFloat(row['Column Name']));
+const average = column.reduce((sum, value) => sum + value) / column.length;
 
 // Compute the standard deviation of a column
-//const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
-//const standardDeviation = Math.sqrt(variance);
+const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
+const standardDeviation = Math.sqrt(variance);
 
 // Compute the minimum and maximum values in a column
-//const minValue = Math.min(...column);
-//const maxValue = Math.max(...column);
-//}
+const minValue = Math.min(...column);
+const maxValue = Math.max(...column);
+return {
+  var:variance,
+  std:standardDeviation,
+  avg:average,
+  min:minValue,
+  max:maxValue
+}
+}
 
+//createpdf.add

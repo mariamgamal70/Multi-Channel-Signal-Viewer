@@ -1,26 +1,14 @@
 let firstSignalData;
 let secondSignalData;
 
-//const firstUploadForm = document.getElementById("firstsignalform");
-//const secondUploadForm = document.getElementById("secondsignalform");
-
 const firstSignalGraph = document.getElementById("firstsignalgraph");
 const secondSignalGraph = document.getElementById("secondsignalgraph");
 
 const firstInputElement = document.getElementById("firstsignalinput");
 const secondInputElement = document.getElementById("secondsignalinput");
 
-//const firstSubmitBtn = document.getElementById("firstsubmitbtn");
-//const secondSubmitBtn = document.getElementById("secondsubmitbtn");
-
-//const addFirstSignalChannelBtn=document.getElementById("firstsignaladdchannelbtn");
-//const addSecondSignalChannelBtn = document.getElementById("secondsignaladdchannelbtn");
-
 const addFirstSignalChannelInput=document.getElementById("firstsignaladdchannelinput");
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
-
-//const addFirstSignalChannelForm = document.getElementById("firstsignaladdchannelform");
-//const addSecondSignalChannelForm = document.getElementById("secondsignaladdchannelform");
 
 const linkSignalsButton=document.getElementById("linksignal");
 
@@ -29,58 +17,6 @@ let secondGraphChannelCounter = 0;
 
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
-
-firstInputElement.addEventListener("change", (submission) => {
-  submission.preventDefault();
-  const file = firstInputElement.files[0];
-  if (!file) {
-    alert("No file selected");
-  } else {
-    const formDataObject = new FormData();
-    formDataObject.append("firstsignalinput", file);
-    fetch("/", {
-      maxContentLength: 10000000,
-      maxBodyLength: 10000000,
-      method: "POST",
-      credentials: "same-origin",
-      body: formDataObject,
-    })
-      .then((response) => {
-        return response.text(); //arrive as string
-      })
-      .then((responseMsg) => {
-        firstSignalData = JSON.parse(responseMsg); //converts it to js object
-        plotMainSignal(firstSignalData, firstSignalGraph);
-      })
-      .catch((error) => console.error(error));
-  }
-});
-
-secondInputElement.addEventListener("change", (submission) => {
-  submission.preventDefault();
-  const file = secondInputElement.files[0];
-  if (!file) {
-    alert("No file selected");
-  } else {
-    const formDataObject = new FormData();
-    formDataObject.append("secondsignalinput", file);
-    fetch("/", {
-      maxContentLength: 10000000,
-      maxBodyLength: 10000000,
-      method: "POST",
-      credentials: "same-origin",
-      body: formDataObject,
-    })
-      .then((response) => {
-        return response.text();
-      })
-      .then((responseMsg) => {
-        secondSignalData = JSON.parse(responseMsg);
-        plotMainSignal(secondSignalData, secondSignalGraph);
-      })
-      .catch((error) => console.error(error));
-  }
-});
 
 function createPlot(graphElement) {
   // Create a data array to hold your trace
@@ -106,31 +42,95 @@ function createPlot(graphElement) {
   Plotly.newPlot(graphElement, [trace], layout, { editable: true });
 }
 
-function plotMainSignal(data, graphElement) {
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < data.length) {
-        const row = data[i];
-        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]);
-        i++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-}
-
-function plotChannelSignal(data, graphElement,channelCounter) {
+function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
   let i = 0;
+  let startPointFoundFlag=false;
   const interval = setInterval(() => {
     if (i < data.length) {
       const row = data[i];
+      if(channelCounter!=0 && !startPointFoundFlag){
+        if(row[0]>=lastX && row[1]>=lastY){
+          startPointFoundFlag=true;
+          Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+        }
+      }else{
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+      }
       i++;
     } else {
       clearInterval(interval);
     }
   }, 100);
 }
+
+function handleSignalFetch(formObject,dataElement,graphElement){
+fetch("/", {
+  maxContentLength: 10000000,
+  maxBodyLength: 10000000,
+  method: "POST",
+  credentials: "same-origin",
+  body: formObject,
+})
+  .then((response) => {
+    return response.text(); //arrive as string
+  })
+  .then((responseMsg) => {
+    dataElement = JSON.parse(responseMsg); //converts it to js object
+    plotSignal(dataElement, graphElement);
+  })
+  .catch((error) => console.error(error));
+}
+
+function handleChannelFetch(formObject,graphElement,channelCounter){
+fetch("/addChannel", {
+  maxContentLength: 10000000,
+  maxBodyLength: 10000000,
+  method: "POST",
+  credentials: "same-origin",
+  body: formObject,
+})
+  .then((response) => {
+    return response.text();
+  })
+  .then((responseMsg) => {
+    let firstGraphChannelData = JSON.parse(responseMsg);
+    const lastTrace = graphElement.data[channelCounter - 1];
+    const lastX = lastTrace.x[lastTrace.x.length - 1];
+    const lastY = lastTrace.y[lastTrace.y.length - 1];
+    Plotly.addTraces(graphElement, {
+      x: [lastX],
+      y: [lastY],
+      name: `Channel ${channelCounter + 1}`,
+      type: "scatter",
+    });
+    plotSignal(firstGraphChannelData, graphElement, channelCounter,lastX,lastY);
+  })
+  .catch((error) => console.error(error));
+}
+
+firstInputElement.addEventListener("change", (submission) => {
+  submission.preventDefault();
+  const file = firstInputElement.files[0];
+  if (!file) {
+    alert("No file selected");
+  } else {
+    const formDataObject = new FormData();
+    formDataObject.append("firstsignalinput", file);
+    handleSignalFetch(formDataObject, firstSignalData , firstSignalGraph);
+  }
+});
+
+secondInputElement.addEventListener("change", (submission) => {
+  submission.preventDefault();
+  const file = secondInputElement.files[0];
+  if (!file) {
+    alert("No file selected");
+  } else {
+    const formDataObject = new FormData();
+    formDataObject.append("secondsignalinput", file);
+    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph);
+  }
+});
 
 addFirstSignalChannelInput.addEventListener('change',(submission)=>{ //ADDS SIGNAL TRACE
   submission.preventDefault();
@@ -142,27 +142,7 @@ addFirstSignalChannelInput.addEventListener('change',(submission)=>{ //ADDS SIGN
     firstGraphChannelCounter++;
     const formDataObject= new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
-    fetch('/addSignal',{
-      maxContentLength: 10000000,
-      maxBodyLength: 10000000,
-      method: "POST",
-      credentials: "same-origin",
-      body: formDataObject,
-    })
-      .then((response) => {
-        return response.text();
-      })
-      .then((responseMsg) => {
-        firstGraphChannelData = JSON.parse(responseMsg);
-        Plotly.addTraces("firstsignalgraph", {
-          x: [],
-          y: [],
-          name: `Channel ${firstGraphChannelCounter+1}`,
-          type: "scatter",
-        });
-        plotChannelSignal(firstGraphChannelData,firstSignalGraph,firstGraphChannelCounter);
-      })
-      .catch((error) => console.error(error));
+    handleChannelFetch(formDataObject,firstSignalGraph,firstGraphChannelCounter);
   }
 })
 
@@ -175,31 +155,8 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     secondGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
-    fetch("/addSignal", {
-      maxContentLength: 10000000,
-      maxBodyLength: 10000000,
-      method: "POST",
-      credentials: "same-origin",
-      body: formDataObject,
-    })
-      .then((response) => {
-        return response.text();
-      })
-      .then((responseMsg) => {
-        secondGraphChannelData = JSON.parse(responseMsg);
-        Plotly.addTraces("secondsignalgraph", {
-          x: [],
-          y: [],
-          name: `Channel ${secondGraphChannelCounter + 1}`,
-          type: "scatter",
-        });
-        plotChannelSignal(
-          secondGraphChannelData,
-          secondSignalGraph,
-          secondGraphChannelCounter
-        );
-      })
-      .catch((error) => console.error(error));
+    handleChannelFetch(formDataObject,secondSignalGraph,secondGraphChannelCounter);
+
   }
 });
 // linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES

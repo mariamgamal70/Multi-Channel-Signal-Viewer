@@ -30,6 +30,63 @@ let secondGraphChannelCounter = 0;
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
+function createPlot(graphElement) {
+  // Create a data array to hold your trace
+  let trace = {
+    x: [], // array to hold the x values
+    y: [], // array to hold the y values
+    type: "scatter", // set the chart type
+    name: "Channel 1",
+    showlegend: true,
+    legend:{
+      itemdoubleclick:false
+    }
+  };
+  let layout = {
+    title: { title: "Click Here<br>to Edit Chart Title" },
+    xaxis: {
+      title: "Time (s)",
+    },
+    yaxis: {
+      title: "Amplitude",
+    },
+    editable: true,
+    displayModeBar: false,
+  };
+  // let config = {
+  //   editable: true,
+  //   displayModeBar: false,
+  // };
+  Plotly.newPlot(graphElement, [trace], layout);
+}
+
+function plotMainSignal(data, graphElement) {
+    //Plotly.update(graphElement,{},{displayModeBar: true});
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < data.length) {
+        const row = data[i];
+        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+}
+
+function plotChannelSignal(data, graphElement,channelCounter) {
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < data.length) {
+      const row = data[i];
+      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 100);
+}
+
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
@@ -81,56 +138,6 @@ secondInputElement.addEventListener("change", (submission) => {
       .catch((error) => console.error(error));
   }
 });
-
-function createPlot(graphElement) {
-  // Create a data array to hold your trace
-  let trace = {
-    x: [], // array to hold the x values
-    y: [], // array to hold the y values
-    type: "scatter", // set the chart type
-    name: "Channel 1",
-    showlegend: true,
-    legend:{
-      itemdoubleclick:false
-    }
-  };
-  let layout = {
-    title: {title: 'Click Here<br>to Edit Chart Title'},
-    xaxis: {
-      title: "Time (s)",
-    },
-    yaxis: {
-      title: "Amplitude",
-    },
-  };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true });
-}
-
-function plotMainSignal(data, graphElement) {
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < data.length) {
-        const row = data[i];
-        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [0]);
-        i++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-}
-
-function plotChannelSignal(data, graphElement,channelCounter) {
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i < data.length) {
-      const row = data[i];
-      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-      i++;
-    } else {
-      clearInterval(interval);
-    }
-  }, 100);
-}
 
 addFirstSignalChannelInput.addEventListener('change',(submission)=>{ //ADDS SIGNAL TRACE
   submission.preventDefault();

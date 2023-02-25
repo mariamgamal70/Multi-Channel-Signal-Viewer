@@ -10,7 +10,7 @@ const secondInputElement = document.getElementById("secondsignalinput");
 const addFirstSignalChannelInput=document.getElementById("firstsignaladdchannelinput");
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
 
-const linkSignalsButton=document.getElementById("linksignal");
+const linkingButton = document.getElementById('linkingbutton');
 const createpdf=document.getElementById("genPDF")
 
 let firstsignalfirstchannel;
@@ -18,19 +18,10 @@ let firstsignalsecondchannel;
 
 let firstGraphChannelCounter=0;
 let secondGraphChannelCounter = 0;
+let linkFlag = false;
 
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
-
-let linkFlag = false;
-
-
-// const PLOTLY_CONFIG = {
-//   responsive: true,
-//   displaylogo: false,
-//   modeBarButtonsToRemove: ["autoScale2d", "resetScale2d"],
-//   doubleClick: false,
-// };
 
 function createPlot(graphElement) {
   // Create a data array to hold your trace
@@ -42,10 +33,10 @@ function createPlot(graphElement) {
     showlegend: true,
     legend:{
       itemdoubleclick:false
-    }
+    },
   };
   let layout = {
-    title: {title: 'Click Here<br>to Edit Chart Title'},
+    title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
       title: "Time (s)",
     },
@@ -68,7 +59,7 @@ function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
           Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
         }
       }else{
-      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       }
       i++;
     } else {
@@ -78,11 +69,11 @@ function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
 }
 
 function handleSignalFetch(formObject,dataElement,graphElement){
-fetch("/", {
-  maxContentLength: 10000000,
-  maxBodyLength: 10000000,
-  method: "POST",
-  credentials: "same-origin",
+  fetch("/", {
+    maxContentLength: 10000000,
+    maxBodyLength: 10000000,
+    method: "POST",
+    credentials: "same-origin",
   body: formObject,
 })
   .then((response) => {
@@ -97,13 +88,13 @@ fetch("/", {
 }
 
 function handleChannelFetch(formObject,graphElement,channelCounter){
-fetch("/addChannel", {
-  maxContentLength: 10000000,
-  maxBodyLength: 10000000,
-  method: "POST",
-  credentials: "same-origin",
-  body: formObject,
-})
+  fetch("/addChannel", {
+    maxContentLength: 10000000,
+    maxBodyLength: 10000000,
+    method: "POST",
+    credentials: "same-origin",
+    body: formObject,
+  })
   .then((response) => {
     return response.text();
   })
@@ -122,6 +113,18 @@ fetch("/addChannel", {
   })
   .catch((error) => console.error(error));
 }
+
+function linking(firstGraph, secondGraph,linkFlag){
+  if (linkFlag==true) {
+    var xaxis = firstGraph.layout.xaxis;
+    var yaxis = firstGraph.layout.yaxis;
+    var update = {
+      xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
+      yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
+    };
+    Plotly.update(secondGraph, {}, update);
+  } 
+  }
 
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
@@ -175,23 +178,11 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
   }
 });
 
-function linking(firstGraph, secondGraph,linkFlag){
-  if (linkFlag==true) {
-    var xaxis = firstGraph.layout.xaxis;
-    var yaxis = firstGraph.layout.yaxis;
-    var update = {
-      xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
-      yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
-    };
-    Plotly.update(secondGraph, {}, update);
-  } 
-  }
-  const linkingButton = document.getElementById('linkingbutton');
- linkingButton.addEventListener('click',()=>{
-   linkFlag=!linkFlag;
-     firstSignalGraph.on('plotly_relayout',()=>{linking(firstSignalGraph, secondSignalGraph,linkFlag)});
-     secondSignalGraph.on('plotly_relayout',()=>{linking(secondSignalGraph, firstSignalGraph,linkFlag)});
-    });
+linkingButton.addEventListener('click',()=>{
+  linkFlag=!linkFlag;
+    firstSignalGraph.on('plotly_relayout',()=>{linking(firstSignalGraph, secondSignalGraph,linkFlag)});
+    secondSignalGraph.on('plotly_relayout',()=>{linking(secondSignalGraph, firstSignalGraph,linkFlag)});
+});
 
 
 // linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES

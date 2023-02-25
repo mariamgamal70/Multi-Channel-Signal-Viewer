@@ -54,9 +54,9 @@
                                     <button type="button" class="btn btn-outline-light">Rewind</button>
                                     <form action="/action_page.php">
                                         <label for="Channels" class="dropdown fs-5">Choose Channel:
-                                            <select id="Channels" name="cars">
-                                                <option value="Channel">Channel1</option>
-                                                <option value="Channel">Channel2</option>
+                                            <select id="firstChannels" name="cars">
+                                                <option value="Channel1">Channel1</option>
+                                                <!-- <option value="Channel">Channel2</option> -->
                                             </select>
                                         </label>
                                     </form>
@@ -68,10 +68,10 @@
                                 <div class="d-flex justify-content-evenly">
                                 <div class="input-group mb-3 w-50">
                                     <span class="input-group-text" id="basic-addon1">Edit Label:</span>
-                                    <input type="text" class="form-control" id="editlabel" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                                    <input type="text" class="form-control" id="firsteditlabel" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
                                   </div>
                                   <div class="fs-5">
-                                    Change Color: <input type="color" name="Color">
+                                    Change Color: <input type="color" name="Color" id="firstcolor">
                                 </div></div>
                                 <label for="Scrolling" class="fs-5">Scrolling: </label>
                                 <div class='rangeWrap'>
@@ -92,7 +92,7 @@
                                 </div><br>
                                 <label for="Cine Speed" class="fs-5">Cine Speed: </label>
                                 <div class='rangeWrap'>
-                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="40" />
+                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="0" id="firstcinespeed"/>
                                     <div class='ticks'>
                                         <div></div>
                                         <div></div>
@@ -150,9 +150,9 @@
 
                                     <form action="/action_page.php">
                                         <label for="Channels" class="dropdown fs-5">Choose Channel:
-                                            <select id="Channels" name="cars">
-                                                <option value="Channel">Channel1</option>
-                                                <option value="Channel">Channel2</option>
+                                            <select id="secondChannels" name="cars">
+                                                <option value="Channel1" >Channel1</option>
+                                                <!-- <option value="Channel">Channel2</option> -->
                                             </select>
                                         </label>
                                     </form>
@@ -164,15 +164,15 @@
                                 <div class="d-flex justify-content-evenly">
                                 <div class="input-group mb-3 w-50">
                                     <span class="input-group-text" id="basic-addon1">Edit Label:</span>
-                                    <input type="text" class="form-control" id="editlabel" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                                    <input type="text" class="form-control" id="secondeditlabel" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
                                   </div>
                                   <div class="fs-5">
-                                  Change Color: <input type="color" name="Color">
+                                  Change Color: <input type="color" name="Color" id="secondcolor">
                                  </div></div>
                                  
                                 <label for="Scrolling" class="fs-5">Scrolling: </label>
                                 <div class='rangeWrap'>
-                                    <input type="range" name="Scrolling" min="0" max="100" step="10" value="40" />
+                                    <input type="range" name="Scrolling" min="0" max="100" step="10" value="40"  />
                                     <div class='ticks'>
                                         <div></div>
                                         <div></div>
@@ -189,7 +189,7 @@
                                    </div><br>
                                 <label for="Cine Speed" class="fs-5">Cine Speed: </label>
                                 <div class='rangeWrap'>
-                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="40" />
+                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="0" id="secondcinespeed" />
                                     <div class='ticks'>
                                         <div></div>
                                         <div></div>

@@ -13,12 +13,23 @@ const addSecondSignalChannelInput = document.getElementById("secondsignaladdchan
 const linkingButton = document.getElementById('linkingbutton');
 const createpdf=document.getElementById("genPDF")
 
+const firstGraphColor=document.getElementById('firstcolor');
+const secondGraphColor = document.getElementById("secondcolor");
+
+const firstDropdown=document.getElementById('firstChannels');
+const secondDropdown = document.getElementById("secondChannels");
+
+const firstCineSpeed=document.getElementById('firstcinespeed');
+const secondCineSpeed = document.getElementById("secondcinespeed");
+
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
 
 let firstGraphChannelCounter=0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
+let intervalTime=100;
+
 
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
@@ -44,8 +55,8 @@ function createPlot(graphElement) {
       title: "Amplitude",
     },
   };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true });
-}
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage'] });
+};
 
 function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
   let i = 0;
@@ -65,8 +76,8 @@ function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
     } else {
       clearInterval(interval);
     }
-  }, 100);
-}
+  }, intervalTime);
+};
 
 function handleSignalFetch(formObject,dataElement,graphElement){
   fetch("/", {
@@ -85,7 +96,7 @@ function handleSignalFetch(formObject,dataElement,graphElement){
     plotSignal(dataElement, graphElement);
   })
   .catch((error) => console.error(error));
-}
+};
 
 function handleChannelFetch(formObject,graphElement,channelCounter){
   fetch("/addChannel", {
@@ -110,9 +121,10 @@ function handleChannelFetch(formObject,graphElement,channelCounter){
       type: "scatter",
     });
     plotSignal(firstGraphChannelData, graphElement, channelCounter,lastX,lastY);
+    
   })
   .catch((error) => console.error(error));
-}
+};
 
 function linking(firstGraph, secondGraph,linkFlag){
   if (linkFlag==true) {
@@ -124,7 +136,27 @@ function linking(firstGraph, secondGraph,linkFlag){
     };
     Plotly.update(secondGraph, {}, update);
   } 
-  }
+};
+
+function addToDropdown(dropdownElement,counter){
+    let newChannel=document.createElement('option');
+    let num= counter+1;
+    newChannel.value=`Channel${num}`;
+    newChannel.textContent = `Channel${num}`;
+    dropdownElement.appendChild(newChannel);
+    dropdownElement.value = `Channel${num}`;
+};
+
+function changeChannelColor(dropdownElement,graphElement,color){
+  const channelIndex = dropdownElement.selectedIndex;
+  Plotly.restyle(graphElement, { "line.color": `${color}` }, [channelIndex]);
+};
+
+function updateCineSpeed(newSpeed){
+newSpeed*=10;
+intervalTime = newSpeed;
+console.log(intervalTime);
+};
 
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
@@ -161,6 +193,7 @@ addFirstSignalChannelInput.addEventListener('change',(submission)=>{ //ADDS SIGN
     const formDataObject= new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
     handleChannelFetch(formDataObject,firstSignalGraph,firstGraphChannelCounter);
+    addToDropdown(firstDropdown, firstGraphChannelCounter);
   }
 })
 
@@ -174,7 +207,7 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
     handleChannelFetch(formDataObject,secondSignalGraph,secondGraphChannelCounter);
-
+    addToDropdown(secondDropdown, secondGraphChannelCounter);
   }
 });
 
@@ -184,6 +217,26 @@ linkingButton.addEventListener('click',()=>{
     secondSignalGraph.on('plotly_relayout',()=>{linking(secondSignalGraph, firstSignalGraph,linkFlag)});
 });
 
+firstGraphColor.addEventListener('change',()=>{
+  changeChannelColor(firstDropdown, firstSignalGraph, firstGraphColor.value);
+});
+
+secondGraphColor.addEventListener('change',()=>{
+  changeChannelColor(secondDropdown, secondSignalGraph, secondGraphColor.value);
+});
+// ON CHANGING LEGEND NAME ON PLOT, IT CHANGES IN DROPDOWN
+// firstSignalGraph.on("plotly_legendclick",(data)=>{
+//     var update = {};
+//     var traceIndex = data.curveNumber;
+//     update["name[" + traceIndex + "]"] = newLabel;
+//     Plotly.update(plotlyElement, update);
+// });
+
+firstCineSpeed.addEventListener('change',()=>{
+  console.log('CINE1');
+  updateCineSpeed(firstCineSpeed.value);
+});
+//firstCineSpeed.addEventListener("change", () => {});
 
 // linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 // function createPDF(){

@@ -18,6 +18,16 @@ let secondGraphChannelCounter = 0;
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
+let linkFlag = false;
+
+
+// const PLOTLY_CONFIG = {
+//   responsive: true,
+//   displaylogo: false,
+//   modeBarButtonsToRemove: ["autoScale2d", "resetScale2d"],
+//   doubleClick: false,
+// };
+
 function createPlot(graphElement) {
   // Create a data array to hold your trace
   let trace = {
@@ -159,6 +169,26 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
 
   }
 });
+
+ function linking(firstGraph, secondGraph,linkFlag){
+  if (linkFlag==true) {
+    var xaxis = firstGraph.layout.xaxis;
+    var yaxis = firstGraph.layout.yaxis;
+    var update = {
+      xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
+      yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
+    };
+    Plotly.update(secondGraph, {}, update);
+  } 
+  }
+ const linkingButton = document.getElementById('linkingbutton');
+ linkingButton.addEventListener('click',()=>{
+     linkFlag=!linkFlag;
+     firstSignalGraph.on('plotly_relayout',()=>{linking(firstSignalGraph, secondSignalGraph,linkFlag)});
+     secondSignalGraph.on('plotly_relayout',()=>{linking(secondSignalGraph, firstSignalGraph,linkFlag)});
+ });
+
+
 // linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 // function createPDF(){
 // fetch("/download", {
@@ -193,4 +223,3 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
 //const minValue = Math.min(...column);
 //const maxValue = Math.max(...column);
 //}
-

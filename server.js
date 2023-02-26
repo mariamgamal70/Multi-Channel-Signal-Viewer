@@ -37,6 +37,7 @@ app.post("/", upload.fields([{ name: "firstsignalinput", maxCount: 1 }, { name: 
             resultArr.push(Object.values(data).map(Number));
         })
         .on("end", () => {
+            console.log(resultArr);
             res.send(resultArr);
         });
     }

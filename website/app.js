@@ -169,7 +169,7 @@ async function createPDF (){
 await fetch("/download", {
   method: "POST",
   headers:{'Content-Type':'application/json'},
-  body:JSON.stringify(signal_statistics()),
+  body:JSON.stringify(await signal_statistics()),
   //body: JSON.stringify({data:'helloooo'}),
   credentials: "same-origin",
 
@@ -186,7 +186,7 @@ await fetch("/download", {
   });
 }
 
-function signal_statistics(){
+async function signal_statistics () {
 //fetch("/")
 // Compute the average of a column
 const column = firstsignalfirstchannel.map((row) => parseFloat(row['Column Name']));

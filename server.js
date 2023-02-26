@@ -10,8 +10,9 @@ const csv = require("csv-parser");
 const fs = require("fs");
 const path = require("path");
 const app = express();
-const PDFDocument = require('pdfkit');
+//const PDFDocument = require('pdfkit');
 const Papa = require("papaparse");
+const PDFDocument = require("pdfkit-table");
 
 /*USING MIDDLEWARES*/
 app.use(bodyParser.json());
@@ -44,10 +45,21 @@ app.post("/", upload.fields([{ name: "firstsignalinput", maxCount: 1 }, { name: 
     }
 });
 
-app.post("/download",(req,res)=>{
-    const doc = new PDFDocument();
-    doc.pipe(fs.createWriteStream("output.pdf"));
-    doc.fontSize(20).text(JSON.stringify(req.body));
+app.post("/download",async(req,res)=>{
+    // const doc = new PDFDocument();
+    // doc.pipe(fs.createWriteStream("output.pdf"));
+    let doc = new PDFDocument({ margin: 30, size: 'A4' });
+    // save document
+    doc.pipe(fs.createWriteStream("./output.pdf"));
+    //doc.fontSize(20).text(JSON.stringify(req.body));
+    console.log(req.body);
+    const table = {
+        title: "Signal Viewer",
+        headers: [ "min", "max", "var" , "std", "avg" ],
+        rows:[req.body.min ,req.body.max, req.body.var, req.body.std, red.body.avg],
+      };
+      await doc.table(table, { /* options */ });
+    
     doc.end();
     res.download("output.pdf");
 });

@@ -56,13 +56,19 @@ app.post("/download",async(req,res)=>{
     console.log(req.body);
     const table = {
         title: "Signal Viewer",
+        subtitle: "signals statistics",
         headers: [ "min", "max", "var" , "std", "avg" ],
-        rows:[req.body.min ,req.body.max, req.body.var, req.body.std, red.body.avg],
+        rows:[[req.body.min ,req.body.max, req.body.var, req.body.std, req.body.avg]]
+        
       };
-      await doc.table(table, { /* options */ });
+      await doc.table(table, { 
+        width: 300,
+      });
     
     doc.end();
-    res.download("output.pdf");
+    res.setHeader("Accept-Ranges", "none");
+    res.sendFile("C:\\Users\\عبدالمنعملؤيعبدالمنع\\OneDrive - Cairo University - Students\\2nd year biomedical HEM\\DSP\\task1\\my task\\task1\\output.pdf");
+    
 });
 
 app.post("/addChannel",upload.fields([{ name: "firstsignaladdchannelinput"}, { name: "secondsignaladdchannelinput"}]),(req,res)=>{

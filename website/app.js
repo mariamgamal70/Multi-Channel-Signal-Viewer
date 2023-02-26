@@ -169,12 +169,13 @@ async function createPDF (){
 await fetch("/download", {
   method: "POST",
   headers:{'Content-Type':'application/json'},
-  body:JSON.stringify(await signal_statistics()),
+  body:JSON.stringify(signal_statistics()),
   //body: JSON.stringify({data:'helloooo'}),
-  credentials: "same-origin",
+  credentials: "same-origin"
 
 })
   .then((response) => {
+    console.log(response);
     return response.blob();
   })
   .then((blob) => {
@@ -186,10 +187,10 @@ await fetch("/download", {
   });
 }
 
-async function signal_statistics () {
+function signal_statistics () {
 //fetch("/")
 // Compute the average of a column
-const column = firstsignalfirstchannel.map((row) => parseFloat(row['Column Name']));
+const column = firstsignalfirstchannel.map((row) => parseFloat(row[1]));
 const average = column.reduce((sum, value) => sum + value) / column.length;
 
 // Compute the standard deviation of a column

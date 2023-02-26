@@ -68,20 +68,7 @@ function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0
   let i = 0;
   let startPointFoundFlag = false;
   const interval = setInterval(() => {
-    //Play/Pause operation
-    if (stopFlag == true) {
-      var stoppingRow = i;
-      var currentChannelCounter = channelCounter;
-      var currentGraphElement = graphElement;
-      for (stoppingRow; stoppingRow < data.length; stoppingRow++) {
-        unPlottedData.push(unPlottedData[stoppingRow]);
-      }
-      const lastTrace = graphElement.data[stoppingRow];
-      const lastX = lastTrace.x[lastTrace.x.length - 1];
-      const lastY = lastTrace.y[lastTrace.y.length - 1];
-      plotSignal(unPlottedData, currentGraphElement, currentChannelCounter, lastX, lastY);
-    }
-    else {
+    if (stopFlag == false){
       if (i < data.length) {
         const row = data[i];
         let afterRow;

@@ -57,3 +57,17 @@ const addFirstSignalChannelBtn=document.getElementById("firstsignaladdchannelbtn
 const addSecondSignalChannelBtn = document.getElementById("secondsignaladdchannelbtn")
 const addFirstSignalChannelForm = document.getElementById("firstsignaladdchannelform");
 const addSecondSignalChannelForm = document.getElementById("secondsignaladdchannelform");
+--------------------------------------------------------------------------------------------------
+    //Play/Pause operation
+    // if (stopFlag == true) {
+    //   // var stoppingRow = i;
+    //   // // var currentChannelCounter = channelCounter;
+    //   // // var currentGraphElement = graphElement;
+    //   // for (stoppingRow; stoppingRow < data.length; stoppingRow++) {
+    //   //   unPlottedData.push(unPlottedData[stoppingRow]);
+    //   // }
+    //   // const lastTrace = graphElement.data[stoppingRow];
+    //   // // const lastX = lastTrace.x[lastTrace.x.length - 1];
+    //   // // const lastY = lastTrace.y[lastTrace.y.length - 1];
+    //   // // plotSignal(unPlottedData, currentGraphElement, currentChannelCounter, lastX, lastY);
+    // }

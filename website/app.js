@@ -54,23 +54,36 @@ function createPlot(graphElement) {
     yaxis: {
       title: "Amplitude",
     },
+    dragmode: false,
   };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage'] });
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage' , 'zoom2d', 'lasso2d'] });
 };
 
 function plotSignal(data, graphElement,channelCounter=0,lastX=0,lastY=0) {
+  Plotly.update(graphElement,{})
   let i = 0;
   let startPointFoundFlag=false;
   const interval = setInterval(() => {
     if (i < data.length) {
       const row = data[i];
+      let afterRow;
+      i-100<data.length && i-100>=0?afterRow=data[i-100]:afterRow=data[i];
+      let oldData = afterRow[0];
+      let CurrentData=row[0];
+      let realtimeScrolling={
+        xaxis: {
+          range: [oldData,CurrentData]
+        }
+      };
       if(channelCounter!=0 && !startPointFoundFlag){
         if(row[0]>=lastX && row[1]>=lastY){
           startPointFoundFlag=true;
           Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+          Plotly.relayout(graphElement, realtimeScrolling);
         }
       }else{
         Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+        Plotly.relayout(graphElement, realtimeScrolling);
       }
       i++;
     } else {

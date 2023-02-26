@@ -64,7 +64,6 @@ function createPlot(graphElement) {
 };
 
 function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
-  Plotly.update(graphElement, {})
   let i = 0;
   let startPointFoundFlag = false;
   const interval = setInterval(() => {

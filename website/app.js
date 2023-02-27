@@ -22,6 +22,8 @@ const secondDropdown = document.getElementById("secondChannels");
 const firstCineSpeed=document.getElementById('firstcinespeed');
 const secondCineSpeed = document.getElementById("secondcinespeed");
 
+const rewindButton = document.getElementById("rewind");
+
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
 
@@ -270,6 +272,20 @@ firstCineSpeed.addEventListener('change',()=>{
 //     a.click();
 //   });
 // }
+
+
+rewindButton.addEventListener("click", () => {
+  resetGraphs();
+});
+function resetGraphs() {
+
+  Plotly.purge(firstSignalGraph);
+  Plotly.purge(secondSignalGraph);
+  createPlot(firstSignalGraph);
+  createPlot(secondSignalGraph);
+  
+}
+
 
 createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 async function createPDF (){

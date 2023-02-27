@@ -13,6 +13,58 @@
     <link rel="stylesheet" href="style.css">
     <script src="plotly-2.18.2.min.js" charset="utf-8"></script>
     <title>Signal viewer</title>
+
+    <style>
+        .rangeWrap {
+            width: 40%;
+        }
+
+        .rangeWrap input {
+            width: 100%;
+            margin: 0;
+        }
+
+        .rangeWrap .ticks {
+            display: flex;
+            justify-content: space-between;
+            height: 6px;
+            margin: -1.5em 5px 0 6px;
+            font: 10px Arial;
+            counter-reset: count -1;
+        }
+
+        .rangeWrap .ticks>div {
+            height: 100%;
+            width: 1px;
+            background: silver;
+            counter-increment: count 1;
+        }
+
+        .rangeWrap .ticks>div:nth-child(5n - 4) {
+            height: 200%;
+        }
+
+        .rangeWrap .ticks>div:nth-child(5n - 4)::before {
+            display: block;
+            content: counter(count, decimal);
+            transform: translate(-50%, 100%);
+            text-align: center;
+            width: 16px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="container-fluid" style="background-color:#192841 ;">
@@ -49,7 +101,7 @@
                             <h5>Control Center</h5>
                             <legend class="mt-2 text-light">
                                 <div class="d-flex justify-content-evenly">
-                                    <button type="button" class="btn btn-outline-light">Play/Pause</button>
+                                    <button type="button" class="btn btn-outline-light" id="FG_Play_Pause">Play/Pause</button>
                                     <button type="button" class="btn btn-outline-light">Export</button>
                                     <button type="button" class="btn btn-outline-light" id="rewind">Rewind</button>
                                     <form action="/action_page.php">
@@ -144,7 +196,7 @@
                             <legend class="mt-2 text-light">
                                 <div class="d-flex justify-content-evenly">
 
-                                    <button type="button" class="btn btn-outline-light">Play/Pause</button>
+                                    <button type="button" class="btn btn-outline-light" id="SG_Play_Pause">Play/Pause</button>
                                     <button type="button" class="btn btn-outline-light">Export</button>
                                     <button type="button" class="btn btn-outline-light" id="rewind">Rewind</button>
 

@@ -22,15 +22,18 @@ const secondDropdown = document.getElementById("secondChannels");
 const firstCineSpeed = document.getElementById('firstcinespeed');
 const secondCineSpeed = document.getElementById("secondcinespeed");
 
+const firstGraphPlayAndPause = document.getElementById("FG_Play_Pause");
+const secondGraphPlayAndPause = document.getElementById("SG_Play_Pause");
+
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
 
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
-let stopFlag = false;
+let secondStopFlag = false;
+let firstStopFlag = false;
 let stoppingRow = 0;
-let unPlottedData = [];
 let intervalTime = 100;
 
 
@@ -68,7 +71,20 @@ function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0
   let i = 0;
   let startPointFoundFlag = false;
   const interval = setInterval(() => {
-    if (stopFlag == false){
+    //Play/Pause operation
+    if (firstStopFlag == true) {
+      let stoppingRow = i;
+      let currentChannelCounter = channelCounter;
+      let currentGraphElement=graphElement;
+      handlePlayAndPause(stoppingRow, currentChannelCounter, currentGraphElement, data,firstStopFlag);
+    }
+    else if (secondStopFlag == true) {
+      let stoppingRow = i;
+      let currentChannelCounter = channelCounter;
+      let currentGraphElement=graphElement;
+      handlePlayAndPause(stoppingRow, currentChannelCounter, currentGraphElement, data,secondStopFlag);
+    }
+    else {
       if (i < data.length) {
         const row = data[i];
         let afterRow;
@@ -157,6 +173,24 @@ function linking(firstGraph, secondGraph, linkFlag) {
   }
 };
 
+function handlePlayAndPause(stoppingRow, currentChannelCounter, currentGraphElement, data,stopFlag)
+{
+  let unPlottedData = [];
+  for (stoppingRow; stoppingRow < data.length; stoppingRow++) {
+    unPlottedData.push(unPlottedData[stoppingRow]);
+  }
+  const theLastTrace = graphElement.data[stoppingRow];
+  const lastXVal = theLastTrace.x[theLastTrace.x.length - 1];
+  const lastYVal = theLastTrace.y[theLastTrace.y.length - 1];
+  while (1) {
+    //do nothing
+    if (stopFlag == false) {
+      plotSignal(unPlottedData, currentGraphElement, currentChannelCounter, lastXVal, lastYVal);
+      break;
+    }
+  }
+};
+
 function addToDropdown(dropdownElement, counter) {
   let newChannel = document.createElement('option');
   let num = counter + 1;
@@ -177,8 +211,11 @@ function updateCineSpeed(newSpeed) {
   console.log(intervalTime);
 };
 
-document.getElementById("Play/Pause").addEventListener("click", function () {
-  stopFlag = !stopFlag;
+firstGraphPlayAndPause.addEventListener("click", function () {
+  firstStopFlag = !firstStopFlag;
+})
+secondGraphPlayAndPause.addEventListener("click", function () {
+  secondStopFlag = !secondStopFlag;
 })
 
 firstInputElement.addEventListener("change", (submission) => {

@@ -132,12 +132,12 @@ function handleChannelFetch(formObject, graphElement, channelCounter) {
       const lastX = lastTrace.x[lastTrace.x.length - 1];
       const lastY = lastTrace.y[lastTrace.y.length - 1];
       Plotly.addTraces(graphElement, {
-        x: [],//lastX],
-        y: [],//lastY],
+        x: [lastX],
+        y: [lastY],
         name: `Channel ${channelCounter + 1}`,
         type: "scatter",
       });
-      plotSignal(firstGraphChannelData, graphElement, channelCounter);//, lastX, lastY);
+      plotSignal(firstGraphChannelData, graphElement, channelCounter, lastX, lastY);
 
     })
     .catch((error) => console.error(error));

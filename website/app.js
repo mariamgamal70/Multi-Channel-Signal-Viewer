@@ -19,6 +19,12 @@ let firstsignalsecondchannel;
 let firstGraphChannelCounter=0;
 let secondGraphChannelCounter = 0;
 
+const stats1 = signal_statistics(data1);
+const stats2 = signal_statistics(data2);
+const stats3 = signal_statistics(data3);
+const stats4 = signal_statistics(data4);
+
+
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
@@ -187,26 +193,33 @@ await fetch("/download", {
   });
 }
 
-function signal_statistics () {
-//fetch("/")
-// Compute the average of a column
-const column = firstsignalfirstchannel.map((row) => parseFloat(row[1]));
-const average = column.reduce((sum, value) => sum + value) / column.length;
+function signal_statistics(data) {
+  // Extract the column of values and duration from the data
+  const column = data.map((row) => parseFloat(row[0]));
+  const durationColumn = data.map((row) => parseFloat(row[1]));
 
-// Compute the standard deviation of a column
-const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
-const standardDeviation = Math.sqrt(variance);
+  // Compute the average of the values column
+  const average = column.reduce((sum, value) => sum + value) / column.length;
 
-// Compute the minimum and maximum values in a column
-const minValue = Math.min(...column);
-const maxValue = Math.max(...column);
-return {
-  var:variance,
-  std:standardDeviation,
-  avg:average,
-  min:minValue,
-  max:maxValue
-}
+  // Compute the standard deviation of the values column
+  const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
+  const standardDeviation = Math.sqrt(variance);
+
+  // Compute the minimum and maximum values in the values column
+  const minValue = Math.min(...column);
+  const maxValue = Math.max(...column);
+
+  // Compute the duration of the signal
+  const duration = durationColumn[durationColumn.length - 1] - durationColumn[0];
+
+  return {
+    var: variance,
+    std: standardDeviation,
+    avg: average,
+    min: minValue,
+    max: maxValue,
+    duration: duration
+  };
 }
 
 //createpdf.add

@@ -46,30 +46,38 @@ app.post("/", upload.fields([{ name: "firstsignalinput", maxCount: 1 }, { name: 
     }
 });
 
-app.post("/download",async(req,res)=>{
-    // const doc = new PDFDocument();
-    // doc.pipe(fs.createWriteStream("output.pdf"));
-    let doc = new PDFDocument({ margin: 30, size: 'A4' });
-    // save document
-    doc.pipe(fs.createWriteStream("./output.pdf"));
-    //doc.fontSize(20).text(JSON.stringify(req.body));
-    console.log(req.body);
+app.post("/download", async (req, res) => {
+    const doc = new PDFDocument({ margin: 30, size: 'A4' });
+  
+    // Set the file name dynamically based on the current working directory
+    const filePath = path.join(process.cwd(), 'output.pdf');
+  
+    // Wait for the document to finish writing before sending the file
+    doc.on('end', () => {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
+      res.sendFile(filePath);
+    });
+  
+    // Create the table of signal statistics
+    const signals = req.body.signals;
+    const rows = signals.map(signal => {
+      return [signal.min, signal.max, signal.var, signal.std, signal.avg, signal.duration];
+    });
     const table = {
-        title: "Signal Viewer",
-        subtitle: "signals statistics",
-        headers: [ "min", "max", "var" , "std", "avg" ],
-        rows:[[req.body.min ,req.body.max, req.body.var, req.body.std, req.body.avg]]
-        
-      };
-      await doc.table(table, { 
-        width: 300,
-      });
-    
+      title: "Signal Viewer",
+      subtitle: "Signals Statistics",
+      headers: ["min", "max", "var", "std", "avg", "duration"],
+      rows: rows
+    };
+    await doc.table(table, {
+      width: 300,
+    });
+  
+    // End the document to save it to a file
     doc.end();
-    res.setHeader("Accept-Ranges", "none");
-    res.sendFile("C:\\Users\\عبدالمنعملؤيعبدالمنع\\OneDrive - Cairo University - Students\\2nd year biomedical HEM\\DSP\\task1\\my task\\task1\\output.pdf");
-    
-});
+  });
+  
 
 app.post("/addChannel",upload.fields([{ name: "firstsignaladdchannelinput"}, { name: "secondsignaladdchannelinput"}]),(req,res)=>{
     let firstsignalchannelfile = req.files["firstsignaladdchannelinput"]?req.files["firstsignaladdchannelinput"][0]:null;

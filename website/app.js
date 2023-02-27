@@ -37,6 +37,8 @@ let secondStopFlag = false;
 let firstStopFlag = false;
 let stoppingRow = 0;
 let intervalTime = 100;
+let speedFirst=0;
+let speedSecond=0;
 
 
 document.onload = createPlot(firstSignalGraph);
@@ -69,9 +71,8 @@ function createPlot(graphElement) {
 };
 
 function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
-  Plotly.update(graphElement, {})
   let i = 0;
-  let startPointFoundFlag = false;
+  //let startPointFoundFlag = false;
   const interval = setInterval(() => {
     //Play/Pause operation
     if (firstStopFlag == true) {
@@ -89,24 +90,25 @@ function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0
     else {
       if (i < data.length) {
         const row = data[i];
-        let afterRow;
-        i - 100 < data.length && i - 100 >= 0 ? afterRow = data[i - 100] : afterRow = data[i];
-        let oldData = afterRow[0];
-        let CurrentData = row[0];
-        let realtimeScrolling = {
-          xaxis: {
-            range: [oldData, CurrentData]
-          }
-        };
-        if (channelCounter != 0 && !startPointFoundFlag) {
-          if (row[0] >= lastX && row[1] >= lastY) {
-            startPointFoundFlag = true;
+        // let beforeRow;
+        // i - 100 < data.length && i - 100 >= 0 ? (beforeRow = data[i - 100]) : (beforeRow = data[i]);
+        // let oldData = beforeRow[0];
+        // let CurrentData = row[0];
+        // let realtimeScrolling = {
+        //   xaxis: {
+        //     range: [oldData, CurrentData],
+        //   },
+        // };
+        if (channelCounter != 0){// && !startPointFoundFlag) {
+          // if (row[0] >= lastX && row[1] >= lastY) {
+          //   startPointFoundFlag = true;
+          setTimeout(speed);
             Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-            Plotly.relayout(graphElement, realtimeScrolling);
-          }
+          // }
         } else {
+          setTimeout(speed);
           Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-          Plotly.relayout(graphElement, realtimeScrolling);
+          // Plotly.relayout(graphElement, realtimeScrolling);
         }
         i++;
       } else {
@@ -152,8 +154,8 @@ function handleChannelFetch(formObject, graphElement, channelCounter) {
       const lastX = lastTrace.x[lastTrace.x.length - 1];
       const lastY = lastTrace.y[lastTrace.y.length - 1];
       Plotly.addTraces(graphElement, {
-        x: [lastX],
-        y: [lastY],
+        x: [],//lastX],
+        y: [],//lastY],
         name: `Channel ${channelCounter + 1}`,
         type: "scatter",
       });

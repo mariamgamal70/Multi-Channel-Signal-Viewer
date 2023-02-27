@@ -65,26 +65,25 @@ function createPlot(graphElement) {
 
 function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
   let i = 0;
-  let startPointFoundFlag = false;
+  //let startPointFoundFlag = false;
   const interval = setInterval(() => {
     if (stopFlag == false){
       if (i < data.length) {
         const row = data[i];
-        let afterRow;
-        i - 100 < data.length && i - 100 >= 0 ? afterRow = data[i - 100] : afterRow = data[i];
-        let oldData = afterRow[0];
+        let beforeRow;
+        i - 100 < data.length && i - 100 >= 0 ? (beforeRow = data[i - 100]) : (beforeRow = data[i]);
+        let oldData = beforeRow[0];
         let CurrentData = row[0];
         let realtimeScrolling = {
           xaxis: {
-            range: [oldData, CurrentData]
-          }
+            range: [oldData, CurrentData],
+          },
         };
-        if (channelCounter != 0 && !startPointFoundFlag) {
-          if (row[0] >= lastX && row[1] >= lastY) {
-            startPointFoundFlag = true;
+        if (channelCounter != 0){// && !startPointFoundFlag) {
+          // if (row[0] >= lastX && row[1] >= lastY) {
+          //   startPointFoundFlag = true;
             Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-            Plotly.relayout(graphElement, realtimeScrolling);
-          }
+          // }
         } else {
           Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
           Plotly.relayout(graphElement, realtimeScrolling);
@@ -133,12 +132,12 @@ function handleChannelFetch(formObject, graphElement, channelCounter) {
       const lastX = lastTrace.x[lastTrace.x.length - 1];
       const lastY = lastTrace.y[lastTrace.y.length - 1];
       Plotly.addTraces(graphElement, {
-        x: [lastX],
-        y: [lastY],
+        x: [],//lastX],
+        y: [],//lastY],
         name: `Channel ${channelCounter + 1}`,
         type: "scatter",
       });
-      plotSignal(firstGraphChannelData, graphElement, channelCounter, lastX, lastY);
+      plotSignal(firstGraphChannelData, graphElement, channelCounter);//, lastX, lastY);
 
     })
     .catch((error) => console.error(error));

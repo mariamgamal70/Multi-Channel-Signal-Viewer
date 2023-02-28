@@ -59,8 +59,8 @@ function createPlot(graphElement) {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
       title: "Time (s)",
-      zoom: 1000,
       range: [],
+      autorange: true,
     },
     yaxis: {
       title: "Amplitude",
@@ -115,73 +115,72 @@ function createPlot(graphElement) {
     //     ],
     //   },
     // ],
-    updatemenus: [
-      {
-        x: 0.5,
-        y: 0,
-        yanchor: "top",
-        xanchor: "center",
-        showactive: false,
-        direction: "left",
-        type: "buttons",
-        pad: { t: 87, r: 10 },
-        buttons: [
-          {
-            method: "animate",
-            args: [
-              null,
-              {
-                fromcurrent: true,
-                transition: {
-                  duration: 0,
-                },
-                frame: {
-                  duration: 40,
-                  redraw: false,
-                },
-              },
-            ],
-            label: "Play",
-          },
-          {
-            method: "animate",
-            args: [
-              [null],
-              {
-                mode: "immediate",
-                transition: {
-                  duration: 0,
-                },
-                frame: {
-                  duration: 0,
-                  redraw: false,
-                },
-              },
-            ],
-            label: "Pause",
-          },
-          {
-            method: "animate",
-            args: [
-              [null],
-              {
-                mode: "afterall",
-                transition: {
-                  duration: 0,
-                },
-                frame: {
-                  duration: 0,
-                  redraw: true,
-                },
-              },
-            ],
-            label: "Rewind",
-          },
-        ],
-      },
-    ],
+    // updatemenus: [
+    //   {
+    //     x: 0.5,
+    //     y: 0,
+    //     yanchor: "top",
+    //     xanchor: "center",
+    //     showactive: false,
+    //     direction: "left",
+    //     type: "buttons",
+    //     pad: { t: 87, r: 10 },
+    //     buttons: [
+    //       {
+    //         method: "animate",
+    //         args: [
+    //           null,
+    //           {
+    //             fromcurrent: true,
+    //             transition: {
+    //               duration: 0,
+    //             },
+    //             frame: {
+    //               duration: 10,
+    //               redraw: false,
+    //             },
+    //           },
+    //         ],
+    //         label: "Play",
+    //       },
+    //       {
+    //         method: "animate",
+    //         args: [
+    //           [null],
+    //           {
+    //             mode: "immediate",
+    //             transition: {
+    //               duration: 0,
+    //             },
+    //             frame: {
+    //               duration: 0,
+    //               redraw: false,
+    //             },
+    //           },
+    //         ],
+    //         label: "Pause",
+    //       },
+    //       {
+    //         method: "animate",
+    //         args: [
+    //           [null],
+    //           {
+    //             mode: "afterall",
+    //             transition: {
+    //               duration: 0,
+    //             },
+    //             frame: {
+    //               duration: 0,
+    //               redraw: true,
+    //             },
+    //           },
+    //         ],
+    //         label: "Rewind",
+    //       },
+    //     ],
+    //   },
+    // ],
   };
-  
   Plotly.newPlot(graphElement, [], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'],responsive: true });
 };
 // function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {

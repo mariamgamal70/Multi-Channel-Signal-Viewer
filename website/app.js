@@ -22,18 +22,15 @@ const secondDropdown = document.getElementById("secondChannels");
 const firstCineSpeed = document.getElementById('firstcinespeed');
 const secondCineSpeed = document.getElementById("secondcinespeed");
 
-const firstGraphPlayAndPause = document.getElementById("FG_Play_Pause");
-const secondGraphPlayAndPause = document.getElementById("SG_Play_Pause");
-
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
 
 let firstGraphCounter = 0;
 let secondGraphCounter = 0;
 let linkFlag = false;
-let secondStopFlag = false;
-let firstStopFlag = false;
+let stopFlag = false;
 let stoppingRow = 0;
+let unPlottedData = [];
 let intervalTime = 100;
 let speedFirst=0;
 let speedSecond=0;
@@ -341,24 +338,6 @@ function linking(firstGraph, secondGraph, linkFlag) {
   }
 };
 
-function handlePlayAndPause(stoppingRow, currentChannelCounter, currentGraphElement, data,stopFlag)
-{
-  let unPlottedData = [];
-  for (stoppingRow; stoppingRow < data.length; stoppingRow++) {
-    unPlottedData.push(unPlottedData[stoppingRow]);
-  }
-  const theLastTrace = graphElement.data[stoppingRow];
-  const lastXVal = theLastTrace.x[theLastTrace.x.length - 1];
-  const lastYVal = theLastTrace.y[theLastTrace.y.length - 1];
-  while (1) {
-    //do nothing
-    if (stopFlag == false) {
-      plotSignal(unPlottedData, currentGraphElement, currentChannelCounter, lastXVal, lastYVal);
-      break;
-    }
-  }
-};
-
 function addToDropdown(dropdownElement, counter) {
   let newChannel = document.createElement('option');
   let num = counter + 1;
@@ -379,12 +358,9 @@ function updateCineSpeed(newSpeed) {
   console.log(intervalTime);
 };
 
-firstGraphPlayAndPause.addEventListener("click", function () {
-  firstStopFlag = !firstStopFlag;
-});
-secondGraphPlayAndPause.addEventListener("click", function () {
-  secondStopFlag = !secondStopFlag;
-});
+document.getElementById("Play/Pause").addEventListener("click", function () {
+  stopFlag = !stopFlag;
+})
 
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();

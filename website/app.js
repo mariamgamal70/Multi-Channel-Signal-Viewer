@@ -28,12 +28,16 @@ let firstsignalsecondchannel;
 let firstGraphCounter = 0;
 let secondGraphCounter = 0;
 let linkFlag = false;
+let linkedGraph = linkFlag ? graph2 : null;
 let stopFlag = false;
 let stoppingRow = 0;
 let unPlottedData = [];
 let intervalTime = 100;
 let speedFirst=0;
 let speedSecond=0;
+
+let firstGraphFrames = [];
+let secondGraphFrames = [];
 
 
 document.onload = createPlot(firstSignalGraph);
@@ -226,17 +230,17 @@ function unpack(arr) {
   return { x: xvalues, y: yvalues };
 };
 
-function plotSignal(arr,graphElement,counter){
-  obj=unpack(arr);
+
+function plotSignal(arr, graphElement, counter, linkedGraph) {
+  obj = unpack(arr);
   counter++;
-  let frames = []
+  let frames = [];
   let x = obj.x;
   let y = obj.y;
-  let frameSize=5;
-  let numFrame=2000;
-  //let n = 100;
+  let frameSize = 5;
+  let numFrame = 2000;
   for (let i = 0; i < numFrame; i++) { 
-    frames[i] = {data: [{x: [], y: []}]};
+    frames[i] = { data: [{ x: [], y: [] }] };
     frames[i].data[0].x = x.slice(0, (i * frameSize) + numFrame);
     frames[i].data[0].y = y.slice(0, (i * frameSize) + numFrame);
   }
@@ -246,47 +250,42 @@ function plotSignal(arr,graphElement,counter){
     name: `channel${counter}`,
   }
   let data = [trace];
-
-let animationSettings = {
-  frame: {
-    duration: 10, // in milliseconds
-    redraw: false,
-  },
-  fromcurrent: true,
-  transition: {
-    duration: 0,
-  },
-};
-let layout = {
-  xaxis: {
-    range: [
-      frames[numFrame - 1].data[0].x[0],
-      frames[numFrame - 1].data[0].x[frameSize - 1],
-    ],
-    showgrid: true,
-  },
-};
-Plotly.addTraces(graphElement, {x: frames[5].data[0].x,y: frames[5].data[0].y,});
-Plotly.update(graphElement,trace,layout,[counter-1]);
-Plotly.addFrames(graphElement, frames);
-Plotly.animate(graphElement, null, animationSettings);
-  // i = 0;
-  // setInterval(() => {
-  //     if (i < frames.length) {
-  //       i++;
-  //       let layout = {
-  //         xaxis: {
-  //           range: [
-  //             frames[i - 1].data[0].x[0],
-  //             frames[i - 1].data[0].x[frameSize - 1],
-  //           ],
-  //           showgrid: true,
-  //         },
-  //       };
-  //       Plotly.relayout(graphElement,layout)
-  //   }
-  //   }, 1000);
-    
+  let animationSettings = {
+    frame: {
+      duration: 10,
+      redraw: false,
+    },
+    fromcurrent: true,
+    transition: {
+      duration: 0,
+    },
+  };
+  let layout = {
+    xaxis: {
+      range: [
+        frames[numFrame - 1].data[0].x[0],
+        frames[numFrame - 1].data[0].x[frameSize - 1],
+      ],
+      showgrid: true,
+    },
+  };
+  if (linkedGraph) {
+    secondGraphFrames[counter - 1] = { data: [{ x: [], y: [] }] };
+    secondGraphFrames[counter - 1].data[0].x = frames[0].data[0].x;
+    secondGraphFrames[counter - 1].data[0].y = frames[0].data[0].y;
+    let currentFrame = Plotly.animate(firstSignalGraph, [], { frame: { duration: 10, redraw: false } }).then(() => {
+      let currentFrameNumber = Plotly.Plots.getSubplot(firstSignalGraph, { "xaxis.anchor": "y", "yaxis.anchor": "x" })._frameIndex;
+      Plotly.animate(secondSignalGraph, [], { frame: { duration: 10, redraw: false }, transition: { duration: 0 } }, [currentFrameNumber]).then(() => {
+        Plotly.addFrames(secondSignalGraph, secondGraphFrames);
+        Plotly.animate(secondSignalGraph);
+      });
+    });
+  } else {
+    Plotly.addTraces(graphElement, { x: frames[5].data[0].x, y: frames[5].data[0].y });
+    Plotly.update(graphElement, trace, layout, [counter - 1]);
+    Plotly.addFrames(graphElement, frames);
+    Plotly.animate(graphElement, null, animationSettings);
+  }
 };
 
 function handleSignalFetch(formObject, dataElement, graphElement,counter) {
@@ -303,7 +302,7 @@ function handleSignalFetch(formObject, dataElement, graphElement,counter) {
     .then((responseMsg) => {
       dataElement = JSON.parse(responseMsg); //converts it to js object
       firstsignalfirstchannel = dataElement;
-      plotSignal(dataElement, graphElement,counter);
+      plotSignal(dataElement, graphElement,counter,linkedGraph );
     })
     .catch((error) => console.error(error));
 };
@@ -321,7 +320,7 @@ function handleChannelFetch(formObject, graphElement, channelCounter) {
     })
     .then((responseMsg) => {
       let firstGraphChannelData = JSON.parse(responseMsg);
-      plotSignal(firstGraphChannelData, graphElement, channelCounter);
+      plotSignal(firstGraphChannelData, graphElement, channelCounter,linkedGraph );
     })
     .catch((error) => console.error(error));
 };
@@ -358,9 +357,9 @@ function updateCineSpeed(newSpeed) {
   console.log(intervalTime);
 };
 
-document.getElementById("Play/Pause").addEventListener("click", function () {
-  stopFlag = !stopFlag;
-})
+// document.getElementById("Play/Pause").addEventListener("click", function () {
+//   stopFlag = !stopFlag;
+// })
 
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();

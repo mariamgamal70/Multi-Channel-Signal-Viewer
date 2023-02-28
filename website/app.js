@@ -213,10 +213,10 @@ function updateCineSpeed(newSpeed) {
 
 firstGraphPlayAndPause.addEventListener("click", function () {
   firstStopFlag = !firstStopFlag;
-})
+});
 secondGraphPlayAndPause.addEventListener("click", function () {
   secondStopFlag = !secondStopFlag;
-})
+});
 
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();

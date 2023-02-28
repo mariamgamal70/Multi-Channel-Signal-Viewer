@@ -66,7 +66,7 @@ app.post("/download", async (req, res) => {
   });
   doc.image('15.png', 0, 15, {width: 300})
    .text('Proportional to width', 0, 0);
-   doc.Plotly.Snapshot.toImage(gd, {format: 'png', width: 1000, height: 800})
+ //  doc.Plotly.Snapshot.toImage(gd, {format: 'png', width: 1000, height: 800})
   // End the document to save it to a file
   doc.end();
 

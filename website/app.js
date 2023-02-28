@@ -55,8 +55,8 @@ function createPlot(graphElement) {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
       title: "Time (s)",
-      zoom: 1000,
       range: [],
+      autorange: true,
     },
     yaxis: {
       title: "Amplitude",
@@ -111,73 +111,72 @@ function createPlot(graphElement) {
     //     ],
     //   },
     // ],
-    updatemenus: [
-      {
-        x: 0.5,
-        y: 0,
-        yanchor: "top",
-        xanchor: "center",
-        showactive: false,
-        direction: "left",
-        type: "buttons",
-        pad: { t: 87, r: 10 },
-        buttons: [
-          {
-            method: "animate",
-            args: [
-              null,
-              {
-                fromcurrent: true,
-                transition: {
-                  duration: 0,
-                },
-                frame: {
-                  duration: 40,
-                  redraw: false,
-                },
-              },
-            ],
-            label: "Play",
-          },
-          {
-            method: "animate",
-            args: [
-              [null],
-              {
-                mode: "immediate",
-                transition: {
-                  duration: 0,
-                },
-                frame: {
-                  duration: 0,
-                  redraw: false,
-                },
-              },
-            ],
-            label: "Pause",
-          },
-          {
-            method: "animate",
-            args: [
-              [null],
-              {
-                mode: "afterall",
-                transition: {
-                  duration: 0,
-                },
-                frame: {
-                  duration: 0,
-                  redraw: true,
-                },
-              },
-            ],
-            label: "Rewind",
-          },
-        ],
-      },
-    ],
+    // updatemenus: [
+    //   {
+    //     x: 0.5,
+    //     y: 0,
+    //     yanchor: "top",
+    //     xanchor: "center",
+    //     showactive: false,
+    //     direction: "left",
+    //     type: "buttons",
+    //     pad: { t: 87, r: 10 },
+    //     buttons: [
+    //       {
+    //         method: "animate",
+    //         args: [
+    //           null,
+    //           {
+    //             fromcurrent: true,
+    //             transition: {
+    //               duration: 0,
+    //             },
+    //             frame: {
+    //               duration: 10,
+    //               redraw: false,
+    //             },
+    //           },
+    //         ],
+    //         label: "Play",
+    //       },
+    //       {
+    //         method: "animate",
+    //         args: [
+    //           [null],
+    //           {
+    //             mode: "immediate",
+    //             transition: {
+    //               duration: 0,
+    //             },
+    //             frame: {
+    //               duration: 0,
+    //               redraw: false,
+    //             },
+    //           },
+    //         ],
+    //         label: "Pause",
+    //       },
+    //       {
+    //         method: "animate",
+    //         args: [
+    //           [null],
+    //           {
+    //             mode: "afterall",
+    //             transition: {
+    //               duration: 0,
+    //             },
+    //             frame: {
+    //               duration: 0,
+    //               redraw: true,
+    //             },
+    //           },
+    //         ],
+    //         label: "Rewind",
+    //       },
+    //     ],
+    //   },
+    // ],
   };
-  
   Plotly.newPlot(graphElement, [], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'],responsive: true });
 };
 // function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
@@ -225,71 +224,159 @@ function unpack(arr) {
   });
   return { x: xvalues, y: yvalues };
 };
-
+// let numFrameFirstGraph=0;
+// let prevTraceFirstGraph={}
 function plotSignal(arr,graphElement,counter){
-  obj=unpack(arr);
-  counter++;
-  let frames = []
+  obj = unpack(arr);
+  let frames = [];
   let x = obj.x;
   let y = obj.y;
-  let frameSize=5;
-  let numFrame=2000;
+  let frameSize = 5;
+  let numFrame = 2000;
   //let n = 100;
-  for (let i = 0; i < numFrame; i++) { 
-    frames[i] = {data: [{x: [], y: []}]};
-    frames[i].data[0].x = x.slice(0, (i * frameSize) + numFrame);
-    frames[i].data[0].y = y.slice(0, (i * frameSize) + numFrame);
+  for (let i = 0; i < numFrame; i++) {
+    frames[i] = { data: [{ x: [], y: [] }] };
+    frames[i].data[0].x = x.slice(0, i * frameSize + numFrame);
+    frames[i].data[0].y = y.slice(0, i * frameSize + numFrame);
   }
   let trace = {
     type: "scatter",
     mode: "lines",
     name: `channel${counter}`,
-  }
-  let data = [trace];
-
-let animationSettings = {
-  frame: {
-    duration: 10, // in milliseconds
-    redraw: false,
-  },
-  fromcurrent: true,
-  transition: {
-    duration: 0,
-  },
-};
-let layout = {
-  xaxis: {
-    range: [
-      frames[numFrame - 1].data[0].x[0],
-      frames[numFrame - 1].data[0].x[frameSize - 1],
+  };
+  let animationSettings = {
+    frame: {
+      duration: 10, // in milliseconds
+      redraw: false,
+    },
+    fromcurrent: true,
+    transition: {
+      duration: 0,
+    },
+  };
+  let layout = {
+    // xaxis: {
+      //   range: [
+    //     frames[numFrame - 1].data[0].x[0],
+    //     frames[numFrame - 1].data[0].x[frameSize - 1],
+    //   ],
+    //   showgrid: true,
+    // },
+    updatemenus: [
+      {
+        x: 0.5,
+        y: 0,
+        yanchor: "top",
+        xanchor: "center",
+        showactive: false,
+        direction: "left",
+        type: "buttons",
+        pad: { t: 87, r: 10 },
+        buttons: [
+          {
+            method: "animate",
+            args: [
+              null,
+              {
+                fromcurrent: true,
+                transition: {
+                  duration: 0,
+                },
+                frame: {
+                  duration: 10,
+                  redraw: false,
+                },
+              },
+            ],
+            label: "Play",
+          },
+          {
+            method: "animate",
+            args: [
+              [null],
+              {
+                mode: "immediate",
+                // animation_options: {
+                //   click: function () {
+                //     console.log("Play button clicked!");
+                //   },
+                // },
+                transition: {
+                  duration: 0,
+                },
+                frame: {
+                  duration: 0,
+                  redraw: false,
+                },
+              },
+            ],
+            label: "Pause",
+          },
+          {
+            method: "animate",
+            args: [
+              [null],
+              {
+                mode: "afterall",
+                transition: {
+                  duration: 0,
+                },
+                frame: {
+                  duration: 0,
+                  redraw: true,
+                },
+              },
+            ],
+            label: "Rewind",
+          },
+        ],
+      },
     ],
-    showgrid: true,
-  },
-};
-Plotly.addTraces(graphElement, {x: frames[5].data[0].x,y: frames[5].data[0].y,});
-Plotly.update(graphElement,trace,layout,[counter-1]);
-Plotly.addFrames(graphElement, frames);
-Plotly.animate(graphElement, null, animationSettings);
+  };
+  // if(counter=0)
+  Plotly.addTraces(graphElement, {x: frames[5].data[0].x,y: frames[5].data[0].y});
+  // else{
+  //   let lastFrameIndex = Plotly.lastFrame(graphElement);
+  //   frames[lastFrameIndex]
+  //   Plotly.addTraces(graphElement, {
+  //     x: frames[5].data[0].x,
+  //     y: frames[5].data[0].y,
+  //   });
+  // }
+  Plotly.update(graphElement, trace, layout, [counter - 1]);
+  Plotly.addFrames(graphElement, frames);
+  Plotly.animate(graphElement, null, animationSettings);
+  //Plotly.moveTraces(graphElement, -1, 0);
   // i = 0;
-  // setInterval(() => {
-  //     if (i < frames.length) {
-  //       i++;
-  //       let layout = {
-  //         xaxis: {
-  //           range: [
-  //             frames[i - 1].data[0].x[0],
-  //             frames[i - 1].data[0].x[frameSize - 1],
-  //           ],
-  //           showgrid: true,
-  //         },
-  //       };
-  //       Plotly.relayout(graphElement,layout)
-  //   }
-  //   }, 1000);
-    
-};
-
-function handleSignalFetch(formObject, dataElement, graphElement,counter) {
+  let rangeupdate=setInterval(() => {
+    //     if (i < numFrame) {
+      //       i++;
+      //       let layout = {
+        //         xaxis: {
+          //           range: [
+            //             frames[i].data[0].x[0],
+            //             frames[i].data[0].x[i],
+            //           ],
+            //         },
+            //       };
+            //console.log(counter)
+            Plotly.relayout(graphElement, { xaxis: { autorange: true }},[0]);
+        // if(counter>0){
+        //   Plotly.relayout(graphElement, { xaxis: { autorange: false } }, [counter-1]);
+        //   Plotly.relayout(graphElement, { xaxis: { autorange: true } }, [counter]);
+        //   console.log(counter);
+        // }
+        // else{
+        //   Plotly.relayout(graphElement, { xaxis: { autorange: true }},[0]);
+        //   console.log(counter);
+        //   clearInterval(rangeupdate);
+        // }
+  //     }
+    }, 100);
+    //counter++;
+  };
+  
+  function handleSignalFetch(formObject, dataElement, graphElement,counter) {
   fetch("/", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,

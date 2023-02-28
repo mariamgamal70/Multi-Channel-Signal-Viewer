@@ -11,7 +11,8 @@ const addFirstSignalChannelInput = document.getElementById("firstsignaladdchanne
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
 
 const linkingButton = document.getElementById('linkingbutton');
-const createpdf = document.getElementById("genPDF")
+const createpdf1 = document.getElementById("Export1");
+const createpdf2 = document.getElementById("Export2");
 
 const firstGraphColor = document.getElementById('firstcolor');
 const secondGraphColor = document.getElementById("secondcolor");
@@ -22,8 +23,7 @@ const secondDropdown = document.getElementById("secondChannels");
 const firstCineSpeed = document.getElementById('firstcinespeed');
 const secondCineSpeed = document.getElementById("secondcinespeed");
 
-let firstsignalfirstchannel;
-let firstsignalsecondchannel;
+let dataHold;
 
 let firstGraphCounter = 0;
 let secondGraphCounter = 0;
@@ -32,8 +32,8 @@ let stopFlag = false;
 let stoppingRow = 0;
 let unPlottedData = [];
 let intervalTime = 100;
-let speedFirst=0;
-let speedSecond=0;
+let speedFirst = 0;
+let speedSecond = 0;
 
 
 document.onload = createPlot(firstSignalGraph);
@@ -178,7 +178,8 @@ function createPlot(graphElement) {
     ],
   };
   
-  Plotly.newPlot(graphElement, [], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'],responsive: true });
+ Plotly.downloadImage
+  Plotly.newPlot(graphElement, [], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'], responsive: true });
 };
 // function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
 //   let i = 0;
@@ -217,26 +218,26 @@ function createPlot(graphElement) {
 
 //GIVE ARR OF OBJ
 function unpack(arr) {
-  xvalues = arr.map((row)=> {
+  xvalues = arr.map((row) => {
     return row[0];
   });
-  yvalues = arr.map((row)=>{
+  yvalues = arr.map((row) => {
     return row[1];
   });
   return { x: xvalues, y: yvalues };
 };
 
-function plotSignal(arr,graphElement,counter){
-  obj=unpack(arr);
+function plotSignal(arr, graphElement, counter) {
+  obj = unpack(arr);
   counter++;
   let frames = []
   let x = obj.x;
   let y = obj.y;
-  let frameSize=5;
-  let numFrame=2000;
+  let frameSize = 5;
+  let numFrame = 2000;
   //let n = 100;
-  for (let i = 0; i < numFrame; i++) { 
-    frames[i] = {data: [{x: [], y: []}]};
+  for (let i = 0; i < numFrame; i++) {
+    frames[i] = { data: [{ x: [], y: [] }] };
     frames[i].data[0].x = x.slice(0, (i * frameSize) + numFrame);
     frames[i].data[0].y = y.slice(0, (i * frameSize) + numFrame);
   }
@@ -247,29 +248,29 @@ function plotSignal(arr,graphElement,counter){
   }
   let data = [trace];
 
-let animationSettings = {
-  frame: {
-    duration: 10, // in milliseconds
-    redraw: false,
-  },
-  fromcurrent: true,
-  transition: {
-    duration: 0,
-  },
-};
-let layout = {
-  xaxis: {
-    range: [
-      frames[numFrame - 1].data[0].x[0],
-      frames[numFrame - 1].data[0].x[frameSize - 1],
-    ],
-    showgrid: true,
-  },
-};
-Plotly.addTraces(graphElement, {x: frames[5].data[0].x,y: frames[5].data[0].y,});
-Plotly.update(graphElement,trace,layout,[counter-1]);
-Plotly.addFrames(graphElement, frames);
-Plotly.animate(graphElement, null, animationSettings);
+  let animationSettings = {
+    frame: {
+      duration: 10, // in milliseconds
+      redraw: false,
+    },
+    fromcurrent: true,
+    transition: {
+      duration: 0,
+    },
+  };
+  let layout = {
+    xaxis: {
+      range: [
+        frames[numFrame - 1].data[0].x[0],
+        frames[numFrame - 1].data[0].x[frameSize - 1],
+      ],
+      showgrid: true,
+    },
+  };
+  Plotly.addTraces(graphElement, { x: frames[5].data[0].x, y: frames[5].data[0].y, });
+  Plotly.update(graphElement, trace, layout, [counter - 1]);
+  Plotly.addFrames(graphElement, frames);
+  Plotly.animate(graphElement, null, animationSettings);
   // i = 0;
   // setInterval(() => {
   //     if (i < frames.length) {
@@ -286,10 +287,10 @@ Plotly.animate(graphElement, null, animationSettings);
   //       Plotly.relayout(graphElement,layout)
   //   }
   //   }, 1000);
-    
+
 };
 
-function handleSignalFetch(formObject, dataElement, graphElement,counter) {
+function handleSignalFetch(formObject, dataElement, graphElement, counter, PlotNo) {
   fetch("/", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -302,8 +303,8 @@ function handleSignalFetch(formObject, dataElement, graphElement,counter) {
     })
     .then((responseMsg) => {
       dataElement = JSON.parse(responseMsg); //converts it to js object
-      firstsignalfirstchannel = dataElement;
-      plotSignal(dataElement, graphElement,counter);
+      dataHold = dataElement;
+      plotSignal(dataElement, graphElement, counter);
     })
     .catch((error) => console.error(error));
 };
@@ -370,7 +371,7 @@ firstInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("firstsignalinput", file);
-    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,firstGraphCounter);
+    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph, firstGraphCounter, 0);
   }
 });
 
@@ -382,7 +383,7 @@ secondInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("secondsignalinput", file);
-    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,secondGraphCounter);
+    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph, secondGraphCounter, 1);
   }
 });
 
@@ -462,12 +463,14 @@ firstCineSpeed.addEventListener('change', () => {
 //   });
 // }
 
-createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND letIABLE NAMES
+createpdf1.addEventListener("click", async () => { await createPDF();/* await createPDF(1, 2);*/ }); //CHANGE BUTTON AND letIABLE NAMES
+createpdf2.addEventListener("click", async () => { await createPDF(); /*await createPDF(2, 2);*/ }); //CHANGE BUTTON AND letIABLE NAMES
+
 async function createPDF() {
   await fetch("/download", {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(signal_statistics()),
+    body: JSON.stringify(signal_statistics(dataHold)),
     //body: JSON.stringify({data:'helloooo'}),
     credentials: "same-origin",
   })
@@ -483,26 +486,33 @@ async function createPDF() {
     });
 }
 
-function signal_statistics() {
-  //fetch("/")
-  // Compute the average of a column
-  const column = firstsignalfirstchannel.map((row) => parseFloat(row['Column Name']));
+function signal_statistics(data) {
+  // Extract the column of values and duration from the data
+  const column = data.map((row) => parseFloat(row[1]));
+  const durationColumn = data.map((row) => parseFloat(row[0]));
+
+  // Compute the average of the values column
   const average = column.reduce((sum, value) => sum + value) / column.length;
 
-  // Compute the standard deviation of a column
-  const letiance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
-  const standardDeviation = Math.sqrt(letiance);
+  // Compute the standard deviation of the values column
+  const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
+  const standardDeviation = Math.sqrt(variance);
 
-  // Compute the minimum and maximum values in a column
+  // Compute the minimum and maximum values in the values column
   const minValue = Math.min(...column);
   const maxValue = Math.max(...column);
+
+  // Compute the duration of the signal
+  const duration = durationColumn[durationColumn.length - 1] - durationColumn[0];
+
   return {
-    let: letiance,
+    var: variance,
     std: standardDeviation,
     avg: average,
     min: minValue,
-    max: maxValue
-  }
+    max: maxValue,
+    duration: duration
+  };
 }
 
 //createpdf.add

@@ -28,13 +28,11 @@ let firstsignalsecondchannel;
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
-let stopFlag = false;
-let stoppingRow = 0;
-let unPlottedData = [];
 let intervalTime = 100;
 let speedFirst=0;
 let speedSecond=0;
-
+let isFirstPlaying = true;
+let isSecondPlaying=true;
 
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
@@ -65,42 +63,48 @@ function createPlot(graphElement) {
   Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'] });
 };
 
-function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
+
+  document.getElementById("Pauseone").addEventListener("click", function () {
+  isFirstPlaying = !isFirstPlaying;
+  console.log(isFirstPlaying);
+})
+  document.getElementById("Pausetwo").addEventListener("click", function () {
+  isSecondPlaying = !isSecondPlaying;
+  console.log(isSecondPlaying);
+})
+function plotSignal(data, graphElement, graphno,channelCounter = 0,lastX = 0, lastY = 0) {
   let i = 0;
-  //let startPointFoundFlag = false;
-  const interval = setInterval(() => {
-    if (stopFlag == false){
-      if (i < data.length) {
-        const row = data[i];
-        // let beforeRow;
-        // i - 100 < data.length && i - 100 >= 0 ? (beforeRow = data[i - 100]) : (beforeRow = data[i]);
-        // let oldData = beforeRow[0];
-        // let CurrentData = row[0];
-        // let realtimeScrolling = {
-        //   xaxis: {
-        //     range: [oldData, CurrentData],
-        //   },
-        // };
-        if (channelCounter != 0){// && !startPointFoundFlag) {
-          // if (row[0] >= lastX && row[1] >= lastY) {
-          //   startPointFoundFlag = true;
-          setTimeout(speed);
-            Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-          // }
-        } else {
-          setTimeout(speed);
-          Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-          // Plotly.relayout(graphElement, realtimeScrolling);
-        }
-        i++;
-      } else {
-        clearInterval(interval);
-      }
+  let x = [];
+  let y = [];
+  function actualplotting(){
+    console.log("first", isFirstPlaying, isSecondPlaying);
+    if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
+    ) {
+      const row = data[i];
+      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [
+        channelCounter,
+      ]);
+      i++;
+      lastindex = i;
+    } else {
+      clearInterval(interval);
     }
-  }, intervalTime);
+  }
+  function startInterval() {
+    interval = setInterval(actualplotting, intervalTime);
+  }
+  const interval = setInterval(actualplotting, intervalTime);
+  const checkPlayingInterval = setInterval(() => {
+    if (
+      (isFirstPlaying && graphno === 1) ||
+      (isSecondPlaying && graphno === 2)
+    ) {
+      startInterval();
+    }
+  }, 500);
 };
 
-function handleSignalFetch(formObject, dataElement, graphElement) {
+function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
   fetch("/", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -114,12 +118,12 @@ function handleSignalFetch(formObject, dataElement, graphElement) {
     .then((responseMsg) => {
       dataElement = JSON.parse(responseMsg); //converts it to js object
       firstsignalfirstchannel = dataElement;
-      plotSignal(dataElement, graphElement);
+      plotSignal(dataElement, graphElement, graphno);
     })
     .catch((error) => console.error(error));
 };
 
-function handleChannelFetch(formObject, graphElement, channelCounter) {
+function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
   fetch("/addChannel", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -131,17 +135,17 @@ function handleChannelFetch(formObject, graphElement, channelCounter) {
       return response.text();
     })
     .then((responseMsg) => {
-      let firstGraphChannelData = JSON.parse(responseMsg);
-      const lastTrace = graphElement.data[channelCounter - 1];
-      const lastX = lastTrace.x[lastTrace.x.length - 1];
-      const lastY = lastTrace.y[lastTrace.y.length - 1];
+      let ChannelData = JSON.parse(responseMsg);
+      // const lastTrace = graphElement.data[channelCounter - 1];
+      // const lastX = lastTrace.x[lastTrace.x.length - 1];
+      // const lastY = lastTrace.y[lastTrace.y.length - 1];
       Plotly.addTraces(graphElement, {
         x: [],//lastX],
         y: [],//lastY],
         name: `Channel ${channelCounter + 1}`,
         type: "scatter",
       });
-      plotSignal(firstGraphChannelData, graphElement, channelCounter, lastX, lastY);
+      plotSignal(ChannelData, graphElement,graphno ,channelCounter); //lastX, lastY);
 
     })
     .catch((error) => console.error(error));
@@ -179,9 +183,9 @@ function updateCineSpeed(newSpeed) {
   console.log(intervalTime);
 };
 
-document.getElementById("Play/Pause").addEventListener("click", function () {
-  stopFlag = !stopFlag;
-})
+// document.getElementById("Play/Pauseone").addEventListener("click", function () {
+//   isPlaying = true;
+// })
 
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
@@ -191,7 +195,7 @@ firstInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("firstsignalinput", file);
-    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph);
+    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,1);
   }
 });
 
@@ -203,7 +207,7 @@ secondInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("secondsignalinput", file);
-    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph);
+    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,2);
   }
 });
 
@@ -217,7 +221,7 @@ addFirstSignalChannelInput.addEventListener('change', (submission) => { //ADDS S
     firstGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
-    handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter);
+    handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter,1);
     addToDropdown(firstDropdown, firstGraphChannelCounter);
   }
 })
@@ -231,7 +235,7 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     secondGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
-    handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter);
+    handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter,2);
     addToDropdown(secondDropdown, secondGraphChannelCounter);
   }
 });

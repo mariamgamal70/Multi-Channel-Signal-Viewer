@@ -64,11 +64,11 @@ function createPlot(graphElement) {
 };
 
 
-  document.getElementById("Pauseone").addEventListener("click", function () {
+  document.getElementById("Play/Pauseone").addEventListener("click", function () {
   isFirstPlaying = !isFirstPlaying;
   console.log(isFirstPlaying);
 })
-  document.getElementById("Pausetwo").addEventListener("click", function () {
+  document.getElementById("Play/Pausetwo").addEventListener("click", function () {
   isSecondPlaying = !isSecondPlaying;
   console.log(isSecondPlaying);
 })
@@ -95,13 +95,10 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0,lastX = 0, la
   }
   const interval = setInterval(actualplotting, intervalTime);
   const checkPlayingInterval = setInterval(() => {
-    if (
-      (isFirstPlaying && graphno === 1) ||
-      (isSecondPlaying && graphno === 2)
-    ) {
+    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
       startInterval();
     }
-  }, 500);
+  }, 100);
 };
 
 function handleSignalFetch(formObject, dataElement, graphElement,graphno) {

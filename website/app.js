@@ -74,30 +74,37 @@ function createPlot(graphElement) {
 
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
-  console.log(data);
-  console.log(channelCounter)
   function actualplotting(){
-    if (i < 50 &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
+    if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
-      console.log(row)
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
+      console.log(intervalTime);
     } else {
       graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       clearInterval(interval);
     }
   }
+  let interval = setInterval(actualplotting, intervalTime);
   function startInterval() {
+    // if (interval) {
+    //   clearInterval(interval);
+    // }
     interval = setInterval(actualplotting, intervalTime);
   }
-  let interval = setInterval(actualplotting, intervalTime);
   let checkPlayingInterval = setInterval(() => {
     if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
       startInterval();
     }
   }, 100);
+
+  firstCineSpeed.addEventListener("change", () => {
+    console.log("CINE1");
+    updateCineSpeed(firstCineSpeed.value);
+    startInterval();
+  });  
 };
 
 function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
@@ -254,10 +261,10 @@ secondGraphColor.addEventListener('change', () => {
 // });
 
 
-firstCineSpeed.addEventListener('change', () => {
-  console.log('CINE1');
-  updateCineSpeed(firstCineSpeed.value);
-});  
+// firstCineSpeed.addEventListener('change', () => {
+//   console.log('CINE1');
+//   updateCineSpeed(firstCineSpeed.value);
+// });  
 
 PlayPauseone.addEventListener("click", function () {
   isFirstPlaying = !isFirstPlaying;
@@ -313,6 +320,7 @@ if (secondGraphFinish) {
       });
       plotSignal(traceXY, secondSignalGraph, 1, secondGraphChannelCounter);
     }, 100); 
+  }
 }
 });
 //firstCineSpeed.addEventListener("change", () => {});

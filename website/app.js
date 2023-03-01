@@ -33,8 +33,8 @@ const secondRewind = document.getElementById("secondrewind");
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
 
-let firstGraphCounter = 0;
-let secondGraphCounter = 0;
+let firstGraphChannelCounter = 0;
+let secondGraphChannelCounter = 0;
 let linkFlag = false;
 let intervalTime = 100;
 let speedFirst=0;
@@ -62,174 +62,14 @@ function createPlot(graphElement) {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
       title: "Time (s)",
-      range: [],
-      autorange: true,
+      zoom: 1000,
     },
     yaxis: {
       title: "Amplitude",
-      autorange: true,
-    },
-    showlegend: true,
-    legend: {
-      orientation: "v",
-      x: 5,
-      y: 1.4,
-      xanchor: "right",
     },
     dragmode: false,
-    // sliders: [
-    //   {
-    //     pad: { t: 30 },
-    //     currentvalue: {
-    //       xanchor: "right",
-    //       prefix: "color: ",
-    //       font: {
-    //         color: "#888",
-    //         size: 20,
-    //       },
-    //     },
-    //     steps: [
-    //       {
-    //         label: "1",
-    //         method: "restyle",
-    //         args: ["line.color", "red"],
-    //       },
-    //       {
-    //         label: "2",
-    //         method: "restyle",
-    //         args: ["line.color", "green"],
-    //       },
-    //       {
-    //         label: "3",
-    //         method: "restyle",
-    //         args: ["line.color", "blue"],
-    //       },
-    //       {
-    //         label: "4",
-    //         method: "restyle",
-    //         args: ["line.color", "blue"],
-    //       },
-    //       ,
-    //       {
-    //         label: "5",
-    //         method: "restyle",
-    //         args: ["line.color", "blue"],
-    //       },
-    //     ],
-    //   },
-    // ],
-    // updatemenus: [
-    //   {
-    //     x: 0.5,
-    //     y: 0,
-    //     yanchor: "top",
-    //     xanchor: "center",
-    //     showactive: false,
-    //     direction: "left",
-    //     type: "buttons",
-    //     pad: { t: 87, r: 10 },
-    //     buttons: [
-    //       {
-    //         method: "animate",
-    //         args: [
-    //           null,
-    //           {
-    //             fromcurrent: true,
-    //             transition: {
-    //               duration: 0,
-    //             },
-    //             frame: {
-    //               duration: 10,
-    //               redraw: false,
-    //             },
-    //           },
-    //         ],
-    //         label: "Play",
-    //       },
-    //       {
-    //         method: "animate",
-    //         args: [
-    //           [null],
-    //           {
-    //             mode: "immediate",
-    //             transition: {
-    //               duration: 0,
-    //             },
-    //             frame: {
-    //               duration: 0,
-    //               redraw: false,
-    //             },
-    //           },
-    //         ],
-    //         label: "Pause",
-    //       },
-    //       {
-    //         method: "animate",
-    //         args: [
-    //           [null],
-    //           {
-    //             mode: "afterall",
-    //             transition: {
-    //               duration: 0,
-    //             },
-    //             frame: {
-    //               duration: 0,
-    //               redraw: true,
-    //             },
-    //           },
-    //         ],
-    //         label: "Rewind",
-    //       },
-    //     ],
-    //   },
-    // ],
   };
-  Plotly.newPlot(graphElement, [], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'],responsive: true });
-};
-// function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
-//   let i = 0;
-//   //let startPointFoundFlag = false;
-//   const interval = setInterval(() => {
-//     if (stopFlag == false){
-//       if (i < data.length) {
-//         const row = data[i];
-//         // let beforeRow;
-//         // i - 100 < data.length && i - 100 >= 0 ? (beforeRow = data[i - 100]) : (beforeRow = data[i]);
-//         // let oldData = beforeRow[0];
-//         // let CurrentData = row[0];
-//         // let realtimeScrolling = {
-//         //   xaxis: {
-//         //     range: [oldData, CurrentData],
-//         //   },
-//         // };
-//         if (channelCounter != 0){// && !startPointFoundFlag) {
-//           // if (row[0] >= lastX && row[1] >= lastY) {
-//           //   startPointFoundFlag = true;
-//           setTimeout(speed);
-//             Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-//           // }
-//         } else {
-//           setTimeout(speed);
-//           Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-//           // Plotly.relayout(graphElement, realtimeScrolling);
-//         }
-//         i++;
-//       } else {
-//         clearInterval(interval);
-//       }
-//     }
-//   }, intervalTime);
-// };
-
-//GIVE ARR OF OBJ
-function unpack(arr) {
-  xvalues = arr.map((row)=> {
-    return row[0];
-  });
-  yvalues = arr.map((row)=>{
-    return row[1];
-  });
-  return { x: xvalues, y: yvalues };
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'] });
 };
 
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
@@ -316,9 +156,9 @@ function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
 
 function linking(firstGraph, secondGraph, linkFlag) {
   if (linkFlag == true) {
-    let xaxis = firstGraph.layout.xaxis;
-    let yaxis = firstGraph.layout.yaxis;
-    let update = {
+    var xaxis = firstGraph.layout.xaxis;
+    var yaxis = firstGraph.layout.yaxis;
+    var update = {
       xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
       yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
     };
@@ -377,7 +217,7 @@ addFirstSignalChannelInput.addEventListener('change', (submission) => { //ADDS S
     alert("No file selected");
   }
   else {
-    firstGraphCounter++;
+    firstGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
     handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter,1);
@@ -391,7 +231,7 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
   if (!file) {
     alert("No file selected");
   } else {
-    secondGraphCounter++;
+    secondGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
     handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter,2);
@@ -414,8 +254,8 @@ secondGraphColor.addEventListener('change', () => {
 });
 // ON CHANGING LEGEND NAME ON PLOT, IT CHANGES IN DROPDOWN
 // firstSignalGraph.on("plotly_legendclick",(data)=>{
-//     let update = {};
-//     let traceIndex = data.curveNumber;
+//     var update = {};
+//     var traceIndex = data.curveNumber;
 //     update["name[" + traceIndex + "]"] = newLabel;
 //     Plotly.update(plotlyElement, update);
 // });
@@ -485,7 +325,7 @@ if (secondGraphFinish) {
 });
 //firstCineSpeed.addEventListener("change", () => {});
 
-// linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND letIABLE NAMES
+// linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 // function createPDF(){
 // fetch("/download", {
 //   method: "POST",
@@ -505,7 +345,7 @@ if (secondGraphFinish) {
 //   });
 // }
 
-createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND letIABLE NAMES
+createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 async function createPDF() {
   await fetch("/download", {
     method: "POST",
@@ -533,14 +373,14 @@ function signal_statistics() {
   const average = column.reduce((sum, value) => sum + value) / column.length;
 
   // Compute the standard deviation of a column
-  const letiance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
-  const standardDeviation = Math.sqrt(letiance);
+  const variance = column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
+  const standardDeviation = Math.sqrt(variance);
 
   // Compute the minimum and maximum values in a column
   const minValue = Math.min(...column);
   const maxValue = Math.max(...column);
   return {
-    let: letiance,
+    var: variance,
     std: standardDeviation,
     avg: average,
     min: minValue,

@@ -69,6 +69,7 @@ function createPlot(graphElement) {
     },
     yaxis: {
       title: "Amplitude",
+      fixedrange: true,
     },
     dragmode: false,
   };
@@ -78,14 +79,14 @@ function createPlot(graphElement) {
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
   function actualplotting(){
-    if (i < 50 &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
+    if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
-      if(i===50){
+      if(i===data.length){
       graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
       clearInterval(interval);
@@ -93,13 +94,10 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   }
   let interval = setInterval(actualplotting, intervalTime);
   function startInterval() {
-    // if (interval) {
-    //   clearInterval(interval);
-    // }
     interval = setInterval(actualplotting, intervalTime);
   }
   let checkPlayingInterval = setInterval(() => {
-    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<50) {
+    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
       startInterval();
     }
   }, 100);
@@ -143,16 +141,13 @@ function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
     })
     .then((responseMsg) => {
       let ChannelData = JSON.parse(responseMsg);
-      // const lastTrace = graphElement.data[channelCounter - 1];
-      // const lastX = lastTrace.x[lastTrace.x.length - 1];
-      // const lastY = lastTrace.y[lastTrace.y.length - 1];
       Plotly.addTraces(graphElement, {
-        x: [],//lastX],
-        y: [],//lastY],
+        x: [],
+        y: [],
         name: `Channel ${channelCounter + 1}`,
         type: "scatter",
       });
-      plotSignal(ChannelData, graphElement,graphno ,channelCounter); //lastX, lastY);
+      plotSignal(ChannelData, graphElement,graphno ,channelCounter);
 
     })
     .catch((error) => console.error(error));
@@ -288,7 +283,7 @@ function getAllGraphTraces(graphElement,num){
     }
     num===1?allFirstGraphTraces.push(traceXY):allSecondGraphTraces.push(traceXY);
   }
-}
+};
 
 firstRewind.addEventListener("click", function () {
   if (firstGraphFinish) {
@@ -412,6 +407,6 @@ function signal_statistics() {
     min: minValue,
     max: maxValue
   }
-}
+};
 
 //createpdf.add

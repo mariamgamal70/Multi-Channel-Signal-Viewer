@@ -75,14 +75,14 @@ function createPlot(graphElement) {
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
   function actualplotting(){
-    if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
+    if (i < 50 &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
-      if(i===data.length){
+      if(i===50){
       graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
       clearInterval(interval);
@@ -96,7 +96,7 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
     interval = setInterval(actualplotting, intervalTime);
   }
   let checkPlayingInterval = setInterval(() => {
-    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
+    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<50) {
       startInterval();
     }
   }, 100);
@@ -274,31 +274,48 @@ PlayPausetwo.addEventListener("click", function () {
   isSecondPlaying = !isSecondPlaying;
 });
 
-firstRewind.addEventListener("click", function () {
-  console.log(firstGraphFinish);
-if(firstGraphFinish){
+let allFirstGraphTraces=[]
+function getAllFirstGraphTraces(){
   let traces = firstSignalGraph.data;
-  for (let i = 0; i < traces.length; i++) {
+  for(i=0;i<traces.length;i++){
     const traceX = traces[i].x;
     const traceY = traces[i].y;
-    const traceXY = [];
+    let traceXY=[]
     for (let j = 0; j < traceX.length; j++) {
       traceXY.push([traceX[j], traceY[j]]);
     }
-    firstGraphChannelCounter=traces.length-1;
-    Plotly.deleteTraces(firstSignalGraph, i);
-    setTimeout(() => {
-      Plotly.addTraces(firstSignalGraph, {
-        x: [], 
-        y: [], 
-        name: `Channel ${firstGraphChannelCounter + 1}`,
-        type: "scatter",
-      });
-      plotSignal(traceXY, firstSignalGraph, 1, firstGraphChannelCounter);
-    }, 100); 
+    allFirstGraphTraces.push(traceXY);
+    //allFirstGraphTraces.push(firstSignalGraph.data[i]);
   }
+  //return allFirstGraphTraces;
 }
+
+firstRewind.addEventListener("click", function () {
+  if (firstGraphFinish) {
+    allFirstGraphTraces = [];
+    getAllFirstGraphTraces();
+    firstGraphChannelCounter=0;
+    for (let i = 0; i < allFirstGraphTraces.length; i++) {
+      Plotly.deleteTraces(firstSignalGraph, 0);
+    }
+    for (let i = 0; i < allFirstGraphTraces.length; i++) {
+      setTimeout(() => {
+        Plotly.addTraces(firstSignalGraph, {
+          x: [],
+          y: [],
+          name: `Channel ${firstGraphChannelCounter + 1}`,
+          showlegend: true,
+          type: "scatter",
+        });
+        plotSignal(allFirstGraphTraces[i], firstSignalGraph, 1, firstGraphChannelCounter);
+        firstGraphChannelCounter++;
+      }, 100);
+    }
+    console.log(firstGraphChannelCounter);
+    console.log(allFirstGraphTraces);
+  }
 });
+
 secondRewind.addEventListener("click", function () {
 if (secondGraphFinish) {
   let traces = secondSignalGraph.data;

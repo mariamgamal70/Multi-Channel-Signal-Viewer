@@ -81,9 +81,10 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
-      console.log(intervalTime);
     } else {
+      if(i===data.length){
       graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
+      }
       clearInterval(interval);
     }
   }
@@ -274,6 +275,7 @@ PlayPausetwo.addEventListener("click", function () {
 });
 
 firstRewind.addEventListener("click", function () {
+  console.log(firstGraphFinish);
 if(firstGraphFinish){
   let traces = firstSignalGraph.data;
   for (let i = 0; i < traces.length; i++) {
@@ -282,7 +284,6 @@ if(firstGraphFinish){
     const traceXY = [];
     for (let j = 0; j < traceX.length; j++) {
       traceXY.push([traceX[j], traceY[j]]);
-      console.log(traceXY);
     }
     firstGraphChannelCounter=traces.length-1;
     Plotly.deleteTraces(firstSignalGraph, i);
@@ -344,6 +345,18 @@ if (secondGraphFinish) {
 //     a.click();
 //   });
 // }
+
+// firstSignalGraph.on("plotly_relayout", function (eventData) {
+//   if (eventData["legend.title"]) {
+//     firstDropdown.
+//   }
+// });
+
+// secondSignalGraph.on("plotly_relayout", function (eventData) {
+//   if (eventData["legend.title"]) {
+//     secondDropdown.
+//   }
+// });
 
 createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 async function createPDF() {

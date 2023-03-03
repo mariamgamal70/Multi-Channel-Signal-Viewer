@@ -29,7 +29,7 @@ const secondCineSpeed = document.getElementById("secondcinespeed");
 const PlayPauseone = document.getElementById("Play/Pauseone");
 const PlayPausetwo = document.getElementById("Play/Pausetwo");
 
-const firstRewind = document.getElementById("firstrewind");
+const firstRewind=document.getElementById("firstrewind");
 const secondRewind = document.getElementById("secondrewind");
 
 let firstsignalfirstchannel;
@@ -57,9 +57,9 @@ document.onload = createPlot(secondSignalGraph);
 
 function createPlot(graphElement) {
   let trace = {
-    x: [],
-    y: [],
-    type: "scatter",
+    x: [], 
+    y: [], 
+    type: "scatter", 
     name: "Channel 1",
     showlegend: true,
     legend: {
@@ -78,34 +78,10 @@ function createPlot(graphElement) {
     },
     dragmode: false,
   };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d','pan2d'], displayModeBar: false });
-
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'] });
 };
 
-function plotSignal(data, graphElement, graphno, channelCounter = 0) {
-  let trace = {
-    x: [],
-    y: [],
-    type: "scatter",
-    name: "Channel 1",
-    showlegend: true,
-    legend: {
-      itemdoubleclick: false
-    },
-  };
-  let layout = {
-    title: { title: "Click Here<br>to Edit Chart Title" },
-    xaxis: {
-      title: "Time (s)",
-      zoom: 1000,
-    },
-    yaxis: {
-      title: "Amplitude",
-      fixedrange: true,
-    },
-    dragmode: 'pan',
-  };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d','pan2d'], displayModeBar: true });
+function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
   let mintick=0;
   let maxtick=4;
@@ -166,7 +142,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   secondCineSpeed.addEventListener("change", () => {
     secondIntervalTime = parseInt(secondCineSpeed.value);
     startInterval();
-  });
+  });  
 };
     
 function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
@@ -188,7 +164,7 @@ function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
     .catch((error) => console.error(error));
 };
 
-function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
+function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
   fetch("/addChannel", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -274,7 +250,7 @@ firstInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("firstsignalinput", file);
-    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph, 1);
+    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,1);
   }
 });
 
@@ -286,7 +262,7 @@ secondInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("secondsignalinput", file);
-    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph, 2);
+    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,2);
   }
 });
 
@@ -300,7 +276,7 @@ addFirstSignalChannelInput.addEventListener('change', (submission) => { //ADDS S
     firstGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
-    handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter, 1);
+    handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter,1);
     addToDropdown(firstDropdown, firstGraphChannelCounter);
   }
 })
@@ -314,7 +290,7 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     secondGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
-    handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter, 2);
+    handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter,2);
     addToDropdown(secondDropdown, secondGraphChannelCounter);
   }
 });
@@ -392,6 +368,7 @@ if (secondGraphFinish) {
       secondGraphChannelCounter++;
     }, 100);
   }
+}
 });
 //firstCineSpeed.addEventListener("change", () => {});
 
@@ -426,15 +403,6 @@ if (secondGraphFinish) {
 //     secondDropdown.
 //   }
 // });
-
-firstSignalScrollbar.addEventListener("Scrollingfirst", function () {
-
-  let scrollPosition = firstSignalScrollbar.scrollTop;
-let maxScrollPosition = firstSignalGraph.scrollHeight - firstSignalGraph.offsetHeight;
-let xaxisRange = [scrollPosition / maxScrollPosition, (scrollPosition + firstSignalGraph.offsetHeight) / maxScrollPosition];
-
-Plotly.relayout(firstSignalGraph, { xaxis: { range: xaxisRange } });
-});
 
 createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 async function createPDF() {

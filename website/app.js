@@ -427,6 +427,15 @@ if (secondGraphFinish) {
 //   }
 // });
 
+firstSignalScrollbar.addEventListener("Scrollingfirst", function () {
+
+  let scrollPosition = firstSignalScrollbar.scrollTop;
+let maxScrollPosition = firstSignalGraph.scrollHeight - firstSignalGraph.offsetHeight;
+let xaxisRange = [scrollPosition / maxScrollPosition, (scrollPosition + firstSignalGraph.offsetHeight) / maxScrollPosition];
+
+Plotly.relayout(firstSignalGraph, { xaxis: { range: xaxisRange } });
+});
+
 createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 async function createPDF() {
   await fetch("/download", {

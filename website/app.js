@@ -82,12 +82,13 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   let i = 0;
   let mintick=0;
   let maxtick=4;
+  let interval;
+  let checkPlayingInterval;
   function actualplotting(){
     if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
       i++;
-      setTimeout(()=>{
         Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       if(row[0]>maxtick){
         mintick=maxtick;
@@ -99,7 +100,6 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
           "xaxis.dtick": 1,
         });
       }
-      },intervalTime);
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
       if(i===data.length){
@@ -108,24 +108,32 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       clearInterval(interval);
     }
   }
-  let interval;
+
   function startInterval() {
-    interval = setInterval(actualplotting, 0);
+      if (interval) {
+        clearInterval(checkPlayingInterval);
+        clearInterval(interval);
+      }
+      interval = setInterval(actualplotting, intervalTime);
+      checkPlaying()
   }
+  
+  function checkPlaying(){
+      checkPlayingInterval = setInterval(() => {
+        if ((isFirstPlaying && graphno === 1) ||(isSecondPlaying && graphno === 2 && i < data.length)) {
+          startInterval();
+        }
+      }, 100);
+    };
+
   startInterval();
-  let checkPlayingInterval = setInterval(() => {
-    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
-      startInterval();
-    }
-  }, 100);
 
-};
-// firstCineSpeed.addEventListener("change", () => {
-//   console.log("CINE1");
-//   updateCineSpeed(parseInt(firstCineSpeed.value));
-//   // startInterval();
-// });  
-
+  firstCineSpeed.addEventListener("change", () => {
+        intervalTime= parseInt(firstCineSpeed.value) ;
+        startInterval();
+    });  
+  };
+    
 function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
   fetch("/", {
     maxContentLength: 10000000,
@@ -194,12 +202,6 @@ function addToDropdown(dropdownElement, counter) {
 function changeChannelColor(dropdownElement, graphElement, color) {
   const channelIndex = dropdownElement.selectedIndex;
   Plotly.restyle(graphElement, { "line.color": `${color}` }, [channelIndex]);
-};
-
-function updateCineSpeed(newSpeed) {
-  newSpeed *= 10;
-  intervalTime = newSpeed;
-  console.log(intervalTime);
 };
 
 function getAllGraphTraces(graphElement,num){
@@ -298,12 +300,6 @@ secondGraphColor.addEventListener('change', () => {
 //     update["name[" + traceIndex + "]"] = newLabel;
 //     Plotly.update(plotlyElement, update);
 // });
-
-
-// firstCineSpeed.addEventListener('change', () => {
-//   console.log('CINE1');
-//   updateCineSpeed(firstCineSpeed.value);
-// });  
 
 PlayPauseone.addEventListener("click", function () {
   isFirstPlaying = !isFirstPlaying;

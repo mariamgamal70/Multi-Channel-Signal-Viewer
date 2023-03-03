@@ -32,6 +32,8 @@ const PlayPausetwo = document.getElementById("Play/Pausetwo");
 const firstRewind = document.getElementById("firstrewind");
 const secondRewind = document.getElementById("secondrewind");
 
+const rewindButton = document.getElementById("rewind");
+
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
 

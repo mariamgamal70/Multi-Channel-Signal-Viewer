@@ -38,9 +38,8 @@ let firstsignalsecondchannel;
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
-let intervalTime = 0;
-let speedFirst=0;
-let speedSecond=0;
+let firstIntervalTime = 0;
+let secondIntervalTime=0;
 let isFirstPlaying = true;
 let isSecondPlaying=true;
 let firstGraphFinish=false;
@@ -84,6 +83,7 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   let maxtick=4;
   let interval;
   let checkPlayingInterval;
+  let time;
   function actualplotting(){
     if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
@@ -110,12 +110,14 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   }
 
   function startInterval() {
+  graphno === 1 ? (time = firstIntervalTime) : (time = secondIntervalTime);
       if (interval) {
         clearInterval(checkPlayingInterval);
         clearInterval(interval);
       }
-      interval = setInterval(actualplotting, intervalTime);
+      interval = setInterval(actualplotting, time);
       checkPlaying()
+      console.log(time);
   }
   
   function checkPlaying(){
@@ -129,10 +131,15 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   startInterval();
 
   firstCineSpeed.addEventListener("change", () => {
-        intervalTime= parseInt(firstCineSpeed.value) ;
-        startInterval();
-    });  
-  };
+    firstIntervalTime= parseInt(firstCineSpeed.value);
+    startInterval();
+  });  
+  
+  secondCineSpeed.addEventListener("change", () => {
+    secondIntervalTime = parseInt(secondCineSpeed.value);
+    startInterval();
+  });  
+};
     
 function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
   fetch("/", {
@@ -307,7 +314,6 @@ PlayPauseone.addEventListener("click", function () {
 PlayPausetwo.addEventListener("click", function () {
   isSecondPlaying = !isSecondPlaying;
 });
-
 
 firstRewind.addEventListener("click", function () {
   if (firstGraphFinish) {

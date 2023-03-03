@@ -89,8 +89,8 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       if(row[0]>maxtick){
-        mintick=maxtick;
-        maxtick+=maxtick;
+        mintick=maxtick/2;
+        maxtick+=maxtick/2;
         Plotly.relayout(graphElement, { "xaxis.range": [mintick, maxtick] });
       }
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
@@ -101,10 +101,10 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       clearInterval(interval);
     }
   }
-  let interval = setInterval(actualplotting, 0);
   function startInterval() {
-    interval = setInterval(actualplotting, 0);
+    let interval = setInterval(actualplotting, 0);
   }
+  startInterval();
   let checkPlayingInterval = setInterval(() => {
     if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
       startInterval();

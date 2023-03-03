@@ -101,8 +101,9 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       clearInterval(interval);
     }
   }
+  let interval;
   function startInterval() {
-    let interval = setInterval(actualplotting, 0);
+    interval = setInterval(actualplotting, 0);
   }
   startInterval();
   let checkPlayingInterval = setInterval(() => {

@@ -1,5 +1,7 @@
 //const { trace } = require("console");
 
+// const { update } = require("plotly.js");
+
 let firstSignalData;
 let secondSignalData;
 
@@ -36,7 +38,7 @@ let firstsignalsecondchannel;
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
-let intervalTime = 100;
+let intervalTime = 0;
 let speedFirst=0;
 let speedSecond=0;
 let isFirstPlaying = true;
@@ -78,12 +80,19 @@ function createPlot(graphElement) {
 
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
+  let mintick=0;
+  let maxtick=0.5;
   function actualplotting(){
     if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+      if(row[0]>maxtick){
+        mintick=maxtick;
+        maxtick+=maxtick;
+        Plotly.relayout(graphElement, { "xaxis.range": [mintick, maxtick] });
+      }
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
       if(i===data.length){
@@ -92,9 +101,9 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       clearInterval(interval);
     }
   }
-  let interval = setInterval(actualplotting, intervalTime);
+  let interval = setInterval(actualplotting, 0);
   function startInterval() {
-    interval = setInterval(actualplotting, intervalTime);
+    interval = setInterval(actualplotting, 0);
   }
   let checkPlayingInterval = setInterval(() => {
     if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
@@ -185,6 +194,29 @@ function updateCineSpeed(newSpeed) {
   console.log(intervalTime);
 };
 
+function getAllGraphTraces(graphElement,num){
+  let traces = graphElement.data;
+  for(i=0;i<traces.length;i++){
+    const traceX = traces[i].x;
+    const traceY = traces[i].y;
+    let traceXY=[]
+    for (let j = 0; j < traceX.length; j++) {
+      traceXY.push([traceX[j], traceY[j]]);
+    }
+    num===1?allFirstGraphTraces.push(traceXY):allSecondGraphTraces.push(traceXY);
+  }
+};
+
+function getMaxMin(data){
+  let max=0
+  let length=0;
+for(i=0;i<data.length;i++){
+  data[i][0] > max ? (max = data[i][0]) : null;
+  length++
+}
+return {'max':Math.round(max),'length':length};
+};
+
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
@@ -272,18 +304,6 @@ PlayPausetwo.addEventListener("click", function () {
   isSecondPlaying = !isSecondPlaying;
 });
 
-function getAllGraphTraces(graphElement,num){
-  let traces = graphElement.data;
-  for(i=0;i<traces.length;i++){
-    const traceX = traces[i].x;
-    const traceY = traces[i].y;
-    let traceXY=[]
-    for (let j = 0; j < traceX.length; j++) {
-      traceXY.push([traceX[j], traceY[j]]);
-    }
-    num===1?allFirstGraphTraces.push(traceXY):allSecondGraphTraces.push(traceXY);
-  }
-};
 
 firstRewind.addEventListener("click", function () {
   if (firstGraphFinish) {

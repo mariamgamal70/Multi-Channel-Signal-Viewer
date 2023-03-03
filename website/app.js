@@ -1,7 +1,3 @@
-//const { trace } = require("console");
-
-// const { update } = require("plotly.js");
-
 let firstSignalData;
 let secondSignalData;
 
@@ -69,6 +65,14 @@ function createPlot(graphElement) {
   let layout = {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
+      // rangeslider: {
+        // range: [0, 1],
+        // visible: true,
+        // dragmode: false,
+        // zoom: false,
+      // },
+      // range: [0, 5],
+      // rangemode: "tozero",
       title: "Time (s)",
       zoom: 1000,
     },
@@ -88,6 +92,7 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   let interval;
   let checkPlayingInterval;
   let time;
+//Plotly.update(graphElement, { modeBarButtonsToRemove: [] });
   function actualplotting(){
     if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
@@ -99,7 +104,7 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
         maxtick+=4;
         Plotly.relayout(graphElement, {
           "xaxis.range": [mintick, maxtick],
-          "xaxis.autorange": false,
+          //"xaxis.autorange": false,
           "xaxis.tickmode": "linear",
           "xaxis.dtick": 1,
         });
@@ -121,7 +126,6 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
       }
       interval = setInterval(actualplotting, time);
       checkPlaying()
-      console.log(time);
   }
   
   function checkPlaying(){

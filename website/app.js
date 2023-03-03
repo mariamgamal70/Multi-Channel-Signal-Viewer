@@ -1,3 +1,5 @@
+//const { trace } = require("console");
+
 let firstSignalData;
 let secondSignalData;
 
@@ -22,10 +24,11 @@ const secondDropdown = document.getElementById("secondChannels");
 const firstCineSpeed = document.getElementById('firstcinespeed');
 const secondCineSpeed = document.getElementById("secondcinespeed");
 
-const firstGraphPlayAndPause = document.getElementById("FG_Play_Pause");
-const secondGraphPlayAndPause = document.getElementById("SG_Play_Pause");
+const PlayPauseone = document.getElementById("Play/Pauseone");
+const PlayPausetwo = document.getElementById("Play/Pausetwo");
 
-const rewindButton = document.getElementById("rewind");
+const firstRewind=document.getElementById("firstrewind");
+const secondRewind = document.getElementById("secondrewind");
 
 let firstsignalfirstchannel;
 let firstsignalsecondchannel;
@@ -33,23 +36,28 @@ let firstsignalsecondchannel;
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
-let secondStopFlag = false;
-let firstStopFlag = false;
+let stopFlag = false;
 let stoppingRow = 0;
+let unPlottedData = [];
 let intervalTime = 100;
 let speedFirst=0;
 let speedSecond=0;
+let isFirstPlaying = true;
+let isSecondPlaying=true;
+let firstGraphFinish=false;
+let secondGraphFinish = false;
 
+let allFirstGraphTraces = [];
+let allSecondGraphTraces = [];
 
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
 function createPlot(graphElement) {
-  // Create a data array to hold your trace
   let trace = {
-    x: [], // array to hold the x values
-    y: [], // array to hold the y values
-    type: "scatter", // set the chart type
+    x: [], 
+    y: [], 
+    type: "scatter", 
     name: "Channel 1",
     showlegend: true,
     legend: {
@@ -64,61 +72,47 @@ function createPlot(graphElement) {
     },
     yaxis: {
       title: "Amplitude",
+      fixedrange: true,
     },
     dragmode: false,
   };
   Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'] });
 };
 
-function plotSignal(data, graphElement, channelCounter = 0, lastX = 0, lastY = 0) {
+function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
-  //let startPointFoundFlag = false;
-  const interval = setInterval(() => {
-    //Play/Pause operation
-    if (firstStopFlag == true) {
-      let stoppingRow = i;
-      let currentChannelCounter = channelCounter;
-      let currentGraphElement=graphElement;
-      handlePlayAndPause(stoppingRow, currentChannelCounter, currentGraphElement, data,firstStopFlag);
-    }
-    else if (secondStopFlag == true) {
-      let stoppingRow = i;
-      let currentChannelCounter = channelCounter;
-      let currentGraphElement=graphElement;
-      handlePlayAndPause(stoppingRow, currentChannelCounter, currentGraphElement, data,secondStopFlag);
-    }
-    else {
-      if (i < data.length) {
-        const row = data[i];
-        // let beforeRow;
-        // i - 100 < data.length && i - 100 >= 0 ? (beforeRow = data[i - 100]) : (beforeRow = data[i]);
-        // let oldData = beforeRow[0];
-        // let CurrentData = row[0];
-        // let realtimeScrolling = {
-        //   xaxis: {
-        //     range: [oldData, CurrentData],
-        //   },
-        // };
-        if (channelCounter != 0){// && !startPointFoundFlag) {
-          // if (row[0] >= lastX && row[1] >= lastY) {
-          //   startPointFoundFlag = true;
-          setTimeout(speed);
-            Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-          // }
-        } else {
-          setTimeout(speed);
-          Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
-          // Plotly.relayout(graphElement, realtimeScrolling);
-        }
-        i++;
-      } else {
-        clearInterval(interval);
+  function actualplotting(){
+    if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
+    ) {
+      const row = data[i];
+      i++;
+      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+      graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
+    } else {
+      if(i===data.length){
+      graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
+      clearInterval(interval);
     }
-  }, intervalTime);
+  }
+  let interval = setInterval(actualplotting, intervalTime);
+  function startInterval() {
+    interval = setInterval(actualplotting, intervalTime);
+  }
+  let checkPlayingInterval = setInterval(() => {
+    if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2) && i<data.length) {
+      startInterval();
+    }
+  }, 100);
+
+  firstCineSpeed.addEventListener("change", () => {
+    console.log("CINE1");
+    updateCineSpeed(firstCineSpeed.value);
+    startInterval();
+  });  
 };
 
-function handleSignalFetch(formObject, dataElement, graphElement) {
+function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
   fetch("/", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -132,12 +126,12 @@ function handleSignalFetch(formObject, dataElement, graphElement) {
     .then((responseMsg) => {
       dataElement = JSON.parse(responseMsg); //converts it to js object
       firstsignalfirstchannel = dataElement;
-      plotSignal(dataElement, graphElement);
+      plotSignal(dataElement, graphElement, graphno);
     })
     .catch((error) => console.error(error));
 };
 
-function handleChannelFetch(formObject, graphElement, channelCounter) {
+function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
   fetch("/addChannel", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -149,17 +143,14 @@ function handleChannelFetch(formObject, graphElement, channelCounter) {
       return response.text();
     })
     .then((responseMsg) => {
-      let firstGraphChannelData = JSON.parse(responseMsg);
-      const lastTrace = graphElement.data[channelCounter - 1];
-      const lastX = lastTrace.x[lastTrace.x.length - 1];
-      const lastY = lastTrace.y[lastTrace.y.length - 1];
+      let ChannelData = JSON.parse(responseMsg);
       Plotly.addTraces(graphElement, {
-        x: [],//lastX],
-        y: [],//lastY],
+        x: [],
+        y: [],
         name: `Channel ${channelCounter + 1}`,
         type: "scatter",
       });
-      plotSignal(firstGraphChannelData, graphElement, channelCounter, lastX, lastY);
+      plotSignal(ChannelData, graphElement,graphno ,channelCounter);
 
     })
     .catch((error) => console.error(error));
@@ -215,13 +206,6 @@ function updateCineSpeed(newSpeed) {
   console.log(intervalTime);
 };
 
-firstGraphPlayAndPause.addEventListener("click", function () {
-  firstStopFlag = !firstStopFlag;
-})
-secondGraphPlayAndPause.addEventListener("click", function () {
-  secondStopFlag = !secondStopFlag;
-})
-
 firstInputElement.addEventListener("change", (submission) => {
   submission.preventDefault();
   const file = firstInputElement.files[0];
@@ -230,7 +214,7 @@ firstInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("firstsignalinput", file);
-    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph);
+    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,1);
   }
 });
 
@@ -242,7 +226,7 @@ secondInputElement.addEventListener("change", (submission) => {
   } else {
     const formDataObject = new FormData();
     formDataObject.append("secondsignalinput", file);
-    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph);
+    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,2);
   }
 });
 
@@ -256,7 +240,7 @@ addFirstSignalChannelInput.addEventListener('change', (submission) => { //ADDS S
     firstGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
-    handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter);
+    handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter,1);
     addToDropdown(firstDropdown, firstGraphChannelCounter);
   }
 })
@@ -270,7 +254,7 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     secondGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
-    handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter);
+    handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter,2);
     addToDropdown(secondDropdown, secondGraphChannelCounter);
   }
 });
@@ -296,9 +280,78 @@ secondGraphColor.addEventListener('change', () => {
 //     Plotly.update(plotlyElement, update);
 // });
 
-firstCineSpeed.addEventListener('change', () => {
-  console.log('CINE1');
-  updateCineSpeed(firstCineSpeed.value);
+
+// firstCineSpeed.addEventListener('change', () => {
+//   console.log('CINE1');
+//   updateCineSpeed(firstCineSpeed.value);
+// });  
+
+PlayPauseone.addEventListener("click", function () {
+  isFirstPlaying = !isFirstPlaying;
+});
+PlayPausetwo.addEventListener("click", function () {
+  isSecondPlaying = !isSecondPlaying;
+});
+
+function getAllGraphTraces(graphElement,num){
+  let traces = graphElement.data;
+  for(i=0;i<traces.length;i++){
+    const traceX = traces[i].x;
+    const traceY = traces[i].y;
+    let traceXY=[]
+    for (let j = 0; j < traceX.length; j++) {
+      traceXY.push([traceX[j], traceY[j]]);
+    }
+    num===1?allFirstGraphTraces.push(traceXY):allSecondGraphTraces.push(traceXY);
+  }
+};
+
+firstRewind.addEventListener("click", function () {
+  if (firstGraphFinish) {
+    allFirstGraphTraces = [];
+    getAllGraphTraces(firstSignalGraph,1);
+    firstGraphChannelCounter=0;
+    for (let i = 0; i < allFirstGraphTraces.length; i++) {
+      Plotly.deleteTraces(firstSignalGraph, 0);
+    }
+    for (let i = 0; i < allFirstGraphTraces.length; i++) {
+      setTimeout(() => {
+        Plotly.addTraces(firstSignalGraph, {
+          x: [],
+          y: [],
+          name: `Channel ${firstGraphChannelCounter + 1}`,
+          showlegend: true,
+          type: "scatter",
+        });
+        plotSignal(allFirstGraphTraces[i], firstSignalGraph, 1, firstGraphChannelCounter);
+        firstGraphChannelCounter++;
+      }, 100);
+    }
+  }
+});
+
+secondRewind.addEventListener("click", function () {
+if (secondGraphFinish) {
+  allSecondGraphTraces = [];
+  getAllGraphTraces(secondSignalGraph, 2);
+  secondGraphChannelCounter = 0;
+  for (let i = 0; i < allSecondGraphTraces.length; i++) {
+    Plotly.deleteTraces(secondSignalGraph, 0);
+  }
+  for (let i = 0; i < allSecondGraphTraces.length; i++) {
+    setTimeout(() => {
+      Plotly.addTraces(secondSignalGraph, {
+        x: [],
+        y: [],
+        name: `Channel ${secondGraphChannelCounter + 1}`,
+        showlegend: true,
+        type: "scatter",
+      });
+      plotSignal(allSecondGraphTraces[i],secondSignalGraph,1,secondGraphChannelCounter);
+      secondGraphChannelCounter++;
+    }, 100);
+  }
+}
 });
 //firstCineSpeed.addEventListener("change", () => {});
 
@@ -322,19 +375,17 @@ firstCineSpeed.addEventListener('change', () => {
 //   });
 // }
 
+// firstSignalGraph.on("plotly_relayout", function (eventData) {
+//   if (eventData["legend.title"]) {
+//     firstDropdown.
+//   }
+// });
 
-rewindButton.addEventListener("click", () => {
-  resetGraphs();
-});
-function resetGraphs() {
-
-  Plotly.purge(firstSignalGraph);
-  Plotly.purge(secondSignalGraph);
-  createPlot(firstSignalGraph);
-  createPlot(secondSignalGraph);
-  
-}
-
+// secondSignalGraph.on("plotly_relayout", function (eventData) {
+//   if (eventData["legend.title"]) {
+//     secondDropdown.
+//   }
+// });
 
 createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
 async function createPDF() {
@@ -377,6 +428,6 @@ function signal_statistics() {
     min: minValue,
     max: maxValue
   }
-}
+};
 
 //createpdf.add

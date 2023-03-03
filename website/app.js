@@ -37,11 +37,15 @@ let firstsignalsecondchannel;
 
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
+
 let linkFlag = false;
+
 let firstIntervalTime = 0;
 let secondIntervalTime=0;
+
 let isFirstPlaying = true;
 let isSecondPlaying=true;
+
 let firstGraphFinish=false;
 let secondGraphFinish = false;
 
@@ -191,9 +195,13 @@ function linking(firstGraph, secondGraph, linkFlag) {
     var yaxis = firstGraph.layout.yaxis;
     var update = {
       xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
-      yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
+      //yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
     };
     Plotly.update(secondGraph, {}, update);
+    secondIntervalTime=firstIntervalTime
+  }
+  else{
+    secondIntervalTime = parseInt(secondCineSpeed.value);
   }
 };
 

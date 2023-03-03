@@ -81,18 +81,25 @@ function createPlot(graphElement) {
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
   let i = 0;
   let mintick=0;
-  let maxtick=0.5;
+  let maxtick=4;
   function actualplotting(){
     if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
       i++;
-      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
+      setTimeout(()=>{
+        Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
       if(row[0]>maxtick){
-        mintick=maxtick/2;
-        maxtick+=maxtick/2;
-        Plotly.relayout(graphElement, { "xaxis.range": [mintick, maxtick] });
+        mintick=maxtick;
+        maxtick+=4;
+        Plotly.relayout(graphElement, {
+          "xaxis.range": [mintick, maxtick],
+          "xaxis.autorange": false,
+          "xaxis.tickmode": "linear",
+          "xaxis.dtick": 1,
+        });
       }
+      },intervalTime);
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
       if(i===data.length){
@@ -112,12 +119,12 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
     }
   }, 100);
 
-  firstCineSpeed.addEventListener("change", () => {
-    console.log("CINE1");
-    updateCineSpeed(firstCineSpeed.value);
-    startInterval();
-  });  
 };
+// firstCineSpeed.addEventListener("change", () => {
+//   console.log("CINE1");
+//   updateCineSpeed(parseInt(firstCineSpeed.value));
+//   // startInterval();
+// });  
 
 function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
   fetch("/", {

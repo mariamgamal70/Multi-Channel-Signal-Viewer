@@ -54,14 +54,14 @@ function createPlot(graphElement) {
   let layout = {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
-      // rangeslider: {
-      // range: [0, 1],
-      // visible: true,
-      // dragmode: false,
-      // zoom: false,
-      // },
-      // range: [0, 5],
-      // rangemode: "tozero",
+      rangeslider: {
+      range: [0, 1],
+      visible: true,
+      dragmode: false,
+      zoom: false,
+      },
+      range: [0, 5],
+      rangemode: "tozero",
       title: "Time (s)",
       zoom: 1000,
       fixedrange: true,
@@ -185,7 +185,6 @@ function linkSpeed() {
   });
 
   secondCineSpeed.addEventListener("change", () => {
-    console.log("B", firstIntervalTime, secondIntervalTime);
     secondIntervalTime = parseInt(secondCineSpeed.value);
     firstIntervalTime = secondIntervalTime;
   });
@@ -197,16 +196,24 @@ function linking(firstGraph, secondGraph, linkFlag) {
     var xaxis = firstGraph.layout.xaxis;
     var yaxis = firstGraph.layout.yaxis;
     var update = {
-      xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
-      yaxis: { range: [yaxis.range[0], yaxis.range[1]] },
+      xaxis: {
+        range: [xaxis.range[0], xaxis.range[1]],
+        rangeslider: {
+          range: [0, 1],
+          visible: true,
+          dragmode: false,
+          zoom: false,
+        },
+      },
+      //yaxis: { range: [yaxis.range[0], yaxis.range[1]] },
     };
     Plotly.update(secondGraph, {}, update);
     // secondIntervalTime=firstIntervalTime;
     linkSpeed();
-    console.log("A", firstIntervalTime, secondIntervalTime);
+    // console.log("A", firstIntervalTime, secondIntervalTime);
   } else {
     secondIntervalTime = parseInt(secondCineSpeed.value);
-    firstCineSpeed = parseInt(firstCineSpeed.value);
+    firstIntervalTime = parseInt(firstCineSpeed.value);
   }
 }
 

@@ -4,18 +4,13 @@ let secondSignalData;
 const firstSignalGraph = document.getElementById("firstsignalgraph");
 const secondSignalGraph = document.getElementById("secondsignalgraph");
 
-const firstInputElement = document.getElementById("firstsignalinput");
-const secondInputElement = document.getElementById("secondsignalinput");
-
-const addFirstSignalChannelInput = document.getElementById(
-  "firstsignaladdchannelinput"
-);
-const addSecondSignalChannelInput = document.getElementById(
-  "secondsignaladdchannelinput"
-);
+const addFirstSignalChannelInput = document.getElementById("firstsignaladdchannelinput");
+const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
 
 const linkingButton = document.getElementById("linkingbutton");
-const createpdf = document.getElementById("genPDF");
+
+const createpdf1 = document.getElementById("Export1");
+const createpdf2 = document.getElementById("Export2");
 
 const firstGraphColor = document.getElementById("firstcolor");
 const secondGraphColor = document.getElementById("secondcolor");
@@ -56,16 +51,6 @@ document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
 function createPlot(graphElement) {
-  // let trace = {
-  //   x: [],
-  //   y: [],
-  //   type: "scatter",
-  //   name: "Channel 1",
-  //   showlegend: true,
-  //   legend: {
-  //     itemdoubleclick: false
-  //   },
-  // };
   let layout = {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
@@ -107,7 +92,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   Plotly.relayout(graphElement, { "xaxis.fixedrange": false });
   function actualplotting() {
     if (
-      i < data.length &&
+      i < 50 &&
       ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
@@ -126,7 +111,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
       }
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
-      if (i === data.length) {
+      if (i === 50) {
         graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
       clearInterval(interval);
@@ -167,25 +152,6 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
     startInterval();
   });
 }
-
-// function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
-//   fetch("/", {
-//     maxContentLength: 10000000,
-//     maxBodyLength: 10000000,
-//     method: "POST",
-//     credentials: "same-origin",
-//     body: formObject,
-//   })
-//     .then((response) => {
-//       return response.text(); //arrive as string
-//     })
-//     .then((responseMsg) => {
-//       dataElement = JSON.parse(responseMsg); //converts it to js object
-//       firstsignalfirstchannel = dataElement;
-//       plotSignal(dataElement, graphElement, graphno);
-//     })
-//     .catch((error) => console.error(error));
-// };
 
 function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
   fetch("/addChannel", {
@@ -283,30 +249,6 @@ function getMaxMin(data) {
   return { max: Math.round(max), length: length };
 }
 
-// firstInputElement.addEventListener("change", (submission) => {
-//   submission.preventDefault();
-//   const file = firstInputElement.files[0];
-//   if (!file) {
-//     alert("No file selected");
-//   } else {
-//     const formDataObject = new FormData();
-//     formDataObject.append("firstsignalinput", file);
-//     handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,1);
-//   }
-// });
-
-// secondInputElement.addEventListener("change", (submission) => {
-//   submission.preventDefault();
-//   const file = secondInputElement.files[0];
-//   if (!file) {
-//     alert("No file selected");
-//   } else {
-//     const formDataObject = new FormData();
-//     formDataObject.append("secondsignalinput", file);
-//     handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,2);
-//   }
-// });
-
 addFirstSignalChannelInput.addEventListener("change", (submission) => {
   //ADDS SIGNAL TRACE
   submission.preventDefault();
@@ -363,13 +305,6 @@ firstGraphColor.addEventListener("change", () => {
 secondGraphColor.addEventListener("change", () => {
   changeChannelColor(secondDropdown, secondSignalGraph, secondGraphColor.value);
 });
-// ON CHANGING LEGEND NAME ON PLOT, IT CHANGES IN DROPDOWN
-// firstSignalGraph.on("plotly_legendclick",(data)=>{
-//     var update = {};
-//     var traceIndex = data.curveNumber;
-//     update["name[" + traceIndex + "]"] = newLabel;
-//     Plotly.update(plotlyElement, update);
-// });
 
 PlayPauseone.addEventListener("click", function () {
   isFirstPlaying = !isFirstPlaying;
@@ -381,7 +316,7 @@ PlayPausetwo.addEventListener("click", function () {
 firstRewind.addEventListener("click", function () {
   if (firstGraphFinish) {
     allFirstGraphTraces = [];
-    getAllGraphTraces(firstSignalGraph, 1);
+    getAllGraphTraces(firstSignalGraph, 1);// gets all traces in first graph each signal=2Darray
     firstGraphChannelCounter = 0;
     for (let i = 0; i < allFirstGraphTraces.length; i++) {
       Plotly.deleteTraces(firstSignalGraph, 0);
@@ -435,46 +370,23 @@ secondRewind.addEventListener("click", function () {
     }
   }
 });
-//firstCineSpeed.addEventListener("change", () => {});
 
-// linkSignalsButton.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
-// function createPDF(){
-// fetch("/download", {
-//   method: "POST",
-//   headers:{'Content-Type':'application/json'},
-//   body: JSON.stringify({data:'helloooo'}),
-//   credentials: "same-origin",
-// })
-//   .then((response) => {
-//     return response.blob();
-//   })
-//   .then((blob) => {
-//     const url = window.URL.createObjectURL(blob);
-//     const a = document.createElement("a");
-//     a.href = url;
-//     a.download = "output.pdf";
-//     a.click();
-//   });
-// }
-
-// firstSignalGraph.on("plotly_relayout", function (eventData) {
-//   if (eventData["legend.title"]) {
-//     firstDropdown.
-//   }
-// });
-
-// secondSignalGraph.on("plotly_relayout", function (eventData) {
-//   if (eventData["legend.title"]) {
-//     secondDropdown.
-//   }
-// });
-
-createpdf.addEventListener("click", createPDF); //CHANGE BUTTON AND VARIABLE NAMES
-async function createPDF() {
+createpdf1.addEventListener("click", async () => {
+  allFirstGraphTraces = [];
+  getAllGraphTraces(firstSignalGraph, 1); 
+  await createPDF(allFirstGraphTraces); /* await createPDF(1, 2);*/ }); 
+//CHANGE BUTTON AND letIABLE NAMES
+createpdf2.addEventListener("click", async () => { 
+  allSecondGraphTraces = [];
+  getAllGraphTraces(secondSignalGraph, 2); 
+  await createPDF(allSecondGraphTraces); /*await createPDF(2, 2);*/}); 
+//CHANGE BUTTON AND letIABLE NAMES
+//function getAllGraphTraces(graphElement, num) 
+async function createPDF(tracesArr) {
   await fetch("/download", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(signal_statistics()),
+    body: JSON.stringify(signal_statistics(tracesArr)),
     //body: JSON.stringify({data:'helloooo'}),
     credentials: "same-origin",
   })
@@ -490,30 +402,39 @@ async function createPDF() {
     });
 }
 
-function signal_statistics() {
-  //fetch("/")
-  // Compute the average of a column
-  const column = firstsignalfirstchannel.map((row) =>
-    parseFloat(row["Column Name"])
-  );
+function signal_statistics(traces) {
+  // Extract the column of values and duration from the data
+  let allStatistics=[]
+  for(i=0;i<traces.length;i++){
+    const durationColumn = traces[i][0];//.map((row) => parseFloat(row[0]));//xaxis
+    const column =traces[i][1];//.map((row) => parseFloat(row[1]));//yaxis
+
+  // Compute the average of the values column
   const average = column.reduce((sum, value) => sum + value) / column.length;
 
-  // Compute the standard deviation of a column
+  // Compute the standard deviation of the values column
   const variance =
     column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) /
     (column.length - 1);
   const standardDeviation = Math.sqrt(variance);
 
-  // Compute the minimum and maximum values in a column
+  // Compute the minimum and maximum values in the values column
   const minValue = Math.min(...column);
   const maxValue = Math.max(...column);
-  return {
+
+  // Compute the duration of the signal
+  const duration =
+    durationColumn[durationColumn.length - 1] - durationColumn[0];
+
+  let statistics= {
     var: variance,
     std: standardDeviation,
     avg: average,
     min: minValue,
     max: maxValue,
+    duration: duration,
   };
+  allStatistics.push(statistics);
 }
-
-//createpdf.add
+return allStatistics;
+}

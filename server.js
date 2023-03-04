@@ -13,6 +13,8 @@ const app = express();
 //const PDFDocument = require('pdfkit');
 const Papa = require("papaparse");
 const PDFDocument = require("pdfkit-table");
+const { promisify } = require("util");
+const { stat } = require("fs");
 
 /*USING MIDDLEWARES*/
 app.use(bodyParser.json());
@@ -45,23 +47,39 @@ app.post("/", upload.fields([{ name: "firstsignalinput", maxCount: 1 }, { name: 
     }
 });
 
-app.post("/download",async(req,res)=>{
-    // const doc = new PDFDocument();
-    // doc.pipe(fs.createWriteStream("output.pdf"));
-    let doc = new PDFDocument({ margin: 30, size: 'A4' });
-    // save document
+app.post("/download", async (req, res) => {
+    const doc = new PDFDocument({ margin: 30, size: "A4" });
     doc.pipe(fs.createWriteStream("./output.pdf"));
-    //doc.fontSize(20).text(JSON.stringify(req.body));
-    console.log(req.body);
+
+  // Set the file name dynamically based on the current working directory
+    const filePath = path.join(process.cwd(), "output.pdf");
+  // Create the table of signal statistics
+    const signals = req.body;
     const table = {
-        title: "Signal Viewer",
-        headers: [ "min", "max", "var" , "std", "avg" ],
-        rows:[req.body.min ,req.body.max, req.body.var, req.body.std, red.body.avg],
-      };
-      await doc.table(table, { /* options */ });
-    
+    title: "Signal Viewer",
+    subtitle: "Signals Statistics",
+    headers: ["min", "max", "var", "std", "avg", "duration"],
+    rows: signals.map(signal => [signal.min, signal.max, signal.var, signal.std, signal.avg, signal.duration])
+    };
+    await doc.table(table, {
+    width: 300,
+    });
+    // doc
+    // .image("15.png", 0, 15, { width: 300 })
+    // .text("Proportional to width", 0, 0);
+  //  doc.Plotly.Snapshot.toImage(gd, {format: 'png', width: 1000, height: 800})
+  // End the document to save it to a file
     doc.end();
-    res.download("output.pdf");
+
+    res.setHeader("Content-Type", "application/pdf");
+    const fileInfo = promisify(stat);
+    const size = await fileInfo(filePath);
+    res.setHeader("Content-Length", size);
+  //console.log(size);
+    setTimeout(() => {
+    res.setHeader("Content-Disposition", "attachment; filename=output.pdf");
+    res.sendFile(filePath);
+    }, 1000);
 });
 
 app.post("/addChannel",upload.fields([{ name: "firstsignaladdchannelinput"}, { name: "secondsignaladdchannelinput"}]),(req,res)=>{

@@ -387,7 +387,6 @@ async function createPDF(tracesArr) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(signal_statistics(tracesArr)),
-    //body: JSON.stringify({data:'helloooo'}),
     credentials: "same-origin",
   })
     .then((response) => {

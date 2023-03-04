@@ -92,7 +92,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   Plotly.relayout(graphElement, { "xaxis.fixedrange": false });
   function actualplotting() {
     if (
-      i < 50 &&
+      i < data.length &&
       ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
@@ -111,7 +111,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
       }
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
-      if (i === 50) {
+      if (i === data.length) {
         graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
       clearInterval(interval);
@@ -374,19 +374,30 @@ secondRewind.addEventListener("click", function () {
 createpdf1.addEventListener("click", async () => {
   allFirstGraphTraces = [];
   getAllGraphTraces(firstSignalGraph, 1); 
-  await createPDF(allFirstGraphTraces); /* await createPDF(1, 2);*/ }); 
-//CHANGE BUTTON AND letIABLE NAMES
+  var imgOpts = {
+    format: "png",
+    width: 500,
+    height: 400,
+  };
+  const imgData = await Plotly.toImage(firstSignalGraph, imgOpts);
+  await createPDF(allFirstGraphTraces, imgData);  }); 
+
 createpdf2.addEventListener("click", async () => { 
   allSecondGraphTraces = [];
   getAllGraphTraces(secondSignalGraph, 2); 
-  await createPDF(allSecondGraphTraces); /*await createPDF(2, 2);*/}); 
-//CHANGE BUTTON AND letIABLE NAMES
-//function getAllGraphTraces(graphElement, num) 
-async function createPDF(tracesArr) {
+  var imgOpts = {
+    format: "png",
+    width: 500,
+    height: 400,
+  };
+  const imgData = await Plotly.toImage(secondSignalGraph, imgOpts);
+  await createPDF(allSecondGraphTraces, imgData); }); 
+
+async function createPDF(tracesArr, imgData) {
   await fetch("/download", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(signal_statistics(tracesArr)),
+    body: JSON.stringify({statistics:signal_statistics(tracesArr),img:imgData}),
     credentials: "same-origin",
   })
     .then((response) => {
@@ -431,7 +442,7 @@ function signal_statistics(traces) {
     avg: average,
     min: minValue,
     max: maxValue,
-    duration: duration,
+    duration: Math.abs(duration),
   };
   allStatistics.push(statistics);
 }

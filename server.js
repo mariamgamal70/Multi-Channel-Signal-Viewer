@@ -15,6 +15,7 @@ const Papa = require("papaparse");
 const PDFDocument = require("pdfkit-table");
 const { promisify } = require("util");
 const { stat } = require("fs");
+const plotly = require("plotly");
 
 /*USING MIDDLEWARES*/
 app.use(bodyParser.json());
@@ -54,7 +55,7 @@ app.post("/download", async (req, res) => {
   // Set the file name dynamically based on the current working directory
     const filePath = path.join(process.cwd(), "output.pdf");
   // Create the table of signal statistics
-    const signals = req.body;
+    const signals = req.body.statistics;
     const table = {
     title: "Signal Viewer",
     subtitle: "Signals Statistics",
@@ -64,9 +65,9 @@ app.post("/download", async (req, res) => {
     await doc.table(table, {
     width: 300,
     });
-    // doc
-    // .image("15.png", 0, 15, { width: 300 })
-    // .text("Proportional to width", 0, 0);
+    doc
+      .image(req.body.img, 30, 200, { width: 300 })
+      // .text("Proportional to width", 0, 0);
   //  doc.Plotly.Snapshot.toImage(gd, {format: 'png', width: 1000, height: 800})
   // End the document to save it to a file
     doc.end();

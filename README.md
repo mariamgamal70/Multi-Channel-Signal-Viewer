@@ -6,7 +6,7 @@ npm install node
 npm install fs
 npm install csv-parser
 npm install path
-npm install plotly.js
+npm install plotly
 npm install binary-parser
 npm install pdfkit
 npm install pdfkit-table

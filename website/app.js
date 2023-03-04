@@ -52,37 +52,45 @@ document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
 function createPlot(graphElement) {
-  let trace = {
-    x: [], 
-    y: [], 
-    type: "scatter", 
-    name: "Channel 1",
-    showlegend: true,
-    legend: {
-      itemdoubleclick: false
-    },
-  };
+  // let trace = {
+  //   x: [], 
+  //   y: [], 
+  //   type: "scatter", 
+  //   name: "Channel 1",
+  //   showlegend: true,
+  //   legend: {
+  //     itemdoubleclick: false
+  //   },
+  // };
   let layout = {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
       // rangeslider: {
-        // range: [0, 1],
-        // visible: true,
-        // dragmode: false,
-        // zoom: false,
+      // range: [0, 1],
+      // visible: true,
+      // dragmode: false,
+      // zoom: false,
       // },
       // range: [0, 5],
       // rangemode: "tozero",
       title: "Time (s)",
       zoom: 1000,
+      fixedrange: true,
     },
     yaxis: {
       title: "Amplitude",
       fixedrange: true,
     },
     dragmode: false,
+    zoommode: false,
   };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'] });
+  let config = {
+    editable: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ["toImage", "zoom2d", "lasso2d"],
+  };
+  
+  Plotly.newPlot(graphElement, [], layout, config);
 };
 
 function plotSignal(data, graphElement, graphno,channelCounter = 0){ 
@@ -92,7 +100,7 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   let interval;
   let checkPlayingInterval;
   let time;
-//Plotly.update(graphElement, { modeBarButtonsToRemove: [] });
+  Plotly.relayout(graphElement, {"xaxis.fixedrange":false})
   function actualplotting(){
     if (i < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
@@ -104,7 +112,6 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
         maxtick+=4;
         Plotly.relayout(graphElement, {
           "xaxis.range": [mintick, maxtick],
-          //"xaxis.autorange": false,
           "xaxis.tickmode": "linear",
           "xaxis.dtick": 1,
         });
@@ -144,29 +151,30 @@ function plotSignal(data, graphElement, graphno,channelCounter = 0){
   });  
   
   secondCineSpeed.addEventListener("change", () => {
+    console.log("B", firstIntervalTime, secondIntervalTime);
     secondIntervalTime = parseInt(secondCineSpeed.value);
     startInterval();
   });  
 };
     
-function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
-  fetch("/", {
-    maxContentLength: 10000000,
-    maxBodyLength: 10000000,
-    method: "POST",
-    credentials: "same-origin",
-    body: formObject,
-  })
-    .then((response) => {
-      return response.text(); //arrive as string
-    })
-    .then((responseMsg) => {
-      dataElement = JSON.parse(responseMsg); //converts it to js object
-      firstsignalfirstchannel = dataElement;
-      plotSignal(dataElement, graphElement, graphno);
-    })
-    .catch((error) => console.error(error));
-};
+// function handleSignalFetch(formObject, dataElement, graphElement,graphno) {
+//   fetch("/", {
+//     maxContentLength: 10000000,
+//     maxBodyLength: 10000000,
+//     method: "POST",
+//     credentials: "same-origin",
+//     body: formObject,
+//   })
+//     .then((response) => {
+//       return response.text(); //arrive as string
+//     })
+//     .then((responseMsg) => {
+//       dataElement = JSON.parse(responseMsg); //converts it to js object
+//       firstsignalfirstchannel = dataElement;
+//       plotSignal(dataElement, graphElement, graphno);
+//     })
+//     .catch((error) => console.error(error));
+// };
 
 function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
   fetch("/addChannel", {
@@ -185,27 +193,44 @@ function handleChannelFetch(formObject, graphElement, channelCounter,graphno) {
         x: [],
         y: [],
         name: `Channel ${channelCounter + 1}`,
+        showlegend: true,
         type: "scatter",
       });
       plotSignal(ChannelData, graphElement,graphno ,channelCounter);
-
     })
     .catch((error) => console.error(error));
 };
 
+function linkSpeed(){
+  firstCineSpeed.addEventListener("change", () => {
+    firstIntervalTime = parseInt(firstCineSpeed.value);
+    secondIntervalTime=firstIntervalTime;
+  });
+
+  secondCineSpeed.addEventListener("change", () => {
+    console.log("B", firstIntervalTime, secondIntervalTime);
+    secondIntervalTime = parseInt(secondCineSpeed.value);
+    firstIntervalTime=secondIntervalTime;
+  });
+}
+
 function linking(firstGraph, secondGraph, linkFlag) {
   if (linkFlag == true) {
+    console.log(linkFlag);
     var xaxis = firstGraph.layout.xaxis;
     var yaxis = firstGraph.layout.yaxis;
     var update = {
       xaxis: { range: [xaxis.range[0], xaxis.range[1]] },
-      //yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
+      yaxis: { range: [yaxis.range[0], yaxis.range[1]] }
     };
     Plotly.update(secondGraph, {}, update);
-    secondIntervalTime=firstIntervalTime
+    // secondIntervalTime=firstIntervalTime;
+    linkSpeed();
+    console.log('A',firstIntervalTime,secondIntervalTime);
   }
   else{
     secondIntervalTime = parseInt(secondCineSpeed.value);
+    firstCineSpeed = parseInt(firstCineSpeed.value);
   }
 };
 
@@ -246,29 +271,29 @@ for(i=0;i<data.length;i++){
 return {'max':Math.round(max),'length':length};
 };
 
-firstInputElement.addEventListener("change", (submission) => {
-  submission.preventDefault();
-  const file = firstInputElement.files[0];
-  if (!file) {
-    alert("No file selected");
-  } else {
-    const formDataObject = new FormData();
-    formDataObject.append("firstsignalinput", file);
-    handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,1);
-  }
-});
+// firstInputElement.addEventListener("change", (submission) => {
+//   submission.preventDefault();
+//   const file = firstInputElement.files[0];
+//   if (!file) {
+//     alert("No file selected");
+//   } else {
+//     const formDataObject = new FormData();
+//     formDataObject.append("firstsignalinput", file);
+//     handleSignalFetch(formDataObject, firstSignalData, firstSignalGraph,1);
+//   }
+// });
 
-secondInputElement.addEventListener("change", (submission) => {
-  submission.preventDefault();
-  const file = secondInputElement.files[0];
-  if (!file) {
-    alert("No file selected");
-  } else {
-    const formDataObject = new FormData();
-    formDataObject.append("secondsignalinput", file);
-    handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,2);
-  }
-});
+// secondInputElement.addEventListener("change", (submission) => {
+//   submission.preventDefault();
+//   const file = secondInputElement.files[0];
+//   if (!file) {
+//     alert("No file selected");
+//   } else {
+//     const formDataObject = new FormData();
+//     formDataObject.append("secondsignalinput", file);
+//     handleSignalFetch(formDataObject, secondSignalData, secondSignalGraph,2);
+//   }
+// });
 
 addFirstSignalChannelInput.addEventListener('change', (submission) => { //ADDS SIGNAL TRACE
   submission.preventDefault();
@@ -277,13 +302,13 @@ addFirstSignalChannelInput.addEventListener('change', (submission) => { //ADDS S
     alert("No file selected");
   }
   else {
-    firstGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("firstsignaladdchannelinput", file);
     handleChannelFetch(formDataObject, firstSignalGraph, firstGraphChannelCounter,1);
     addToDropdown(firstDropdown, firstGraphChannelCounter);
+    firstGraphChannelCounter++;
   }
-})
+});
 
 addSecondSignalChannelInput.addEventListener("change", (submission) => {
   submission.preventDefault();
@@ -291,11 +316,11 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
   if (!file) {
     alert("No file selected");
   } else {
-    secondGraphChannelCounter++;
     const formDataObject = new FormData();
     formDataObject.append("secondsignaladdchannelinput", file);
     handleChannelFetch(formDataObject, secondSignalGraph, secondGraphChannelCounter,2);
     addToDropdown(secondDropdown, secondGraphChannelCounter);
+    secondGraphChannelCounter++;
   }
 });
 

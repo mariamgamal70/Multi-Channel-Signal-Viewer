@@ -80,10 +80,17 @@ function createPlot(graphElement) {
     },
     dragmode: false,
   };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'], displayModeBar: false });
+  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, displayModeBar: false });
 };
 
 function plotSignal(data, graphElement, graphno, channelCounter = 0) {
+  let xData = data.map((row) => row[0]);
+  let xMin = Math.min(...xData);
+  let xMax = Math.max(...xData);
+  let yData = data.map((row) => row[1]);
+  let yMin = Math.min(...yData);
+  let yMax = Math.max(...yData);
+
   let trace = {
     x: [],
     y: [],
@@ -102,11 +109,49 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
     },
     yaxis: {
       title: "Amplitude",
-      fixedrange: true,
     },
     dragmode: 'pan',
   };
-  Plotly.newPlot(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d'], displayModeBar: true });
+  Plotly.react(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d', 'pan2d'], displayModeBar: true });
+
+  let plot = graphElement._fullLayout;
+
+  graphElement.on("plotly_relayout", () => {
+    let xaxis = plot.xaxis;
+    let yaxis = plot.yaxis;
+    let xRange = xaxis.range;
+    let yRange = yaxis.range;
+    if (xRange[0] < xMin) {
+      xaxis.range = [xMin, xRange[1] - xRange[0] + xMin];
+    } else if (xRange[1] > xMax) {
+      xaxis.range = [xMax - (xRange[1] - xRange[0]), xMax];
+    }
+    if (yRange[0] < yMin) {
+      yaxis.range = [yMin, yRange[1] - yRange[0] + yMin];
+    } else if (yRange[1] > yMax) {
+      yaxis.range = [yMax - (yRange[1] - yRange[0]), yMax];
+    }
+    Plotly.update(graphElement, {}, { "xaxis.range": xaxis.range, "yaxis.range": yaxis.range });
+  });
+
+
+
+
+  // graphElement.on("plotly_relayouting", function (eventData) {
+  //   if (eventData && eventData.target) {
+  //     let xaxis = eventData.target.layout.xaxis;
+  //     if (xaxis.range[0] < xMin) {
+  //       xaxis.range = [xMin, xaxis.range[1] - xaxis.range[0] + xMin];
+  //     } else if (xaxis.range[1] > xMax) {
+  //       xaxis.range = [xMax - (xaxis.range[1] - xaxis.range[0]), xMax];
+  //     }
+  //     Plotly.update(graphElement, { "xaxis.range": xaxis.range });
+  //   }
+  // });
+
+
+
+
   let i = 0;
   let mintick = 0;
   let maxtick = 4;

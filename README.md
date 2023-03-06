@@ -1,3 +1,5 @@
+<svg fill="none" viewBox="0 0 600 300" width="600" height="300" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="100%">
 <h1> Multi-Channel Signal Viewer</h1>
 <h3>Table of contents</h3>
 <a href="#introduction" style="font-weight:400;color:black;text-decoration:none;">Introduction</a><br>
@@ -53,3 +55,6 @@ or download each package manually by writing <br>
 <li>Run the server by writing this in the terminal : 
 <br><code> node server.js </code></li>
 </ol>
+  </foreignObject>
+
+</svg>

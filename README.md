@@ -1,4 +1,5 @@
 # task1
+
 npm install express
 npm install cors
 npm install body-parser
@@ -18,6 +19,7 @@ start server using node -serversidefilename-
 TO RESTART SERVER AUTOMATICALLY:
 npm install -g nodemon
 nodemon server.js
+
 <h1> Multi-Channel Signal Viewer</h1>
 <h3>Introduction</h3>
 <p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>
@@ -33,9 +35,27 @@ nodemon server.js
     <li>Adding a label/title for each signal</li>
     <li>Adding a label/title for each signal</li>
     <li>Pausing/playing/rewinding</li>
-    <li>Exporting & Reporting ( PDF that has Data statistics such as mean, std, duration, min and max values for each signal ) </li>
+    <li>Exporting & Reporting ( PDF that has data statistics such as mean, std, duration, min and max values for each signal ) </li>
     </ul>
     </li>
     <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>
-
 </ul>
+<h3>Project Structure</h3>
+<p>The web app is built using:
+<ul>
+    <li>Frontend: 
+    <ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>Javascript</li>
+    <li>Bootstrap</li>
+    </ul>
+    </li>
+    <li>Backend:
+    <ul>
+    <li>Node.js</li>
+    <li>Express.js</li>
+    </ul></li>
+</ul>
+</p>
+<h3>Run the project</h3>

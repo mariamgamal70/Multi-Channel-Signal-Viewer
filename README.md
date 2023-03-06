@@ -72,7 +72,7 @@ nodemon server.js
     <li><code>npm install path</code></li>
     <li><code>npm install plotly</code></li>
     <li><code>npm install binary-parser</code></li>
-    <li><code>npm install pdfkit</li>
+    <li><code>npm install pdfkit</code></li>
     <li><code>npm install pdfkit-table</code></li>
     <li><code>npm install papaparse</code></li>
     <li><code>npm install util</code></li>

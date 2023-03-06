@@ -1,9 +1,9 @@
 <h1> Multi-Channel Signal Viewer</h1>
 <h3>Table of contents</h3>
-<a href="#introduction">Introduction</a>
-<a href="#requirements">Introduction</a>
-<a href="#projectstructure">Introduction</a>
-<a href="#runtheproject">Introduction</a>
+<a href="#introduction">Introduction</a><br>
+<a href="#requirements">Requirements</a><br>
+<a href="#projectstructure">Project Structure</a><br>
+<a href="#runtheproject">Run the project</a><br>
 
 <h3 id="introduction">Introduction</h3>
 <p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>

@@ -23,7 +23,7 @@
 <h3>Project Structure</h3>
 <p>The web app is built using:
 <ul>
-    <li><h5>Frontend: </h5>
+    <li><h4>Frontend: </h4>
     <ul>
     <li>HTML</li>
     <li>CSS</li>
@@ -31,7 +31,7 @@
     <li>Bootstrap</li>
     </ul>
     </li>
-    <li><h5>Backend:</h5>
+    <li><h4>Backend:</h4>
     <ul>
     <li>Node.js</li>
     <li>Express.js</li>

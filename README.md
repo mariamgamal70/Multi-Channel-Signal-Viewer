@@ -13,7 +13,6 @@
     <li>Scrolling through sliders</li>
     <li>Changing color</li>
     <li>Adding a label/title for each signal</li>
-    <li>Adding a label/title for each signal</li>
     <li>Pausing/playing/rewinding</li>
     <li>Exporting & Reporting ( PDF that has data statistics such as mean, std, duration, min and max values for each signal ) </li>
     </ul>

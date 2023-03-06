@@ -1,6 +1,6 @@
 <h1> Multi-Channel Signal Viewer</h1>
 <h3>Table of contents</h3>
-<a href="#introduction">Introduction</a><br>
+<a href="#introduction" style="font-weight:400;color:black;text-decoration:none;">Introduction</a><br>
 <a href="#requirements">Requirements</a><br>
 <a href="#projectstructure">Project Structure</a><br>
 <a href="#runtheproject">Run the project</a><br>

@@ -63,19 +63,19 @@ nodemon server.js
 <li>Download the project</li> 
 <li>Download the following packages:
 <ul>
-    <li>npm install express</li>
-    <li>npm install cors</li>
-    <li>npm install body-parser</li>
-    <li>npm install node</li>
-    <li>npm install fs</li>
-    <li>npm install csv-parser</li>
-    <li>npm install path</li>
-    <li>npm install plotly</li>
-    <li>npm install binary-parser</li>
-    <li>npm install pdfkit</li>
-    <li>npm install pdfkit-table</li>
-    <li>npm install papaparse</li>
-    <li>npm install util</li>
+    <li><code>npm install express</code></li>
+    <li><code>npm install cors</code></li>
+    <li><code>npm install body-parser</code></li>
+    <li><code>npm install node</code></li>
+    <li><code>npm install fs</code></li>
+    <li><code>npm install csv-parser</code></li>
+    <li><code>npm install path</code></li>
+    <li><code>npm install plotly</code></li>
+    <li><code>npm install binary-parser</code></li>
+    <li><code>npm install pdfkit</li>
+    <li><code>npm install pdfkit-table</code></li>
+    <li><code>npm install papaparse</code></li>
+    <li><code>npm install util</code></li>
 </ul>
 </li>
 <li>Then run the server by writing this in the terminal : start server using " node server.js "</li>

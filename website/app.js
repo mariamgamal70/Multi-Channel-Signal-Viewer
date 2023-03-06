@@ -55,10 +55,10 @@ function createPlot(graphElement) {
     title: { title: "Click Here<br>to Edit Chart Title" },
     xaxis: {
       rangeslider: {
-      range: [0, 1],
-      visible: true,
-      dragmode: false,
-      zoom: false,
+        range: [0, 1],
+        visible: true,
+        dragmode: false,
+        zoom: false,
       },
       range: [0, 5],
       rangemode: "tozero",
@@ -71,25 +71,36 @@ function createPlot(graphElement) {
       fixedrange: true,
     },
     dragmode: false,
-    zoommode: false,
+    // zoommode: false,
   };
   let config = {
     editable: true,
     displaylogo: false,
-    modeBarButtonsToRemove: ["toImage", "zoom2d", "lasso2d"],
+    modeBarButtonsToRemove: ["toImage", "zoom2d", "lasso2d","pan2d"],
   };
 
   Plotly.newPlot(graphElement, [], layout, config);
 }
 
 function plotSignal(data, graphElement, graphno, channelCounter = 0) {
+  // let xData = data.map((row) => row[0]);
+  // let xMin = Math.min(...xData);
+  let xMin = 0;
+  let xMax ;
+  // let yData = data.map((row) => row[1]);
+  // let yMin = Math.min(...yData);
+  // let yMax = Math.max(...yData);
+
   let i = 0;
   let mintick = 0;
   let maxtick = 4;
   let interval;
   let checkPlayingInterval;
   let time;
-  Plotly.relayout(graphElement, { "xaxis.fixedrange": false });
+  Plotly.relayout(graphElement, { "xaxis.fixedrange": false, dragmode: "pan" });
+  // Plotly.react(graphElement, [trace], layout, { editable: true, displaylogo: false, modeBarButtonsToRemove: ['toImage', 'zoom2d', 'lasso2d', 'pan2d'], displayModeBar: true });
+  let plot = graphElement._fullLayout;
+
   function actualplotting() {
     if (
       i < data.length &&
@@ -109,6 +120,20 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
           "xaxis.dtick": 1,
         });
       }
+      // Get current x-axis range
+      const currentRange = graphElement.layout.xaxis.range;
+  
+      // Adjust x-axis range if necessary
+      if (row[0] < currentRange[0] || row[0] > currentRange[1]) {
+        mintick = row[0];
+        maxtick = row[0] + 4;
+        Plotly.relayout(graphElement, {
+          "xaxis.range": [mintick, maxtick],
+          "xaxis.tickmode": "linear",
+          "xaxis.dtick": 1,
+        });
+      }
+      
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
       if (i === data.length) {
@@ -116,6 +141,29 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
       }
       clearInterval(interval);
     }
+  }
+  
+
+  function limitsUpdate()
+  {
+    let xaxis = plot.xaxis;
+    // let yaxis = plot.yaxis;
+    let xRange = xaxis.range;
+    // let yRange = yaxis.range;
+    if (xRange[0] < xMin) {
+      // xaxis.range = [xMin, xRange[1] - xRange[0] + xMin];
+      xaxis.range = [ 0, maxtick ];
+    } else if (xRange[1] > xMax) {
+      // xaxis.range = [xMax - (xRange[1] - xRange[0]), xMax];
+      xMin=mintick;
+      xaxis.range = [xMin, maxtick];
+    }
+    // if (yRange[0] < yMin) {
+    //   yaxis.range = [yMin, yRange[1] - yRange[0] + yMin];
+    // } else if (yRange[1] > yMax) {
+    //   yaxis.range = [yMax - (yRange[1] - yRange[0]), yMax];
+    // }
+    Plotly.update(graphElement, {}, { "xaxis.range": xaxis.range});
   }
 
   function startInterval() {
@@ -380,31 +428,33 @@ secondRewind.addEventListener("click", function () {
 
 createpdf1.addEventListener("click", async () => {
   allFirstGraphTraces = [];
-  getAllGraphTraces(firstSignalGraph, 1); 
+  getAllGraphTraces(firstSignalGraph, 1);
   var imgOpts = {
     format: "png",
     width: 500,
     height: 400,
   };
   const imgData = await Plotly.toImage(firstSignalGraph, imgOpts);
-  await createPDF(allFirstGraphTraces, imgData);  }); 
+  await createPDF(allFirstGraphTraces, imgData);
+});
 
-createpdf2.addEventListener("click", async () => { 
+createpdf2.addEventListener("click", async () => {
   allSecondGraphTraces = [];
-  getAllGraphTraces(secondSignalGraph, 2); 
+  getAllGraphTraces(secondSignalGraph, 2);
   var imgOpts = {
     format: "png",
     width: 500,
     height: 400,
   };
   const imgData = await Plotly.toImage(secondSignalGraph, imgOpts);
-  await createPDF(allSecondGraphTraces, imgData); }); 
+  await createPDF(allSecondGraphTraces, imgData);
+});
 
 async function createPDF(tracesArr, imgData) {
   await fetch("/download", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({statistics:signal_statistics(tracesArr),img:imgData}),
+    body: JSON.stringify({ statistics: signal_statistics(tracesArr), img: imgData }),
     credentials: "same-origin",
   })
     .then((response) => {
@@ -421,37 +471,37 @@ async function createPDF(tracesArr, imgData) {
 
 function signal_statistics(traces) {
   // Extract the column of values and duration from the data
-  let allStatistics=[]
-  for(i=0;i<traces.length;i++){
+  let allStatistics = []
+  for (i = 0; i < traces.length; i++) {
     const durationColumn = traces[i][0];//.map((row) => parseFloat(row[0]));//xaxis
-    const column =traces[i][1];//.map((row) => parseFloat(row[1]));//yaxis
+    const column = traces[i][1];//.map((row) => parseFloat(row[1]));//yaxis
 
-  // Compute the average of the values column
-  const average = column.reduce((sum, value) => sum + value) / column.length;
+    // Compute the average of the values column
+    const average = column.reduce((sum, value) => sum + value) / column.length;
 
-  // Compute the standard deviation of the values column
-  const variance =
-    column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) /
-    (column.length - 1);
-  const standardDeviation = Math.sqrt(variance);
+    // Compute the standard deviation of the values column
+    const variance =
+      column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) /
+      (column.length - 1);
+    const standardDeviation = Math.sqrt(variance);
 
-  // Compute the minimum and maximum values in the values column
-  const minValue = Math.min(...column);
-  const maxValue = Math.max(...column);
+    // Compute the minimum and maximum values in the values column
+    const minValue = Math.min(...column);
+    const maxValue = Math.max(...column);
 
-  // Compute the duration of the signal
-  const duration =
-    durationColumn[durationColumn.length - 1] - durationColumn[0];
+    // Compute the duration of the signal
+    const duration =
+      durationColumn[durationColumn.length - 1] - durationColumn[0];
 
-  let statistics= {
-    var: variance,
-    std: standardDeviation,
-    avg: average,
-    min: minValue,
-    max: maxValue,
-    duration: Math.abs(duration),
-  };
-  allStatistics.push(statistics);
-}
-return allStatistics;
+    let statistics = {
+      var: variance,
+      std: standardDeviation,
+      avg: average,
+      min: minValue,
+      max: maxValue,
+      duration: Math.abs(duration),
+    };
+    allStatistics.push(statistics);
+  }
+  return allStatistics;
 }

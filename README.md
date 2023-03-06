@@ -57,7 +57,7 @@ nodemon server.js
     <li>Express.js</li>
     </ul></li>
 </ul>
-</p>
+
 <h3>Run the project</h3>
 <ol>
 <li>Download the project</li> 
@@ -78,5 +78,5 @@ nodemon server.js
     <li>npm install util</li>
 </ul>
 </li>
-Then run the server by writing this in the terminal : start server using " node server.js "
-</p>
+<li>Then run the server by writing this in the terminal : start server using " node server.js "</li>
+</ol>

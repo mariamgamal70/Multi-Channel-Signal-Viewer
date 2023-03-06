@@ -23,17 +23,19 @@ nodemon server.js
 <p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>
 <h3>Requirements</h3>
     <ul>
-    <li>each graph has to have its own UI controls such as:
+    <li>Contain two main identical graphs. The user can open different signals in each graph</li>
+    <li>Each graph has to have its own UI controls such as:
     <ul> 
-    <li>zooming </li>
+    <li>Zooming</li>
     <li>panning through the mouse movements</li>
     <li>Scrolling through sliders</li>
-    <li>changing color</li>
+    <li>Cchanging color</li>
     <li>Adding a label/title for each signal</li>
     <li>Adding a label/title for each signal</li>
     <li>Pausing/playing/rewinding</li>
     <li>Exporting & Reporting</li>
     </ul>
     </li>
-    <li>link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed,</li>
+    <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>
+
 </ul>

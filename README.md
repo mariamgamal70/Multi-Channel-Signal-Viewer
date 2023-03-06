@@ -59,3 +59,19 @@ nodemon server.js
 </ul>
 </p>
 <h3>Run the project</h3>
+<p>After downloading the project, download the following packages:</p>
+<ul>
+    <li>npm install express</li>
+    <li>npm install cors</li>
+    <li>npm install body-parser</li>
+    <li>npm install node</li>
+    <li>npm install fs</li>
+    <li>npm install csv-parser</li>
+    <li>npm install path</li>
+    <li>npm install plotly</li>
+    <li>npm install binary-parser</li>
+    <li>npm install pdfkit</li>
+    <li>npm install pdfkit-table</li>
+    <li>npm install papaparse</li>
+    <li>npm install util</li>
+</ul>

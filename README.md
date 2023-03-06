@@ -59,7 +59,7 @@ nodemon server.js
 </ul>
 </p>
 <h3>Run the project</h3>
-<p>After downloading the project, download the following packages:</p>
+<p>After downloading the project, download the following packages:
 <ul>
     <li>npm install express</li>
     <li>npm install cors</li>
@@ -75,3 +75,5 @@ nodemon server.js
     <li>npm install papaparse</li>
     <li>npm install util</li>
 </ul>
+Then run the server by writing this in the terminal : start server using " node server.js "
+</p>

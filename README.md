@@ -42,6 +42,8 @@
 <ol>
 <li>Download the project</li> 
 <li>Download the following packages through the terminal:
+<br><code>npm install</code> <br>
+to download all the packages in package.json
 <ul>
     <li><code>npm install express</code></li>
     <li><code>npm install cors</code></li>
@@ -57,7 +59,7 @@
     <li><code>npm install papaparse</code></li>
     <li><code>npm install util</code></li>
 </ul>
-or just write this in the terminal <code>npm install</code>
+or just write this in the terminal 
 </li>
 <li>Then run the server by writing this in the terminal : 
 <br><code> node server.js </code></li>

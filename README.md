@@ -33,7 +33,7 @@ nodemon server.js
     <li>Adding a label/title for each signal</li>
     <li>Adding a label/title for each signal</li>
     <li>Pausing/playing/rewinding</li>
-    <li>Exporting & Reporting</li>
+    <li>Exporting & Reporting ( PDF that has Data statistics such as mean, std, duration, min and max values for each signal ) </li>
     </ul>
     </li>
     <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>

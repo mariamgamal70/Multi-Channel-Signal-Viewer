@@ -43,23 +43,8 @@
 <li>Download the project</li> 
 <li>Download the following packages through the terminal:
 <br><code>npm install</code> <br>
-to download all the packages in package.json
-<ul>
-    <li><code>npm install express</code></li>
-    <li><code>npm install cors</code></li>
-    <li><code>npm install body-parser</code></li>
-    <li><code>npm install node</code></li>
-    <li><code>npm install fs</code></li>
-    <li><code>npm install csv-parser</code></li>
-    <li><code>npm install path</code></li>
-    <li><code>npm install plotly</code></li>
-    <li><code>npm install binary-parser</code></li>
-    <li><code>npm install pdfkit</code></li>
-    <li><code>npm install pdfkit-table</code></li>
-    <li><code>npm install papaparse</code></li>
-    <li><code>npm install util</code></li>
-</ul>
-or just write this in the terminal 
+to download all the packages in package.json which are: express, cors, body-parser, node, fs, csv-parser, path, plotly, binary-parser, pdfkit, pdfkit-table, papaparse, util
+or just write them manually by writing <code>npm install</code>-packagename-
 </li>
 <li>Then run the server by writing this in the terminal : 
 <br><code> node server.js </code></li>

@@ -1,26 +1,6 @@
-# task1
-
-npm install express
-npm install cors
-npm install body-parser
-npm install node
-npm install fs
-npm install csv-parser
-npm install path
-npm install plotly
-npm install binary-parser
-npm install pdfkit
-npm install pdfkit-table
-npm install papaparse
-npm install util
-
-start server using node -serversidefilename-
-
-TO RESTART SERVER AUTOMATICALLY:
-npm install -g nodemon
-nodemon server.js
-
 <h1> Multi-Channel Signal Viewer</h1>
+<h3>Table of contents</h3>
+
 <h3>Introduction</h3>
 <p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>
 <h3>Requirements</h3>
@@ -77,6 +57,7 @@ nodemon server.js
     <li><code>npm install papaparse</code></li>
     <li><code>npm install util</code></li>
 </ul>
+or just write this in the terminal <code>npm install</code>
 </li>
 <li>Then run the server by writing this in the terminal : 
 <br><code> node server.js </code></li>

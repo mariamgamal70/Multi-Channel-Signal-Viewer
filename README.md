@@ -11,7 +11,7 @@
     <li>Zooming</li>
     <li>panning through the mouse movements</li>
     <li>Scrolling through sliders</li>
-    <li>Cchanging color</li>
+    <li>Changing color</li>
     <li>Adding a label/title for each signal</li>
     <li>Adding a label/title for each signal</li>
     <li>Pausing/playing/rewinding</li>

@@ -144,27 +144,27 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   }
   
 
-  function limitsUpdate()
-  {
-    let xaxis = plot.xaxis;
-    // let yaxis = plot.yaxis;
-    let xRange = xaxis.range;
-    // let yRange = yaxis.range;
-    if (xRange[0] < xMin) {
-      // xaxis.range = [xMin, xRange[1] - xRange[0] + xMin];
-      xaxis.range = [ 0, maxtick ];
-    } else if (xRange[1] > xMax) {
-      // xaxis.range = [xMax - (xRange[1] - xRange[0]), xMax];
-      xMin=mintick;
-      xaxis.range = [xMin, maxtick];
-    }
-    // if (yRange[0] < yMin) {
-    //   yaxis.range = [yMin, yRange[1] - yRange[0] + yMin];
-    // } else if (yRange[1] > yMax) {
-    //   yaxis.range = [yMax - (yRange[1] - yRange[0]), yMax];
-    // }
-    Plotly.update(graphElement, {}, { "xaxis.range": xaxis.range});
-  }
+  // function limitsUpdate()
+  // {
+  //   let xaxis = plot.xaxis;
+  //   // let yaxis = plot.yaxis;
+  //   let xRange = xaxis.range;
+  //   // let yRange = yaxis.range;
+  //   if (xRange[0] < xMin) {
+  //     // xaxis.range = [xMin, xRange[1] - xRange[0] + xMin];
+  //     xaxis.range = [ 0, maxtick ];
+  //   } else if (xRange[1] > xMax) {
+  //     // xaxis.range = [xMax - (xRange[1] - xRange[0]), xMax];
+  //     xMin=mintick;
+  //     xaxis.range = [xMin, maxtick];
+  //   }
+  //   // if (yRange[0] < yMin) {
+  //   //   yaxis.range = [yMin, yRange[1] - yRange[0] + yMin];
+  //   // } else if (yRange[1] > yMax) {
+  //   //   yaxis.range = [yMax - (yRange[1] - yRange[0]), yMax];
+  //   // }
+  //   Plotly.update(graphElement, {}, { "xaxis.range": xaxis.range});
+  // }
 
   function startInterval() {
     graphno === 1 ? (time = firstIntervalTime) : (time = secondIntervalTime);

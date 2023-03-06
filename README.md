@@ -1,9 +1,13 @@
 <h1> Multi-Channel Signal Viewer</h1>
 <h3>Table of contents</h3>
+<a href="#introduction">Introduction</a>
+<a href="#requirements">Introduction</a>
+<a href="#projectstructure">Introduction</a>
+<a href="#runtheproject">Introduction</a>
 
-<h3>Introduction</h3>
+<h3 id="introduction">Introduction</h3>
 <p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>
-<h3>Requirements</h3>
+<h3 id="requirements">Requirements</h3>
     <ul>
     <li>Contain two main identical graphs. The user can open different signals in each graph</li>
     <li>Each graph has to have its own UI controls such as:
@@ -19,7 +23,7 @@
     </li>
     <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>
 </ul>
-<h3>Project Structure</h3>
+<h3 id="projectstructure">Project Structure</h3>
 <p>The web app is built using:
 <ul>
     <li><h4>Frontend: </h4>
@@ -37,7 +41,7 @@
     </ul></li>
 </ul>
 
-<h3>Run the project</h3>
+<h3 id="runtheproject">Run the project</h3>
 <ol>
 <li>Download the project</li> 
 <li>Download the following packages through the terminal:

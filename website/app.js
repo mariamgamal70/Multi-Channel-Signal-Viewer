@@ -64,11 +64,11 @@ function createPlot(graphElement) {
       rangemode: "tozero",
       title: "Time (s)",
       zoom: 1000,
-      // fixedrange: true,
+      fixedrange: true,
     },
     yaxis: {
       title: "Amplitude",
-      // fixedrange: true,
+      fixedrange: true,
     },
     dragmode: false,
     zoommode: false,

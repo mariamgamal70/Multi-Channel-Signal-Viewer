@@ -64,11 +64,11 @@ function createPlot(graphElement) {
       rangemode: "tozero",
       title: "Time (s)",
       zoom: 1000,
-      fixedrange: true,
+      // fixedrange: true,
     },
     yaxis: {
       title: "Amplitude",
-      fixedrange: true,
+      // fixedrange: true,
     },
     dragmode: false,
     zoommode: false,
@@ -76,7 +76,7 @@ function createPlot(graphElement) {
   let config = {
     editable: true,
     displaylogo: false,
-    modeBarButtonsToRemove: ["toImage", "zoom2d", "lasso2d"],
+    modeBarButtonsToRemove: ["toImage", "zoom2d", "lasso2d","pan2d"],
   };
 
   Plotly.newPlot(graphElement, [], layout, config);
@@ -89,7 +89,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   let interval;
   let checkPlayingInterval;
   let time;
-  Plotly.relayout(graphElement, { "xaxis.fixedrange": false });
+  Plotly.relayout(graphElement, { "xaxis.fixedrange": false, dragmode: "pan" });
   function actualplotting() {
     if (
       i < data.length &&
@@ -109,6 +109,19 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
           "xaxis.dtick": 1,
         });
       }
+       // Get current x-axis range
+       const currentRange = graphElement.layout.xaxis.range;
+  
+       // Adjust x-axis range if necessary
+       if (row[0] < currentRange[0] || row[0] > currentRange[1]) {
+         mintick = row[0];
+         maxtick = row[0] + 4;
+         Plotly.relayout(graphElement, {
+           "xaxis.range": [mintick, maxtick],
+           "xaxis.tickmode": "linear",
+           "xaxis.dtick": 1,
+         });
+       }
       graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
       if (i === data.length) {

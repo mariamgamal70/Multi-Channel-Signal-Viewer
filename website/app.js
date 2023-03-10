@@ -9,8 +9,8 @@ const addSecondSignalChannelInput = document.getElementById("secondsignaladdchan
 
 const linkingButton = document.getElementById("linkingbutton");
 
-const createpdf1 = document.getElementById("Export1");
-const createpdf2 = document.getElementById("Export2");
+const createPDFButton = document.getElementById("Export");
+//const createpdf2 = document.getElementById("Export2");
 
 const firstGraphColor = document.getElementById("firstcolor");
 const secondGraphColor = document.getElementById("secondcolor");
@@ -391,33 +391,52 @@ secondRewind.addEventListener("click", function () {
   }
 });
 
-createpdf1.addEventListener("click", async () => {
+createPDFButton.addEventListener("click", async () => {
   allFirstGraphTraces = [];
-  getAllGraphTraces(firstSignalGraph, 1); 
-  var imgOpts = {
-    format: "png",
-    width: 500,
-    height: 400,
-  };
-  const imgData = await Plotly.toImage(firstSignalGraph, imgOpts);
-  await createPDF(allFirstGraphTraces, imgData);  }); 
-
-createpdf2.addEventListener("click", async () => { 
   allSecondGraphTraces = [];
-  getAllGraphTraces(secondSignalGraph, 2); 
+  getAllGraphTraces(firstSignalGraph, 1);
+  getAllGraphTraces(secondSignalGraph, 2);
   var imgOpts = {
     format: "png",
     width: 500,
     height: 400,
   };
-  const imgData = await Plotly.toImage(secondSignalGraph, imgOpts);
-  await createPDF(allSecondGraphTraces, imgData); }); 
+  let imgData1;
+  let imgData2;
+  allFirstGraphTraces.length!=0? imgData1 = await Plotly.toImage(firstSignalGraph, imgOpts):null;
+  allSecondGraphTraces.length!=0? imgData2= await Plotly.toImage(secondSignalGraph, imgOpts):null;
+  // const imgData1 = await Plotly.toImage(firstSignalGraph, imgOpts);
+  // const imgData2 = await Plotly.toImage(secondSignalGraph, imgOpts);
+  await createPDF(
+    allFirstGraphTraces,
+    allSecondGraphTraces,
+    imgData1,
+    imgData2
+  );
+}); 
 
-async function createPDF(tracesArr, imgData) {
+// createpdf2.addEventListener("click", async () => { 
+//   allSecondGraphTraces = [];
+//   getAllGraphTraces(secondSignalGraph, 2); 
+//   var imgOpts = {
+//     format: "png",
+//     width: 500,
+//     height: 400,
+//   };
+//   const imgData = await Plotly.toImage(secondSignalGraph, imgOpts);
+//   await createPDF(allSecondGraphTraces, imgData); }); 
+
+async function createPDF(tracesArr1,tracesArr2,imgData1,imgData2) {
+  // console.log(signal_statistics(tracesArr2));
   await fetch("/download", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({statistics:signal_statistics(tracesArr),img:imgData}),
+    body: JSON.stringify({
+      statistics1: signal_statistics(tracesArr1),
+      statistics2: signal_statistics(tracesArr2),
+      img1: imgData1,
+      img2: imgData2,
+    }),
     credentials: "same-origin",
   })
     .then((response) => {

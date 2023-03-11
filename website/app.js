@@ -1,5 +1,5 @@
-let firstSignalData;
-let secondSignalData;
+let firstGraphData=[];
+let secondGraphData=[];
 
 const firstSignalGraph = document.getElementById("firstsignalgraph");
 const secondSignalGraph = document.getElementById("secondsignalgraph");
@@ -47,6 +47,14 @@ let secondGraphFinish = false;
 let allFirstGraphTraces = [];
 let allSecondGraphTraces = [];
 
+let firstmintick ;
+let firstmaxtick ;
+
+let firstcurrentindex;
+let secondcurrentindex;
+// let secondmintick ;
+// let secondmaxtick ;
+
 document.onload = createPlot(firstSignalGraph);
 document.onload = createPlot(secondSignalGraph);
 
@@ -84,8 +92,14 @@ function createPlot(graphElement) {
 
 function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   let i = 0;
-  let mintick = 0;
-  let maxtick = 4;
+  if(channelCounter==0 && graphno==1){
+    firstmintick = 0;
+    firstmaxtick = 4;
+  }
+  // else if(channelCounter==0 && graphno==2){
+  //   secondmintick = 0;
+  //   secondmaxtick = 4;
+  // }
   let interval;
   let checkPlayingInterval;
   let time;
@@ -96,19 +110,31 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
       ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
+      if(channelCounter == 0){
+        graphno==1 ? firstcurrentindex = i:secondcurrentindex = i
+      }
       i++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [
         channelCounter,
       ]);
-      if (row[0] > maxtick) {
-        mintick = maxtick;
-        maxtick += 4;
+      if (row[0] > firstmaxtick && graphno==1) {
+        firstmintick = firstmaxtick;
+        firstmaxtick += 4;
         Plotly.relayout(graphElement, {
-          "xaxis.range": [mintick, maxtick],
+          "xaxis.range": [firstmintick, firstmaxtick],
           "xaxis.tickmode": "linear",
           "xaxis.dtick": 1,
         });
-      }
+      } 
+      // else if(row[0] > secondmaxtick && graphno==2){
+      //   secondmintick = secondmaxtick;
+      //   secondmaxtick += 4;
+      //   Plotly.relayout(graphElement, {
+      //     "xaxis.range": [secondmintick, secondmaxtick],
+      //     "xaxis.tickmode": "linear",
+      //     "xaxis.dtick": 1,
+      //   });
+      // }
        // Get current x-axis range
        const currentRange = graphElement.layout.xaxis.range;
   
@@ -179,14 +205,29 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
     })
     .then((responseMsg) => {
       let ChannelData = JSON.parse(responseMsg);
+      let x=[],y=[],rest=ChannelData;
+      if(channelCounter!=0){ 
+        if(graphno==1){
+          const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
+          x = newX;
+          y = newY;
+          rest = newData;
+        }else{
+          const { x: newX, y: newY, rest: newData } = splitData(ChannelData,secondcurrentindex)
+          x = newX;
+          y = newY;
+          rest = newData;
+        }
+      }
+      graphno==1? firstGraphData.push(ChannelData):secondGraphData.push(ChannelData);
       Plotly.addTraces(graphElement, {
-        x: [],
-        y: [],
+        x: x,
+        y: y,
         name: `Channel ${channelCounter + 1}`,
         showlegend: true,
         type: "scatter",
       });
-      plotSignal(ChannelData, graphElement, graphno, channelCounter);
+      plotSignal(rest, graphElement, graphno, channelCounter);
     })
     .catch((error) => console.error(error));
 }
@@ -205,7 +246,33 @@ function linkSpeed() {
 
 function linking(firstGraph, secondGraph, linkFlag) {
   if (linkFlag == true) {
-    console.log(linkFlag);
+    if(firstcurrentindex > secondcurrentindex){
+
+      // allSecondGraphTraces = [];
+      // getAllGraphTraces(secondSignalGraph, 2); // gets all traces in first graph each signal=2Darray
+      secondGraphChannelCounter = 0;
+      for (let i = 0; i < secondGraphData.length; i++) {
+        Plotly.deleteTraces(secondSignalGraph, 0);
+      }
+      console.log(secondSignalGraph.data);
+      for (let i = 0; i < secondGraphData.length; i++) {
+        setTimeout(() => {
+          const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],firstcurrentindex)
+          x = newX;
+          y = newY;
+          rest = newData;
+          Plotly.addTraces(secondSignalGraph, {
+            x: x,
+            y: y,
+            name: `Channel ${secondGraphChannelCounter + 1}`,
+            showlegend: true,
+            type: "scatter",
+          });
+          plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
+          secondGraphChannelCounter++;
+        }, 100);
+      }
+    }
     var xaxis = firstGraph.layout.xaxis;
     var yaxis = firstGraph.layout.yaxis;
     var update = {
@@ -244,7 +311,7 @@ function changeChannelColor(dropdownElement, graphElement, color) {
   Plotly.restyle(graphElement, { "line.color": `${color}` }, [channelIndex]);
 }
 
-function getAllGraphTraces(graphElement, num) {
+function getAllGraphTraces(graphElement, graphNum) {
   let traces = graphElement.data;
   for (i = 0; i < traces.length; i++) {
     const traceX = traces[i].x;
@@ -253,11 +320,30 @@ function getAllGraphTraces(graphElement, num) {
     for (let j = 0; j < traceX.length; j++) {
       traceXY.push([traceX[j], traceY[j]]);
     }
-    num === 1
+    graphNum === 1
       ? allFirstGraphTraces.push(traceXY)
       : allSecondGraphTraces.push(traceXY);
   }
 }
+
+function splitData(data, endIndex) {
+  const x = [];
+  const y = [];
+  const rest = [];
+
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i];
+    if (i < endIndex) {
+      x.push(row[0]);
+      y.push(row[1]);
+    } else {
+      rest.push(row);
+    }
+  }
+//console.log(rest);
+  return {x,y,rest};
+}
+
 
 function getMaxMin(data) {
   let max = 0;
@@ -415,19 +501,8 @@ createPDFButton.addEventListener("click", async () => {
   );
 }); 
 
-// createpdf2.addEventListener("click", async () => { 
-//   allSecondGraphTraces = [];
-//   getAllGraphTraces(secondSignalGraph, 2); 
-//   var imgOpts = {
-//     format: "png",
-//     width: 500,
-//     height: 400,
-//   };
-//   const imgData = await Plotly.toImage(secondSignalGraph, imgOpts);
-//   await createPDF(allSecondGraphTraces, imgData); }); 
 
 async function createPDF(tracesArr1,tracesArr2,imgData1,imgData2) {
-  // console.log(signal_statistics(tracesArr2));
   await fetch("/download", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

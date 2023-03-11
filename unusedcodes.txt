@@ -287,3 +287,25 @@ start server using node -serversidefilename-
 TO RESTART SERVER AUTOMATICALLY:
 npm install -g nodemon
 nodemon server.js
+------------------------------------------------------------
+// createpdf2.addEventListener("click", async () => { 
+//   allSecondGraphTraces = [];
+//   getAllGraphTraces(secondSignalGraph, 2); 
+//   var imgOpts = {
+//     format: "png",
+//     width: 500,
+//     height: 400,
+//   };
+//   const imgData = await Plotly.toImage(secondSignalGraph, imgOpts);
+//   await createPDF(allSecondGraphTraces, imgData); }); 
+-------------------------------------------------------
+// const imgData1 = await Plotly.toImage(firstSignalGraph, imgOpts);
+  // const imgData2 = await Plotly.toImage(secondSignalGraph, imgOpts);
+  --------------------------------------------------------------------------------
+  //   doc.image(req.body.img1, 30, 200, { width: 300 });
+//   doc.image(req.body.img2, 30, 400, { width: 300 });
+  // .text("Proportional to width", 0, 0);
+  //  doc.Plotly.Snapshot.toImage(gd, {format: 'png', width: 1000, height: 800})
+  ------------------------------------------------------------------------------
+  //const signalsArr = [signals1, signals2]; //const concatenated = signals1.concat(signals2);
+  -------------------------------------------------------------------------------

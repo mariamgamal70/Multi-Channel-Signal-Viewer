@@ -68,9 +68,7 @@ app.post("/download", async (req, res) => {
   // Create the table of signal statistics
   const signals1 = req.body.statistics1; //arr of objects
   const signals2 = req.body.statistics2; //arr of object
-  //const signalsArr = [signals1, signals2]; //const concatenated = signals1.concat(signals2);
- // console.log(signalsArr);
-  const signalsArr = [signals1, signals2];//.filter(signals => signals.length > 0);
+  const signalsArr = [signals1, signals2];
 
   const table = {
     title: "Signal Viewer",
@@ -94,11 +92,6 @@ app.post("/download", async (req, res) => {
  // Add images only if the data for both signals is present
     req.body.img1 ? doc.image(req.body.img1, 30, 200, { width: 300 }) : null;
     req.body.img2 ? doc.image(req.body.img2, 30, 400, { width: 300 }) : null;
-  
-//   doc.image(req.body.img1, 30, 200, { width: 300 });
-//   doc.image(req.body.img2, 30, 400, { width: 300 });
-  // .text("Proportional to width", 0, 0);
-  //  doc.Plotly.Snapshot.toImage(gd, {format: 'png', width: 1000, height: 800})
   // End the document to save it to a file
   doc.end();
 
@@ -106,7 +99,6 @@ app.post("/download", async (req, res) => {
   const fileInfo = promisify(stat);
   const size = await fileInfo(filePath);
   res.setHeader("Content-Length", size);
-  //console.log(size);
   setTimeout(() => {
     res.setHeader("Content-Disposition", "attachment; filename=output.pdf");
     res.sendFile(filePath);

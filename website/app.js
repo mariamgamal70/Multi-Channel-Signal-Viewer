@@ -413,35 +413,35 @@ linkingButton.addEventListener("click", () => {
       }
     }
   }
-  linkingbutton.eventlistener("click", () => {
-    linkFlag = !linkFlag;
-    if (linkFlag == true) {
-      const indexone = firstcurrentindex;
-      const indextwo = secondcurrentindex;
-      //console.log(indexone);
-      if(indexone > secondcurrentindex){
-        secondGraphChannelCounter = 0;
-        Plotly.purge(secondSignalGraph);
-        for (let i = 0; i < secondGraphData.length; i++) {
-          const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
-          const x = newX;
-          const y = newY;
-          const rest = newData;
-          setTimeout(() => {
-            Plotly.addTraces(secondSignalGraph, {
-              x: x,
-              y: y,
-              name: `Channel ${secondGraphChannelCounter + 1}`,
-              showlegend: true,
-              type: "scatter",
-            });
-            plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
-            secondGraphChannelCounter++;
-          }, 100);
-        } 
-      }
-    }
-  });
+  // linkingbutton.eventlistener("click", () => {
+  //   linkFlag = !linkFlag;
+  //   if (linkFlag == true) {
+  //     const indexone = firstcurrentindex;
+  //     const indextwo = secondcurrentindex;
+  //     //console.log(indexone);
+  //     if(indexone > secondcurrentindex){
+  //       secondGraphChannelCounter = 0;
+  //       Plotly.purge(secondSignalGraph);
+  //       for (let i = 0; i < secondGraphData.length; i++) {
+  //         const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
+  //         const x = newX;
+  //         const y = newY;
+  //         const rest = newData;
+  //         setTimeout(() => {
+  //           Plotly.addTraces(secondSignalGraph, {
+  //             x: x,
+  //             y: y,
+  //             name: `Channel ${secondGraphChannelCounter + 1}`,
+  //             showlegend: true,
+  //             type: "scatter",
+  //           });
+  //           plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
+  //           secondGraphChannelCounter++;
+  //         }, 100);
+  //       } 
+  //     }
+  //   }
+  // });
   
   firstSignalGraph.on("plotly_relayout", () => {
     linking(firstSignalGraph, secondSignalGraph, linkFlag);

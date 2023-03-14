@@ -93,9 +93,9 @@ function createPlot(graphElement) {
 
 function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   let i = 0;
-  if(channelCounter==0 && graphno==1){
-    firstmintick = 0;
-    firstmaxtick = 4;
+  if(channelCounter==0 ){
+    mintick = 0;
+    maxtick = 4;
   }
   // else if(channelCounter==0 && graphno==2){
   //   secondmintick = 0;
@@ -111,18 +111,21 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
       ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))
     ) {
       const row = data[i];
+      //const prevrow=data[i-1];
       if(channelCounter == 0){
         graphno==1 ? firstcurrentindex = i:secondcurrentindex = i
       }
       i++;
+      //if(row[0]>=prevrow[0]){
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [               //possible error
         channelCounter,
       ]);
-      if (row[0] > firstmaxtick && graphno==1) {
-        firstmintick = firstmaxtick;
-        firstmaxtick += 4;
+    //}
+      if (row[0] > maxtick) {
+        mintick = maxtick;
+        maxtick += 4;
         Plotly.relayout(graphElement, {
-          "xaxis.range": [firstmintick, firstmaxtick],
+          "xaxis.range": [mintick, maxtick],
           "xaxis.tickmode": "linear",
           "xaxis.dtick": 1,
         });
@@ -208,19 +211,27 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
     .then((responseMsg) => {
       let ChannelData = JSON.parse(responseMsg);
       let x=[],y=[],rest=ChannelData;
-      if(channelCounter!=0){ 
+      //if(channelCounter!=0){ 
         if(graphno==1){
           const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
           x = newX;
           y = newY;
           rest = newData;
         }else{
-          const { x: newX, y: newY, rest: newData } = splitData(ChannelData,secondcurrentindex)
+          const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
           x = newX;
           y = newY;
           rest = newData;
         }
-      }
+      //}
+      // else{
+      //   if(graphno==2){
+      //     const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
+      //     x = newX;
+      //     y = newY;
+      //     rest = newData;
+      //   }
+      //}
       graphno==1? firstGraphData.push(ChannelData):secondGraphData.push(ChannelData);
       Plotly.addTraces(graphElement, {
         x: x,
@@ -229,7 +240,7 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
         showlegend: true,
         type: "scatter",
       });
-      console.log(rest);
+      //console.log(rest);
       plotSignal(rest, graphElement, graphno, channelCounter);
     })
     .catch((error) => console.error(error));
@@ -369,52 +380,52 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
 
 linkingButton.addEventListener("click", () => {
   linkFlag = !linkFlag;
-  if (linkFlag == true) {
-    const indexone = firstcurrentindex;
-    const indextwo = secondcurrentindex;
-    //console.log(indexone);
-    //let indexrange=abs(indexone-indextwo);
-    //Plotly.deleteTraces(firstSignalGraph, 0, { xaxis: { range: [firstcurrentindex, indexrange] } });
-    if(indexone > indextwo){
-      secondGraphChannelCounter = 0;  
-      for (let i = 0; i < secondGraphData.length; i++) {
-        Plotly.deleteTraces(secondSignalGraph, 0);
-        console.log(secondSignalGraph.data);
-      }
-      //   console.log(secondSignalGraph.data);
-      //Plotly.purge(secondSignalGraph);
-      console.log(secondSignalGraph.data);
-      //Plotly.newPlot(secondSignalGraph, [], {});
-      console.log(secondSignalGraph.data);
-      for (let i = 0; i < secondGraphData.length; i++) {
-        const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
-        const x = newX;
-        const y = newY;
-        const rest = newData;
-        setTimeout(() => {
-          // traces = {
-          //   x: x,
-          //   y: y,
-          //   name: `Channel ${secondGraphChannelCounter + 1}`,
-          //   showlegend: true,
-          //   type: "scatter",
-          // };
-          Plotly.addTraces(secondSignalGraph, {
-            x: x,
-            y: y,
-            name: `Channel ${secondGraphChannelCounter + 1}`,
-            showlegend: true,
-            type: "scatter",
-          });
-          //console.log(rest)
-          //console.log(secondGraphData);
-          // plotly.newPlot(secondSignalGraph, [traces], {});
-          plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
-          secondGraphChannelCounter++;
-        }, 100);
-      }
-    }
-  }
+  // if (linkFlag == true) {
+  //   const indexone = firstcurrentindex;
+  //   const indextwo = secondcurrentindex;
+  //   //console.log(indexone);
+  //   //let indexrange=abs(indexone-indextwo);
+  //   //Plotly.deleteTraces(firstSignalGraph, 0, { xaxis: { range: [firstcurrentindex, indexrange] } });
+  //   if(indexone > indextwo){
+  //     secondGraphChannelCounter = 0;  
+  //     for (let i = 0; i < secondGraphData.length; i++) {
+  //       Plotly.deleteTraces(secondSignalGraph, 0);
+  //       console.log(secondSignalGraph.data);
+  //     }
+  //     //   console.log(secondSignalGraph.data);
+  //     //Plotly.purge(secondSignalGraph);
+  //     console.log(secondSignalGraph.data);
+  //     //Plotly.newPlot(secondSignalGraph, [], {});
+  //     console.log(secondSignalGraph.data);
+  //     for (let i = 0; i < secondGraphData.length; i++) {
+  //       const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
+  //       const x = newX;
+  //       const y = newY;
+  //       const rest = newData;
+  //       setTimeout(() => {
+  //         // traces = {
+  //         //   x: x,
+  //         //   y: y,
+  //         //   name: `Channel ${secondGraphChannelCounter + 1}`,
+  //         //   showlegend: true,
+  //         //   type: "scatter",
+  //         // };
+  //         Plotly.addTraces(secondSignalGraph, {
+  //           x: x,
+  //           y: y,
+  //           name: `Channel ${secondGraphChannelCounter + 1}`,
+  //           showlegend: true,
+  //           type: "scatter",
+  //         });
+  //         //console.log(rest)
+  //         //console.log(secondGraphData);
+  //         // plotly.newPlot(secondSignalGraph, [traces], {});
+  //         plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
+  //         //secondGraphChannelCounter++;
+  //       }, 100);
+  //     }
+  //   }
+  // }
 // });
 //  linkingButton.addEventListener("click", () => {
 //   linkFlag = !linkFlag;

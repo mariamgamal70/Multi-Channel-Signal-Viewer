@@ -373,16 +373,18 @@ linkingButton.addEventListener("click", () => {
     const indexone = firstcurrentindex;
     const indextwo = secondcurrentindex;
     //console.log(indexone);
+    //let indexrange=abs(indexone-indextwo);
+    //Plotly.deleteTraces(firstSignalGraph, 0, { xaxis: { range: [firstcurrentindex, indexrange] } });
     if(indexone > indextwo){
       secondGraphChannelCounter = 0;  
-      // for (let i = 0; i < secondGraphData.length; i++) {
-      //   Plotly.deleteTraces(secondSignalGraph, 0);
+      for (let i = 0; i < secondGraphData.length; i++) {
+        Plotly.deleteTraces(secondSignalGraph, 0);
+        console.log(secondSignalGraph.data);
+      }
       //   console.log(secondSignalGraph.data);
-      // }
-      //   console.log(secondSignalGraph.data);
-      Plotly.purge(secondSignalGraph);
+      //Plotly.purge(secondSignalGraph);
       console.log(secondSignalGraph.data);
-      Plotly.newPlot(secondSignalGraph, [], {});
+      //Plotly.newPlot(secondSignalGraph, [], {});
       console.log(secondSignalGraph.data);
       for (let i = 0; i < secondGraphData.length; i++) {
         const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
@@ -413,6 +415,19 @@ linkingButton.addEventListener("click", () => {
       }
     }
   }
+// });
+//  linkingButton.addEventListener("click", () => {
+//   linkFlag = !linkFlag;
+//   if (linkFlag == true) {
+//     const indexone = firstcurrentindex;
+//     const indextwo = secondcurrentindex;
+//     //console.log(indexone);
+//     let indexrange=abs(indexone-indextwo);
+//     removeTraces(firstSignalGraph, 0, indexrange);
+//     rewi
+    
+
+
   // linkingbutton.eventlistener("click", () => {
   //   linkFlag = !linkFlag;
   //   if (linkFlag == true) {

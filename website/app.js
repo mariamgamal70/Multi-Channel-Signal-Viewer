@@ -47,8 +47,8 @@ let secondGraphFinish = false;
 let allFirstGraphTraces = [];
 let allSecondGraphTraces = [];
 
-let firstmintick ;
-let firstmaxtick ;
+let mintick ;
+let maxtick ;
 
 let firstcurrentindex;
 let secondcurrentindex;

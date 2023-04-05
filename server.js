@@ -26,6 +26,7 @@ app.use(cors());
 app.use(express.static("website"));
 
 /*ENDPOINTS*/
+/*uploading files endpoint */
 app.post(
   "/",
   upload.fields([
@@ -59,6 +60,7 @@ app.post(
   }
 );
 
+/*downloading pdf endpoint*/
 app.post("/download", async (req, res) => {
   const doc = new PDFDocument({ margin: 30, size: "A4" });
   doc.pipe(fs.createWriteStream("./output.pdf"));
@@ -66,7 +68,7 @@ app.post("/download", async (req, res) => {
   const filePath = path.join(process.cwd(), "output.pdf");
   // Create the table of signal statistics
   const signals1 = req.body.statistics1; //arr of objects
-  const signals2 = req.body.statistics2; //arr of object
+  const signals2 = req.body.statistics2; //arr of objects
   const signalsArr = [signals1, signals2];
 
   const table = {
@@ -104,6 +106,7 @@ app.post("/download", async (req, res) => {
   }, 1000);
 });
 
+/*add channel endpoint */
 app.post(
   "/addChannel",
   upload.fields([

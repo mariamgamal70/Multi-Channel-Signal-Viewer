@@ -5,7 +5,6 @@ const addFirstSignalChannelInput = document.getElementById("firstsignaladdchanne
 const addSecondSignalChannelInput = document.getElementById("secondsignaladdchannelinput");
 const linkingButton = document.getElementById("linkingbutton");
 const createPDFButton = document.getElementById("Export");
-//const createpdf2 = document.getElementById("Export2");
 const firstGraphColor = document.getElementById("firstcolor");
 const secondGraphColor = document.getElementById("secondcolor");
 const firstDropdown = document.getElementById("firstChannels");
@@ -37,8 +36,6 @@ let maxtick ;
 let firstcurrentindex;
 let secondcurrentindex;
 let continued=true;
-// let secondmintick ;
-// let secondmaxtick ;
 
 //------------------------------------------EVENT LISTENERS-------------------------------------------------
 addFirstSignalChannelInput.addEventListener("change", (submission) => {
@@ -186,8 +183,6 @@ createPDFButton.addEventListener("click", async () => {
   allFirstGraphTraces.length!=0? imgData1 = await Plotly.toImage(firstSignalGraph, imgOpts):null;
   allSecondGraphTraces.length!=0? imgData2= await Plotly.toImage(secondSignalGraph, imgOpts):null;
   await createPDF(allFirstGraphTraces,allSecondGraphTraces,imgData1,imgData2);
-  // const imgData1 = await Plotly.toImage(firstSignalGraph, imgOpts);
-  // const imgData2 = await Plotly.toImage(secondSignalGraph, imgOpts);
 }); 
 
 //----------------------------------------------FUNCTIONS---------------------------------------------------
@@ -228,7 +223,6 @@ function createPlot(graphElement) {
     //remove unused buttons
     modeBarButtonsToRemove: ["toImage", "zoom2d", "lasso2d","pan2d"],
   };
-
   Plotly.newPlot(graphElement, [], layout, config);
 }
 
@@ -239,10 +233,6 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
     mintick = 0;
     maxtick = 4;
   }
-  // else if(channelCounter==0 && graphno==2){
-  //   secondmintick = 0;
-  //   secondmaxtick = 4;
-  // }
 
   //set index=0 to increment to go through all the points in signal
   let index = 0;
@@ -260,9 +250,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
         graphno==1 ? firstcurrentindex = index:secondcurrentindex = index
       }
       index++;
-      //if(row[0]>=prevrow[0]){
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter,]);
-    //}
 
     //if condition used to change the time interval dynamically
       if (row[0] > maxtick) {
@@ -274,17 +262,7 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
           "xaxis.dtick": 1,
         });
       } 
-      // else if(row[0] > secondmaxtick && graphno==2){
-      //   secondmintick = secondmaxtick;
-      //   secondmaxtick += 4;
-      //   Plotly.relayout(graphElement, {
-      //     "xaxis.range": [secondmintick, secondmaxtick],
-      //     "xaxis.tickmode": "linear",
-      //     "xaxis.dtick": 1,
-      //   });
-      // }
        // Get current x-axis range
-        
       const currentRange = graphElement.layout.xaxis.range;
        // Adjust x-axis range if necessary
         if (row[0] < currentRange[0] || row[0] > currentRange[1]) {
@@ -361,39 +339,29 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
     .then((responseMsg) => {
       let ChannelData = JSON.parse(responseMsg);
       let x=[],y=[],rest=ChannelData;
-      //if(channelCounter!=0){ 
-        //plot statically initially using x and y then plot dynamically using rest
-        if(graphno==1){
-          const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
-          x = newX;
-          y = newY;
-          rest = newData;
-        }else{
-          const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
-          x = newX;
-          y = newY;
-          rest = newData;
-        }
-      //}
-      // else{
-      //   if(graphno==2){
-      //     const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
-      //     x = newX;
-      //     y = newY;
-      //     rest = newData;
-      //   }
-      //}
-      graphno==1? firstGraphData.push(ChannelData):secondGraphData.push(ChannelData);
-      Plotly.addTraces(graphElement, {
-        x: x,
-        y: y,
-        name: `Channel ${channelCounter + 1}`,
-        showlegend: true,
-        type: "scatter",
-      });
-      plotSignal(rest, graphElement, graphno, channelCounter);
-    })
-    .catch((error) => console.error(error));
+      //plot statically initially using x and y then plot dynamically using rest
+      if(graphno==1){
+        const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
+        x = newX;
+        y = newY;
+        rest = newData;
+      }else{
+        const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
+        x = newX;
+        y = newY;
+        rest = newData;
+      }
+    graphno==1? firstGraphData.push(ChannelData):secondGraphData.push(ChannelData);
+    Plotly.addTraces(graphElement, {
+      x: x,
+      y: y,
+      name: `Channel ${channelCounter + 1}`,
+      showlegend: true,
+      type: "scatter",
+    });
+    plotSignal(rest, graphElement, graphno, channelCounter);
+  })
+  .catch((error) => console.error(error));
 }
 
 //function that links speed slider 
@@ -413,7 +381,6 @@ function linkSpeed() {
 function linking(firstGraph, secondGraph, linkFlag) {
   if (linkFlag == true) {
     var xaxis = firstGraph.layout.xaxis;
-    //var yaxis = firstGraph.layout.yaxis;
     //link time frame 
     var update = {
       xaxis: {
@@ -425,7 +392,6 @@ function linking(firstGraph, secondGraph, linkFlag) {
           zoom: false,
         },
       },
-      //yaxis: { range: [yaxis.range[0], yaxis.range[1]] },
     };
     Plotly.update(secondGraph, {}, update);
     //link speed
@@ -485,17 +451,6 @@ function splitData(data, endIndex) {
   }
   return {x,y,rest};
 }
-
-// //function to get the maximum data
-// function getMaxMin(data) {
-//   let max = 0;
-//   let length = 0;
-//   for (i = 0; i < data.length; i++) {
-//     data[i][0] > max ? (max = data[i][0]) : null;
-//     length++;
-//   }
-//   return { max: Math.round(max), length: length };
-// }
 
 //function that creates pdf
 async function createPDF(tracesArr1,tracesArr2,imgData1,imgData2) {

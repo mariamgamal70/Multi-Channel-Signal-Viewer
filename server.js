@@ -72,30 +72,63 @@ app.post("/download", async (req, res) => {
   const signalsArr = [signals1, signals2];
 
   const table = {
-    title: "Signal Viewer",
-    subtitle: "Signals Statistics",
-    headers: ["min", "max", "var", "std", "avg", "duration"],
+    title: " ",
+    //subtitle: "Multi-Channel Signal Viewer Statistics",
+    headers: [
+      "Minimum",
+      "Maximum",
+      "Variance",
+      "Standard deviation",
+      "Average",
+      "duration",
+    ],
     rows: signalsArr.flatMap((signals) =>
-        signals.map((signal) => [
-        signal.min,
-        signal.max,
-        signal.var,
-        signal.std,
-        signal.avg,
-        signal.duration,
+      signals.map((signal) => [
+        signal.min.toFixed(3),
+        signal.max.toFixed(3),
+        signal.var.toFixed(3),
+        signal.std.toFixed(3),
+        signal.avg.toFixed(3),
+        signal.duration.toFixed(3),
       ])
     ),
-    
   };
+
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(16)
+    .text("Multi-Channel Signal Viewer ", {
+      align: "center",
+      margin: [0, 0, 0, 20],
+    });
+
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(12)
+    .text("Signals Statistics", {
+      align: "center",
+      margin: [0, 0, 0, 10],
+    });
+
   await doc.table(table, {
-    width: 300,
+    width: 500,
   });
- // Add images only if the data for both signals is present
-    req.body.img1 ? doc.image(req.body.img1, 30, 200, { width: 300 }) : null;
-    req.body.img2 ? doc.image(req.body.img2, 30, 400, { width: 300 }) : null;
+  // Set the cursor position to the top of the page
+  doc.x = doc.page.margins.left;
+  doc.y = doc.page.margins.top;
+  // Add images only if the data for both signals is present
+  if (req.body.img1) {
+    doc.y = 300;
+    doc.x = 0;
+    doc.image(req.body.img1, { width: 300 });
+  }
+  if (req.body.img2) {
+    doc.y = 300;
+    doc.x += 295;
+    doc.image(req.body.img2, { width: 300 });
+  }
   // End the document to save it to a file
   doc.end();
-
   res.setHeader("Content-Type", "application/pdf");
   const fileInfo = promisify(stat);
   const size = await fileInfo(filePath);

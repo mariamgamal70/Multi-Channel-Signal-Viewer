@@ -15,6 +15,7 @@ const PlayPauseone = document.getElementById("Play/Pauseone");
 const PlayPausetwo = document.getElementById("Play/Pausetwo");
 const firstRewind = document.getElementById("firstrewind");
 const secondRewind = document.getElementById("secondrewind");
+
 //---------------------------------------GLOBAL VARIABLES---------------------------------------------------
 let firstGraphData=[];
 let secondGraphData=[];
@@ -31,10 +32,10 @@ let firstGraphFinish = false;
 let secondGraphFinish = false;
 let allFirstGraphTraces = [];
 let allSecondGraphTraces = [];
-let mintick ;
-let maxtick ;
-let firstcurrentindex;
-let secondcurrentindex;
+let minTick ;
+let maxTick ;
+let firstCurrentIndex;
+let secondCurrentIndex;
 let continued=true;
 
 //------------------------------------------EVENT LISTENERS-------------------------------------------------
@@ -113,7 +114,7 @@ firstRewind.addEventListener("click", function () {
     //clears global array for second graph traces
     allFirstGraphTraces = [];
     // gets all traces in second graph each 2Darray signal to push into the global graph traces array again
-    getAllGraphTraces(firstSignalGraph, 1);
+    getAllGraphChannels(firstSignalGraph, 1);
     //reset number of channels in first graph
     firstGraphChannelCounter = 0;
     //deletes all traces in first graph
@@ -143,7 +144,7 @@ secondRewind.addEventListener("click", function () {
     //clears global array for first graph traces
     allSecondGraphTraces = [];
     // gets all traces in first graph each 2Darray signal to push into the global graph traces array again
-    getAllGraphTraces(secondSignalGraph, 2);
+    getAllGraphChannels(secondSignalGraph, 2);
     //reset number of channels in first graph
     secondGraphChannelCounter = 0;
     //deletes all traces in first graph
@@ -152,6 +153,7 @@ secondRewind.addEventListener("click", function () {
     }
     //replots all traces all over again
     for (let addIterator = 0; addIterator < allSecondGraphTraces.length; addIterator++) {
+      //settimeout is used to wait for the data to load 
       setTimeout(() => {
         Plotly.addTraces(secondSignalGraph, {
           x: [],
@@ -171,8 +173,8 @@ createPDFButton.addEventListener("click", async () => {
   //clear global array and then push the channels into them again to avoid array data repetition
   allFirstGraphTraces = [];
   allSecondGraphTraces = [];
-  getAllGraphTraces(firstSignalGraph, 1);
-  getAllGraphTraces(secondSignalGraph, 2);
+  getAllGraphChannels(firstSignalGraph, 1);
+  getAllGraphChannels(secondSignalGraph, 2);
   var imgOpts = {
     format: "png",
     width: 500,
@@ -227,37 +229,37 @@ function createPlot(graphElement) {
 }
 
 //main plotting function
-function plotSignal(data, graphElement, graphno, channelCounter = 0) {
-  //if first channel set the mintick=0 and maxtick=4 that is going to change to view plot as if realtime
+function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
+  //if first channel set the minTick=0 and maxTick=4 that is going to change to view plot as if realtime
   if(channelCounter==0 ){
-    mintick = 0;
-    maxtick = 4;
+    minTick = 0;
+    maxTick = 4;
   }
 
   //set index=0 to increment to go through all the points in signal
   let index = 0;
-  let interval;
+  let plottingInterval;
   let checkPlayingInterval;
   let time;
   Plotly.relayout(graphElement, { "xaxis.fixedrange": false, dragmode: "pan" });
   
   //function that plots point by point and change the time interval accordingly to plot dynamically
-  function actualplotting() {
-    if (index < data.length &&((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2))) {
+  function actualPlotting() {
+    if (index < data.length &&((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2))) {
       const row = data[index];
       //const prevrow=data[index-1];
       if(channelCounter == 0){
-        graphno==1 ? firstcurrentindex = index:secondcurrentindex = index
+        graphNum==1 ? firstCurrentIndex = index:secondCurrentIndex = index
       }
       index++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter,]);
 
     //if condition used to change the time interval dynamically
-      if (row[0] > maxtick) {
-        mintick = maxtick;
-        maxtick += 4;
+      if (row[0] > maxTick) {
+        minTick = maxTick;
+        maxTick += 4;
         Plotly.relayout(graphElement, {
-          "xaxis.range": [mintick, maxtick],
+          "xaxis.range": [minTick, maxTick],
           "xaxis.tickmode": "linear",
           "xaxis.dtick": 1,
         });
@@ -266,43 +268,43 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
       const currentRange = graphElement.layout.xaxis.range;
        // Adjust x-axis range if necessary
         if (row[0] < currentRange[0] || row[0] > currentRange[1]) {
-          mintick = row[0];
-          maxtick = row[0] + 4;
+          minTick = row[0];
+          maxTick = row[0] + 4;
           Plotly.relayout(graphElement, {
-            "xaxis.range": [mintick, maxtick],
+            "xaxis.range": [minTick, maxTick],
             "xaxis.tickmode": "linear",
             "xaxis.dtick": 1,
           });
         }
 
       //check if plotting is finished or no, if yes, then user can rewind
-      graphno === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
+      graphNum === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
       if (index === data.length) {
-        graphno === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
+        graphNum === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
-      clearInterval(interval);
+      clearInterval(plottingInterval);
     }
   }
 
 //function that starts plotting asynchronously
   function startInterval() {
-    graphno === 1 ? (time = firstIntervalTime) : (time = secondIntervalTime);
-    if (interval) {
+    graphNum === 1 ? (time = firstIntervalTime) : (time = secondIntervalTime);
+    if (plottingInterval) {
       clearInterval(checkPlayingInterval);
-      clearInterval(interval);
+      clearInterval(plottingInterval);
     }
-    interval = setInterval(actualplotting, time);
+    plottingInterval = setInterval(actualPlotting, time);
     checkPlaying();
   }
 
 //function used to check if it is currently plotting, used for play and pause
-//if the plotting function is called again on clicking play/pause it calls start interval 
+//if the plotting function is called again on clicking play/pause it calls start plottingInterval 
 //that then calls checkPlaying that checks if boolean variables are true, 
-//it clears the plotting interval until called again with false boolean variable
+//it clears the plotting plottingInterval until called again with false boolean variable
   function checkPlaying() {
     checkPlayingInterval = setInterval(() => {
-      if ((isFirstPlaying && graphno === 1) || (isSecondPlaying && graphno === 2 && index < data.length)) {
+      if ((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2 && index < data.length)) {
         startInterval();
       }
     }, 100);
@@ -314,18 +316,18 @@ function plotSignal(data, graphElement, graphno, channelCounter = 0) {
   //eventlistener for cine speed sliders
   firstCineSpeed.addEventListener("change", () => {
     firstIntervalTime = parseInt(firstCineSpeed.value);
-    //restart interval in order to apply speed changes
+    //restart plottingInterval in order to apply speed changes
     startInterval();
   });
   secondCineSpeed.addEventListener("change", () => {
     secondIntervalTime = parseInt(secondCineSpeed.value);
-    //restart interval in order to apply speed changes
+    //restart plottingInterval in order to apply speed changes
     startInterval();
   });
 }
 
 //function that handles data fetch requests
-function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
+function handleChannelFetch(formObject, graphElement, channelCounter, graphNum) {
   fetch("/addChannel", {
     maxContentLength: 10000000,
     maxBodyLength: 10000000,
@@ -338,28 +340,28 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphno) {
     })
     .then((responseMsg) => {
       let ChannelData = JSON.parse(responseMsg);
-      let x=[],y=[],rest=ChannelData;
+      let time=[],amplitude=[],restData=ChannelData;
       //plot statically initially using x and y then plot dynamically using rest
-      if(graphno==1){
-        const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
-        x = newX;
-        y = newY;
-        rest = newData;
+      if(graphNum==1){
+        const { time: newTime, amplitude: newAmplitude, restData: newData } = splitData(ChannelData,firstCurrentIndex)
+        time = newTime;
+        amplitude = newAmplitude;
+        restData = newData;
       }else{
-        const { x: newX, y: newY, rest: newData } = splitData(ChannelData,firstcurrentindex)
-        x = newX;
-        y = newY;
-        rest = newData;
+        const { time: newTime, amplitude: newAmplitude, restData: newData } = splitData(ChannelData,firstCurrentIndex)
+        time = newTime;
+        amplitude = newAmplitude;
+        restData = newData;
       }
-    graphno==1? firstGraphData.push(ChannelData):secondGraphData.push(ChannelData);
+    graphNum==1? firstGraphData.push(ChannelData):secondGraphData.push(ChannelData);
     Plotly.addTraces(graphElement, {
-      x: x,
-      y: y,
+      x: time,
+      y: amplitude,
       name: `Channel ${channelCounter + 1}`,
       showlegend: true,
       type: "scatter",
     });
-    plotSignal(rest, graphElement, graphno, channelCounter);
+    plotSignal(restData, graphElement, graphNum, channelCounter);
   })
   .catch((error) => console.error(error));
 }
@@ -406,50 +408,50 @@ function linking(firstGraph, secondGraph, linkFlag) {
 //function that add to dropdown list the added channels
 function addToDropdown(dropdownElement, counter) {
   let newChannel = document.createElement("option");
-  let num = counter + 1;
-  newChannel.value = `Channel${num}`;
-  newChannel.textContent = `Channel${num}`;
+  let channelNum = counter + 1;
+  newChannel.value = `Channel${channelNum}`;
+  newChannel.textContent = `Channel${channelNum}`;
   dropdownElement.appendChild(newChannel);
-  dropdownElement.value = `Channel${num}`;
+  dropdownElement.value = `Channel${channelNum}`;
 }
 
 //function that changes color of the selected channel in dropdown
-function changeChannelColor(dropdownElement, graphElement, color) {
+function changeChannelColor(dropdownElement, graphElement, selectedColor) {
   const channelIndex = dropdownElement.selectedIndex;
-  Plotly.restyle(graphElement, { "line.color": `${color}` }, [channelIndex]);
+  Plotly.restyle(graphElement, { "line.color": `${selectedColor}` }, [channelIndex]);
 }
 
 //function that adds all channels into its global array
-function getAllGraphTraces(graphElement, graphNum) {
-  let traces = graphElement.data;
-  for (traceIndex = 0; traceIndex < traces.length; traceIndex++) {
-    const traceX = traces[traceIndex].x;
-    const traceY = traces[traceIndex].y;
-    let traceXY = [];
-    for (let tracedataIterator = 0; tracedataIterator < traceX.length; tracedataIterator++) {
-      traceXY.push([traceX[tracedataIterator], traceY[tracedataIterator]]);
+function getAllGraphChannels(graphElement, graphNum) {
+  let channels = graphElement.data;
+  for (channelIndex = 0; channelIndex < channels.length; channelIndex++) {
+    const channelTime = channels[channelIndex].x;
+    const channelAmplitude = channels[channelIndex].y;
+    let channelsArr = [];
+    for (let channelDataIterator = 0; channelDataIterator < channelTime.length; channelDataIterator++) {
+      channelsArr.push([channelTime[channelDataIterator], channelAmplitude[channelDataIterator]]);
     }
-    graphNum === 1 ? allFirstGraphTraces.push(traceXY) : allSecondGraphTraces.push(traceXY);
+    graphNum === 1 ? allFirstGraphTraces.push(channelsArr) : allSecondGraphTraces.push(channelsArr);
   }
 }
 
 //function that splits channel data into part that is plotted statically and dynamically
-function splitData(data, endIndex) {
+function splitData(data, lastPlottedIndex) {
   //data to plot statically
-  const x = [];
-  const y = [];
+  const time = [];
+  const amplitude = [];
   //data to plot dynamically
-  const rest = [];
-  for (let i = 0; i < data.length; i++) {
-    const row = data[i];
-    if (i < endIndex) {
-      x.push(row[0]);
-      y.push(row[1]);
+  const restData = [];
+  for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+    const row = data[rowIndex];
+    if (rowIndex < lastPlottedIndex) {
+      time.push(row[0]);
+      amplitude.push(row[1]);
     } else {
-      rest.push(row);
+      restData.push(row);
     }
   }
-  return {x,y,rest};
+  return { time, amplitude, restData };
 }
 
 //function that creates pdf
@@ -470,41 +472,43 @@ async function createPDF(tracesArr1,tracesArr2,imgData1,imgData2) {
     })
     .then((blob) => {
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "output.pdf";
-      a.click();
+      const anchorElement = document.createElement("a");
+      anchorElement.href = url;
+      anchorElement.download = "output.pdf";
+      anchorElement.click();
     });
 }
 
-function signal_statistics(traces) {
+function signal_statistics(channels) {
   // Extract the column of values and duration from the data
   let allStatistics=[]
-  for(i=0;i<traces.length;i++){
+  for (channelNumIndex = 0; channelNumIndex < channels.length; channelNumIndex++) {
     //xaxis
-    const durationColumn = traces[i][0];
+    const durationColumn = channels[channelNumIndex][0];
     //yaxis
-    const column =traces[i][1];
-  // Compute the average of the values column
-  const average = column.reduce((sum, value) => sum + value) / column.length;
-  // Compute the standard deviation of the values column
-  const variance =
-    column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / (column.length - 1);
-  const standardDeviation = Math.sqrt(variance);
-  // Compute the minimum and maximum values in the values column
-  const minValue = Math.min(...column);
-  const maxValue = Math.max(...column);
-  // Compute the duration of the signal
-  const duration = durationColumn[durationColumn.length - 1] - durationColumn[0];
-  let statistics= {
-    var: variance,
-    std: standardDeviation,
-    avg: average,
-    min: minValue,
-    max: maxValue,
-    duration: Math.abs(duration),
-  };
-  allStatistics.push(statistics);
-}
+    const column = channels[channelNumIndex][1];
+    // Compute the average of the values column
+    const average = column.reduce((sum, value) => sum + value) / column.length;
+    // Compute the standard deviation of the values column
+    const variance =
+      column.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) /
+      (column.length - 1);
+    const standardDeviation = Math.sqrt(variance);
+    // Compute the minimum and maximum values in the values column
+    const minValue = Math.min(...column);
+    const maxValue = Math.max(...column);
+    // Compute the duration of the signal
+    const duration =
+      durationColumn[durationColumn.length - 1] - durationColumn[0];
+    let statistics = {
+      var: variance,
+      std: standardDeviation,
+      avg: average,
+      min: minValue,
+      max: maxValue,
+      duration: Math.abs(duration),
+    };
+    allStatistics.push(statistics);
+  }
 return allStatistics;
 }

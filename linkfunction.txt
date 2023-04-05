@@ -1,0 +1,103 @@
+linkingButton.addEventListener("click", () => {
+  linkFlag = !linkFlag;
+  // if (linkFlag == true) {
+  //   const indexone = firstcurrentindex;
+  //   const indextwo = secondcurrentindex;
+  //   //console.log(indexone);
+  //   //let indexrange=abs(indexone-indextwo);
+  //   //Plotly.deleteTraces(firstSignalGraph, 0, { xaxis: { range: [firstcurrentindex, indexrange] } });
+  //   if(indexone > indextwo){
+  //     secondGraphChannelCounter = 0;  
+  //     for (let i = 0; i < secondGraphData.length; i++) {
+  //       Plotly.deleteTraces(secondSignalGraph, 0);
+  //       console.log(secondSignalGraph.data);
+  //     }
+  //     //   console.log(secondSignalGraph.data);
+  //     //Plotly.purge(secondSignalGraph);
+  //     console.log(secondSignalGraph.data);
+  //     //Plotly.newPlot(secondSignalGraph, [], {});
+  //     console.log(secondSignalGraph.data);
+  //     for (let i = 0; i < secondGraphData.length; i++) {
+  //       const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
+  //       const x = newX;
+  //       const y = newY;
+  //       const rest = newData;
+  //       setTimeout(() => {
+  //         // traces = {
+  //         //   x: x,
+  //         //   y: y,
+  //         //   name: `Channel ${secondGraphChannelCounter + 1}`,
+  //         //   showlegend: true,
+  //         //   type: "scatter",
+  //         // };
+  //         Plotly.addTraces(secondSignalGraph, {
+  //           x: x,
+  //           y: y,
+  //           name: `Channel ${secondGraphChannelCounter + 1}`,
+  //           showlegend: true,
+  //           type: "scatter",
+  //         });
+  //         //console.log(rest)
+  //         //console.log(secondGraphData);
+  //         // plotly.newPlot(secondSignalGraph, [traces], {});
+  //         plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
+  //         //secondGraphChannelCounter++;
+  //       }, 100);
+  //     }
+  //   }
+  // }
+// });
+//  linkingButton.addEventListener("click", () => {
+//   linkFlag = !linkFlag;
+//   if (linkFlag == true) {
+//     const indexone = firstcurrentindex;
+//     const indextwo = secondcurrentindex;
+//     //console.log(indexone);
+//     let indexrange=abs(indexone-indextwo);
+//     removeTraces(firstSignalGraph, 0, indexrange);
+//     rewi
+    
+
+
+  // linkingbutton.eventlistener("click", () => {
+  //   linkFlag = !linkFlag;
+  //   if (linkFlag == true) {
+  //     const indexone = firstcurrentindex;
+  //     const indextwo = secondcurrentindex;
+  //     //console.log(indexone);
+  //     if(indexone > secondcurrentindex){
+  //       secondGraphChannelCounter = 0;
+  //       Plotly.purge(secondSignalGraph);
+  //       for (let i = 0; i < secondGraphData.length; i++) {
+  //         const { x: newX, y: newY, rest: newData } = splitData(secondGraphData[i],indexone)
+  //         const x = newX;
+  //         const y = newY;
+  //         const rest = newData;
+  //         setTimeout(() => {
+  //           Plotly.addTraces(secondSignalGraph, {
+  //             x: x,
+  //             y: y,
+  //             name: `Channel ${secondGraphChannelCounter + 1}`,
+  //             showlegend: true,
+  //             type: "scatter",
+  //           });
+  //           plotSignal(rest,secondSignalGraph,2,secondGraphChannelCounter);
+  //           secondGraphChannelCounter++;
+  //         }, 100);
+  //       } 
+  //     }
+  //   }
+  // });
+
+
+//---------------------------------------------------------------------------
+  // //function to get the maximum data
+// function getMaxMin(data) {
+//   let max = 0;
+//   let length = 0;
+//   for (i = 0; i < data.length; i++) {
+//     data[i][0] > max ? (max = data[i][0]) : null;
+//     length++;
+//   }
+//   return { max: Math.round(max), length: length };
+// }

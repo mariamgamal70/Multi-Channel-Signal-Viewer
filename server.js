@@ -62,7 +62,6 @@ app.post(
 app.post("/download", async (req, res) => {
   const doc = new PDFDocument({ margin: 30, size: "A4" });
   doc.pipe(fs.createWriteStream("./output.pdf"));
-
   // Set the file name dynamically based on the current working directory
   const filePath = path.join(process.cwd(), "output.pdf");
   // Create the table of signal statistics

@@ -50,10 +50,10 @@ master
 |  └─ index.html
 ├─ data 
 │  ├─ datasets
-|  ├─ readme.txt
 |  └─ project statement
 ├─ .gitattributes
 ├─ .gitignore
+├─ readme.txt
 ├─ package
 ├─ package-lock
 └─ server.js (Back-end)

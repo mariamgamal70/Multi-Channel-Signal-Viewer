@@ -53,3 +53,27 @@ or download each package manually by writing <br>
 <li>Run the server by writing this in the terminal : 
 <br><code> node server.js </code></li>
 </ol>
+
+<h3>Team</h3>
+<p>Biomedical Signal Processing (SBEN311) class task created by:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Team Members</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/NadaAlfowey">Nada Mohamed</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/AbdulmonemElsherif">Abdulmonem Elsherif</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/asmaakhaledd">Asmaa Khalid</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/mariamgamal70">Mariam Gamal</a></td>
+    </tr>
+  </tbody>
+</table>

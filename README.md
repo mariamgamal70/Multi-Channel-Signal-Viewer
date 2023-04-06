@@ -4,6 +4,7 @@
 <a href="#requirements">Requirements</a><br>
 <a href="#projectstructure">Project Structure</a><br>
 <a href="#runtheproject">Run the project</a><br>
+<a href="#team">Team members</a><br>
 
 <h3 id="introduction">Introduction</h3>
 <p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>
@@ -72,7 +73,7 @@ or download each package manually by writing <br>
 <br><code> node server.js </code></li>
 </ol>
 
-<h3>Team</h3>
+<h3 id="team">Team</h3>
 <p>Biomedical Signal Processing (SBEN311) class task created by:</p>
 <table>
   <thead>

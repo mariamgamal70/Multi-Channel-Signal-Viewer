@@ -41,6 +41,23 @@
     </ul></li>
 </ul>
 
+```
+master
+├─ website (Front-end)
+│  ├─ app.js
+│  ├─ plotly-2.18.2.min
+|  ├─ style.css
+|  └─ index.html
+├─ data 
+│  ├─ datasets
+│  ├─ git
+|  ├─ readme.txt
+|  └─ project statement
+├─ package
+├─ package-lock
+└─ server.js (Back-end)
+```
+
 <h3 id="runtheproject">Run the project</h3>
 <ol>
 <li>Download the project</li> 

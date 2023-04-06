@@ -3,11 +3,12 @@
 <a href="#introduction">Introduction</a><br>
 <a href="#requirements">Requirements</a><br>
 <a href="#projectstructure">Project Structure</a><br>
+<a href="#projectfeatures">Project Features</a><br>
 <a href="#runtheproject">Run the project</a><br>
 <a href="#team">Team members</a><br>
 
 <h3 id="introduction">Introduction</h3>
-<p> Develop a web application that illustrates multi-channel signal viewer that monitors the vital signals is a crucial aim in any ICU room</p>
+<p> A web application that illustrates a real time signal using a multi-channel signal viewer.</p>
 <h3 id="requirements">Requirements</h3>
     <ul>
     <li>Contain two main identical graphs. The user can open different signals in each graph</li>
@@ -24,6 +25,12 @@
     </li>
     <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>
 </ul>
+<h3 id="projectfeatures">Project Features</h3>
+
+
+https://user-images.githubusercontent.com/104398513/230252169-5cfad823-3deb-488c-958c-54e23758562d.mp4
+
+
 <h3 id="projectstructure">Project Structure</h3>
 <p>The web app is built using:
 <ul>

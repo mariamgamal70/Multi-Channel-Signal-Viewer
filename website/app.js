@@ -169,14 +169,48 @@ secondRewind.addEventListener("click", function () {
     for (let addIterator = 0; addIterator < allSecondGraphTraces.length; addIterator++) {
       //settimeout is used to wait for the data to load 
       setTimeout(() => {
+        // Plotly.addTraces(secondSignalGraph, {
+        //   x: [],
+        //   y: [],
+        //   name: `Channel ${secondGraphChannelCounter + 1}`,
+        //   showlegend: true,
+        //   type: "scatter",
+        // });
+        if(addIterator===0){
+        const {
+          time: newTime,
+          amplitude: newAmplitude,
+          restData: newData,
+        } = splitData(allSecondGraphTraces[addIterator], firstCurrentIndex);
+        time = newTime;
+        amplitude = newAmplitude;
+        restData = newData;
         Plotly.addTraces(secondSignalGraph, {
-          x: [],
-          y: [],
+          x: time,
+          y: amplitude,
           name: `Channel ${secondGraphChannelCounter + 1}`,
           showlegend: true,
           type: "scatter",
         });
-        plotSignal(allSecondGraphTraces[addIterator],secondSignalGraph,1,secondGraphChannelCounter);
+        }
+      else{
+        const {
+          time: newTime,
+          amplitude: newAmplitude,
+          restData: newData,
+        } = splitData(allSecondGraphTraces[addIterator], secondCurrentIndex);
+        time = newTime;
+        amplitude = newAmplitude;
+        restData = newData;
+        Plotly.addTraces(secondSignalGraph, {
+          x: time,
+          y: amplitude,
+          name: `Channel ${secondGraphChannelCounter + 1}`,
+          showlegend: true,
+          type: "scatter",
+        });
+      }
+        plotSignal(restData,secondSignalGraph,2,secondGraphChannelCounter);
         secondGraphChannelCounter++;
       }, 100);
     }
@@ -221,7 +255,7 @@ function createPlot(graphElement) {
       range: [0, 5],
       rangemode: "tozero",
       title: "Time (s)",
-      zoom: 1000,
+      zoom: 3000,
       fixedrange: true,
     },
     yaxis: {
@@ -266,7 +300,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
         graphNum==1 ? firstCurrentIndex = plottingPointIndex:secondCurrentIndex = plottingPointIndex
       }
       plottingPointIndex++;
-      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter,]);
+      Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter]);
 
     //if condition used to change the time interval dynamically
       if (row[0] > maxTick) {
@@ -343,8 +377,8 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
 //function that handles data fetch requests
 function handleChannelFetch(formObject, graphElement, channelCounter, graphNum) {
   fetch("/addChannel", {
-    maxContentLength: 10000000,
-    maxBodyLength: 10000000,
+    maxContentLength: 30000000,
+    maxBodyLength: 30000000,
     method: "POST",
     credentials: "same-origin",
     body: formObject,

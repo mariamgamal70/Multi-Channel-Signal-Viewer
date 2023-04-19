@@ -236,8 +236,8 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
     maxTick = 4;
   }
 
-  //set index=0 to increment to go through all the points in signal
-  let index = 0;
+  //set plottingPointIndex=0 to increment to go through all the points in signal
+  let plottingPointIndex = 0;
   let plottingInterval;
   let checkPlayingInterval;
   let time;
@@ -245,13 +245,13 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
   
   //function that plots point by point and change the time interval accordingly to plot dynamically
   function actualPlotting() {
-    if (index < data.length &&((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2))) {
-      const row = data[index];
-      //const prevrow=data[index-1];
+    if (plottingPointIndex < data.length &&((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2))) {
+      const row = data[plottingPointIndex];
+      //const prevrow=data[plottingPointIndex-1];
       if(channelCounter == 0){
-        graphNum==1 ? firstCurrentIndex = index:secondCurrentIndex = index
+        graphNum==1 ? firstCurrentIndex = plottingPointIndex:secondCurrentIndex = plottingPointIndex
       }
-      index++;
+      plottingPointIndex++;
       Plotly.extendTraces(graphElement, { x: [[row[0]]], y: [[row[1]]] }, [channelCounter,]);
 
     //if condition used to change the time interval dynamically
@@ -266,7 +266,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
       } 
        // Get current x-axis range
       const currentRange = graphElement.layout.xaxis.range;
-       // Adjust x-axis range if necessary
+       // Adjust x-axis range if necessary limits
         if (row[0] < currentRange[0] || row[0] > currentRange[1]) {
           minTick = row[0];
           maxTick = row[0] + 4;
@@ -280,7 +280,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
       //check if plotting is finished or no, if yes, then user can rewind
       graphNum === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
-      if (index === data.length) {
+      if (plottingPointIndex === data.length) {
         graphNum === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
       clearInterval(plottingInterval);
@@ -304,7 +304,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
 //it clears the plotting plottingInterval until called again with false boolean variable
   function checkPlaying() {
     checkPlayingInterval = setInterval(() => {
-      if ((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2 && index < data.length)) {
+      if ((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2 && plottingPointIndex < data.length)) {
         startInterval();
       }
     }, 100);

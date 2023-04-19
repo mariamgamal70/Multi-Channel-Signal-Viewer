@@ -9,6 +9,7 @@
 ">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js
 "></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="plotly-2.18.2.min.js" charset="utf-8"></script>
@@ -74,7 +75,7 @@
         <div class="container-fluid d-flex flex-row justify-content-between">
             <span class="navbar-brand mb-0 h1 text-light">Multi-Channel Signal Viewer</span>
             <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-outline-light" id="Export">Export</button>&emsp;
+            <button type="button" class="btn btn-outline-light" id="Export"><i class="fa fa-download"></i></button>&emsp;
             <button class="btn btn-light" id="linkingbutton" type="button">Link graph</button>
         </div>
         </div>
@@ -105,8 +106,9 @@
                             <legend class="mt-2 text-light">
                                 <div class="d-flex justify-content-evenly">
                                     <button type="button" class="btn btn-outline-light"
-                                        id="Play/Pauseone">Play/Pause</button>
-                                    <button type="button" class="btn btn-outline-light" id="firstrewind">Rewind</button>
+                                        id="Play/Pauseone"><i class="fa fa-play"></i>
+                                        <i class="fa fa-pause"></i></button>
+                                    <button type="button" class="btn btn-outline-light" id="firstrewind"><i class="fa fa-backward"></i></button>
                                     <!-- <form action="/action_page.php"> -->
                                 </div><br>
                                 <div class="d-flex justify-content-evenly">
@@ -206,9 +208,10 @@
                                 <div class="d-flex justify-content-evenly">
 
                                     <button type="button" class="btn btn-outline-light"
-                                        id="Play/Pausetwo">Play/Pause</button>
+                                        id="Play/Pausetwo"><i class="fa fa-play"></i>
+                                        <i class="fa fa-pause"></i></button>
                                     <button type="button" class="btn btn-outline-light"
-                                        id="secondrewind">Rewind</button>
+                                        id="secondrewind"><i class="fa fa-backward"></i></button>
 
                                 </div>
                                 <br>

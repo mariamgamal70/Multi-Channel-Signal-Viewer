@@ -84,6 +84,14 @@ linkingButton.addEventListener("click", () => {
   secondSignalGraph.on("plotly_relayout", () => {
     linking(secondSignalGraph, firstSignalGraph, linkFlag);
   });
+  if(linkFlag==true){
+      //link speed
+    linkSpeed();
+  }
+  else{//unlink speed
+    secondIntervalTime = parseInt(secondCineSpeed.value);
+    firstIntervalTime = parseInt(firstCineSpeed.value);
+  }
 });
 
 //UI button to change color of first graph
@@ -100,12 +108,18 @@ secondGraphColor.addEventListener("change", () => {
 PlayPauseone.addEventListener("click", function () {
   //flag initially set to true
   isFirstPlaying = !isFirstPlaying;
+  if (linkFlag){
+    isSecondPlaying=isFirstPlaying;
+  }
 });
 
 //UI button to play/pause second graph
 PlayPausetwo.addEventListener("click", function () {
   //flag initially set to true
   isSecondPlaying = !isSecondPlaying;
+  if (linkFlag) {
+    isFirstPlaying = isSecondPlaying;
+  }
 });
 
 //UI button to rewind if plotting is finished; by  deleting traces and replotting them
@@ -245,7 +259,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
   
   //function that plots point by point and change the time interval accordingly to plot dynamically
   function actualPlotting() {
-    if (plottingPointIndex < data.length &&((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2))) {
+    if (plottingPointIndex < 3000 &&((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2))) {
       const row = data[plottingPointIndex];
       //const prevrow=data[plottingPointIndex-1];
       if(channelCounter == 0){
@@ -280,7 +294,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
       //check if plotting is finished or no, if yes, then user can rewind
       graphNum === 1 ? (firstGraphFinish = false) : (secondGraphFinish = false);
     } else {
-      if (plottingPointIndex === data.length) {
+      if (plottingPointIndex === 3000) {
         graphNum === 1 ? (firstGraphFinish = true) : (secondGraphFinish = true);
       }
       clearInterval(plottingInterval);
@@ -304,7 +318,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
 //it clears the plotting plottingInterval until called again with false boolean variable
   function checkPlaying() {
     checkPlayingInterval = setInterval(() => {
-      if ((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2 && plottingPointIndex < data.length)) {
+      if ((isFirstPlaying && graphNum === 1) || (isSecondPlaying && graphNum === 2 && plottingPointIndex < 3000)) {
         startInterval();
       }
     }, 100);
@@ -396,13 +410,19 @@ function linking(firstGraph, secondGraph, linkFlag) {
       },
     };
     Plotly.update(secondGraph, {}, update);
-    //link speed
-    linkSpeed();
-  } else {
-    //unlink speed
-    secondIntervalTime = parseInt(secondCineSpeed.value);
-    firstIntervalTime = parseInt(firstCineSpeed.value);
-  }
+  //   //link speed
+  //   linkSpeed();
+  //   //link play and pause
+  //   if(firstGraph==firstSignalGraph){
+  //     isSecondPlaying=isFirstPlaying;
+  //   }else{
+  //     isFirstPlaying = isSecondPlaying;
+  //   }
+  // } else {
+  //   //unlink speed
+  //   secondIntervalTime = parseInt(secondCineSpeed.value);
+  //   firstIntervalTime = parseInt(firstCineSpeed.value);
+   }
 }
 
 //function that add to dropdown list the added channels
@@ -442,7 +462,7 @@ function splitData(data, lastPlottedIndex) {
   const amplitude = [];
   //data to plot dynamically
   const restData = [];
-  for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+  for (let rowIndex = 0; rowIndex < 3000; rowIndex++) {
     const row = data[rowIndex];
     if (rowIndex < lastPlottedIndex) {
       time.push(row[0]);

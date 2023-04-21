@@ -84,14 +84,15 @@ linkingButton.addEventListener("click", () => {
   secondSignalGraph.on("plotly_relayout", () => {
     linking(secondSignalGraph, firstSignalGraph, linkFlag);
   });
-  if(linkFlag==true){
-      //link speed
-    linkSpeed();
-  }
-  else{//unlink speed
-    secondIntervalTime = parseInt(secondCineSpeed.value);
-    firstIntervalTime = parseInt(firstCineSpeed.value);
-  }
+  // if(linkFlag){
+  //     //link speed
+  //   linkSpeed();
+  // }
+  // else{//unlink speed
+  //   secondIntervalTime = parseInt(secondCineSpeed.value);
+  //   console.log(secondCineSpeed.value);
+  //   firstIntervalTime = parseInt(firstCineSpeed.value);
+  // }
 });
 
 //UI button to change color of first graph
@@ -106,15 +107,29 @@ secondGraphColor.addEventListener("change", () => {
 
 //UI button to play/pause first graph
 PlayPauseone.addEventListener("click", function () {
+  if (isFirstPlaying) {
+    document.getElementById("playone").style.display = "none";
+    document.getElementById("pauseone").style.display = "block";
+  } else {
+    document.getElementById("playone").style.display = "block";
+    document.getElementById("pauseone").style.display = "none";
+  }
   //flag initially set to true
   isFirstPlaying = !isFirstPlaying;
-  if (linkFlag){
-    isSecondPlaying=isFirstPlaying;
+  if (linkFlag) {
+    isSecondPlaying = isFirstPlaying;
   }
 });
 
 //UI button to play/pause second graph
 PlayPausetwo.addEventListener("click", function () {
+  if (isFirstPlaying) {
+    document.getElementById("playtwo").style.display = "none";
+    document.getElementById("pausetwo").style.display = "block";
+  } else {
+    document.getElementById("playtwo").style.display = "block";
+    document.getElementById("pausetwo").style.display = "none";
+  }
   //flag initially set to true
   isSecondPlaying = !isSecondPlaying;
   if (linkFlag) {
@@ -239,18 +254,35 @@ createPDFButton.addEventListener("click", async () => {
 
 //create initial empty plots
 document.onload = createPlot(firstSignalGraph);
+Plotly.relayout(firstSignalGraph, {
+  title: {
+    text: "<b>First Graph</b>",
+    font: {
+      size: 20, // specify font size here
+    },
+  },
+});
 document.onload = createPlot(secondSignalGraph);
+Plotly.relayout(secondSignalGraph, {
+  title: {
+    text: "<b>Second Graph</b>",
+    font: {
+      size: 20, // specify font size here
+    },
+  },
+});
 
 //function to create plot
-function createPlot(graphElement) {
+function createPlot(graphElement,title) {
   let layout = {
     title: { title: "Click Here<br>to Edit Chart Title" },
+    margin: { l: 75, r: 75, t: 50, b: 40 },
     xaxis: {
       rangeslider: {
-      range: [0, 1],
-      visible: true,
-      dragmode: false,
-      zoom: false,
+        range: [0, 1],
+        visible: true,
+        dragmode: false,
+        zoom: false,
       },
       range: [0, 5],
       rangemode: "tozero",
@@ -363,12 +395,29 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
   
   //eventlistener for cine speed sliders
   firstCineSpeed.addEventListener("change", () => {
-    firstIntervalTime = parseInt(firstCineSpeed.value);
+     if (linkFlag) {
+       //link speed
+       firstIntervalTime = parseInt(firstCineSpeed.value);
+       secondIntervalTime = parseInt(firstCineSpeed.value); 
+     } else {
+       //unlink speed
+       firstIntervalTime = parseInt(firstCineSpeed.value);
+       secondIntervalTime = parseInt(secondCineSpeed.value);
+     }
     //restart plottingInterval in order to apply speed changes
     startInterval();
   });
   secondCineSpeed.addEventListener("change", () => {
-    secondIntervalTime = parseInt(secondCineSpeed.value);
+     if (linkFlag) {
+       //link speed
+       firstIntervalTime = parseInt(secondCineSpeed.value);
+       secondIntervalTime = parseInt(secondCineSpeed.value);
+     } else {
+       //unlink speed
+       firstIntervalTime = parseInt(firstCineSpeed.value);
+       secondIntervalTime = parseInt(secondCineSpeed.value);
+     }
+    // secondIntervalTime = parseInt(secondCineSpeed.value);
     //restart plottingInterval in order to apply speed changes
     startInterval();
   });
@@ -415,17 +464,17 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphNum) 
 }
 
 //function that links speed slider 
-function linkSpeed() {
-  firstCineSpeed.addEventListener("change", () => {
-    firstIntervalTime = parseInt(firstCineSpeed.value);
-    secondIntervalTime = firstIntervalTime;
-  });
+// function linkSpeed() {
+//   firstCineSpeed.addEventListener("change", () => {
+//     firstIntervalTime = parseInt(firstCineSpeed.value);
+//     secondIntervalTime = firstIntervalTime;
+//   });
 
-  secondCineSpeed.addEventListener("change", () => {
-    secondIntervalTime = parseInt(secondCineSpeed.value);
-    firstIntervalTime = secondIntervalTime;
-  });
-}
+//   secondCineSpeed.addEventListener("change", () => {
+//     secondIntervalTime = parseInt(secondCineSpeed.value);
+//     firstIntervalTime = secondIntervalTime;
+//   });
+// }
 
 //linking function
 function linking(firstGraph, secondGraph, linkFlag) {
@@ -446,16 +495,6 @@ function linking(firstGraph, secondGraph, linkFlag) {
     Plotly.update(secondGraph, {}, update);
   //   //link speed
   //   linkSpeed();
-  //   //link play and pause
-  //   if(firstGraph==firstSignalGraph){
-  //     isSecondPlaying=isFirstPlaying;
-  //   }else{
-  //     isFirstPlaying = isSecondPlaying;
-  //   }
-  // } else {
-  //   //unlink speed
-  //   secondIntervalTime = parseInt(secondCineSpeed.value);
-  //   firstIntervalTime = parseInt(firstCineSpeed.value);
    }
 }
 
@@ -472,7 +511,7 @@ function addToDropdown(dropdownElement, counter) {
 //function that changes color of the selected channel in dropdown
 function changeChannelColor(dropdownElement, graphElement, selectedColor) {
   const channelIndex = dropdownElement.selectedIndex;
-  Plotly.restyle(graphElement, { "line.color": `${selectedColor}` }, [channelIndex]);
+  Plotly.restyle(graphElement, { "line.color": `${selectedColor}` }, [channelIndex-1]);
 }
 
 //function that adds all channels into its global array

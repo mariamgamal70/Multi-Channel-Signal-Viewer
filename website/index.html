@@ -14,62 +14,9 @@
     <link rel="stylesheet" href="style.css">
     <script src="plotly-2.18.2.min.js" charset="utf-8"></script>
     <title>Signal viewer</title>
-
-    <style>
-        .rangeWrap {
-            width: 40%;
-        }
-
-        .rangeWrap input {
-            width: 100%;
-            margin: 0;
-        }
-
-        .rangeWrap .ticks {
-            display: flex;
-            justify-content: space-between;
-            height: 6px;
-            margin: -1.5em 5px 0 6px;
-            font: 10px Arial;
-            counter-reset: count -1;
-        }
-
-        .rangeWrap .ticks>div {
-            height: 100%;
-            width: 1px;
-            background: silver;
-            counter-increment: count 1;
-        }
-
-        .rangeWrap .ticks>div:nth-child(5n - 4) {
-            height: 200%;
-        }
-
-        .rangeWrap .ticks>div:nth-child(5n - 4)::before {
-            display: block;
-            content: counter(count, decimal);
-            transform: translate(-50%, 100%);
-            text-align: center;
-            width: 16px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-input-label {
-            display: inline-block;
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 5px;
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body class="container-fluid" style="background-color:#192841 ;">
-
     <nav class="navbar fixed-top bg-body-tertiary border-bottom mb-5" data-bs-theme="dark"
         style="background-color:#152238 ;">
         <div class="container-fluid d-flex flex-row justify-content-between">
@@ -81,107 +28,50 @@
         </div>
     </nav>
     <div class="container-fluid pt-5 mt-3">
-        <div class="container-fluid">
-            <div class="d-flex flex-row justify-content-around">
-                <div class="d-flex flex-column">
-                    <div contenteditable="true" style="font-size: 30px; text-align: center; color:#F0FFFF;">First Graph
-                    </div>
-    
-                    <div id="firstsignalgraph" style="width:600px;height:350px; "></div>
-                </div>
-                <div class="d-flex flex-column">
-                    <div contenteditable="true" style="font-size: 30px; text-align: center; color:#F0FFFF;">Second
-                        Graph</div>
-    
-                    <div id="secondsignalgraph" style="width:600px;height:350px;"></div><br>
-                </div>
-            </div>
-        </div>
+        <br>
         <div class="row">
             <div class="col-6">
+                <div class="d-flex flex-column">
+                    <div id="firstsignalgraph" style="width:100%;height:350px; "></div>
+                </div>
                 <div class="d-flex flex-column justify-content-center">
                     <form class=" p-3" style="background-color:#152238 ;">
                         <fieldset class="text-light">
-                            <h5>Control Center</h5>
                             <legend class="mt-2 text-light">
-                                <div class="d-flex justify-content-evenly">
-                                    <button type="button" class="btn btn-outline-light"
-                                        id="Play/Pauseone"><i class="fa fa-play"></i>
-                                        <i class="fa fa-pause"></i></button>
-                                    <button type="button" class="btn btn-outline-light" id="firstrewind"><i class="fa fa-backward"></i></button>
-                                    <!-- <form action="/action_page.php"> -->
-                                </div><br>
-                                <div class="d-flex justify-content-evenly">
-                                    <label for="Channels" class="dropdown fs-5">Choose Channel:
-                                        <select id="firstChannels" name="cars">
-                                            <!-- <option value="Channel1">Channel1</option> -->
-                                            <!-- <option value="Channel">Channel2</option> -->
-                                        </select>
-                                    </label>
-                                    <!-- </form> -->
-                                    <br>
-                                    <!-- <div class="d-flex justify-content-evenly">
-                                    <button onclick="zoomIn()"type="button" class="btn btn-outline-light" id="zoom-btn">Zoom in</button>
-                                    <button onclick="zoomOut()" type="button" class="btn btn-outline-light" id="zoom-btn">Zoom out</button>
-                                </div><br> -->
-                                    <!-- <div class="input-group mb-3 w-50">
-                                    <span class="input-group-text" id="basic-addon1">Edit Label:</span>
-                                    <input type="text" class="form-control" id="firsteditlabel" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
-                                  </div> -->
-                                    <div class="fs-5">
-                                        Change Color: <input type="color" name="Color" id="firstcolor">
+                                        <div class="d-flex justify-content-center mb-3">
+                                    <button type="button" class="btn btn-outline-light mx-2" id="firstrewind" style="border-radius: 50%;display:inline-block; height:55px; width: 55px;">
+                                        <i class="fa fa-backward" ></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-light mx-2"
+                                        id="Play/Pauseone" style="border-radius: 50%;display:inline-block;height:55px; width: 55px;">
+                                        <i class="fa fa-play" id="playone" style="display: block;"></i>
+                                        <i class="fa fa-pause" id="pauseone" style="display: none;"></i>
+                                    </button>
+                                      </div>
+                                    <div class='rangeWrap d-inline-block w-100'>
+                                        <input type="range" name="Cine Speed" min="0" max="100" step="10" value="50" id="firstcinespeed" />
+                                        <div class='ticks'>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div></div>
-                                <!-- <label for="Scrolling" class="fs-5">Scrolling: </label>
-                                <div class='rangeWrap'>
-                                    <input type="range" name="Scrolling" min="0" max="100" step="10" value="40" />
-                                    <div class='ticks'>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div><br> -->
-                                <br>
-                                <div class="d-flex justify-content-evenly">
-                                    <label for="Cine Speed" class="fs-5">Cine Speed: </label>
-                                    <div class='rangeWrap'>
-                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="0"
-                                        id="firstcinespeed" />
-                                    <div class='ticks'>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div></div><br>
-
-                                <div class="d-flex justify-content-evenly">
-                                    <!-- <div class="input-group mx-auto mt-3 mb-5 w-auto"> -->
-                                    <!-- <form action="/" method="post" enctype="multipart/form-data"
-                                            id="firstsignalform">
-                                            <div class="input-group">
-                                                <input type="file" class="form-control" id="firstsignalinput"
-                                                    name="firstsignalinput" aria-describedby="inputGroupFileAddon04"
-                                                    aria-label="Upload">
-                                            </div>
-                                        </form> -->
-                                    <!-- </div>&nbsp;&nbsp; -->
+                                    <br><br>
+                                        <div class="input-group w-100">
+                                            <select class="form-select " id="firstChannels">
+                                                <option selected>Channels</option>
+                                            </select>
+                                            <button class="btn btn-outline-secondary" type="button" style="width: 25%; padding: 0%;"><input type="color" class="form-control form-control-color w-100" id="firstcolor" style="border-radius: 0%;"></button>
+                                        </div>
+                                <div class=" w-100">
                                     <div class="input-group mx-auto mt-3 mb-5 w-auto">
                                         <form action="/" method="post" enctype="multipart/form-data"
                                             id="firstsignalform">
@@ -192,74 +82,34 @@
                                             </div>
                                         </form>
                                     </div>
-
                                 </div>
                             </legend>
                         </fieldset>
                     </form>
                 </div>
             </div>
+
             <div class="col-6">
+                <div class="d-flex flex-column">
+                    <div id="secondsignalgraph" style="width:100%;height:350px; "></div>
+                </div>
                 <div class="d-flex flex-column justify-content-center">
                     <form class=" p-3" style="background-color:#152238 ;">
                         <fieldset class="text-light">
-                            <h5>Control Center</h5>
                             <legend class="mt-2 text-light">
-                                <div class="d-flex justify-content-evenly">
-
-                                    <button type="button" class="btn btn-outline-light"
-                                        id="Play/Pausetwo"><i class="fa fa-play"></i>
-                                        <i class="fa fa-pause"></i></button>
-                                    <button type="button" class="btn btn-outline-light"
-                                        id="secondrewind"><i class="fa fa-backward"></i></button>
-
+                                <div class="d-flex justify-content-center mb-3">
+                                    <button type="button" class="btn btn-outline-light mx-2" id="secondrewind"
+                                        style="border-radius: 50%;display:inline-block; height:55px; width: 55px;">
+                                        <i class="fa fa-backward"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-light mx-2" id="Play/Pausetwo"
+                                        style="border-radius: 50%;display:inline-block;height:55px; width: 55px;">
+                                        <i class="fa fa-play" id="playtwo" style="display: block;"></i>
+                                        <i class="fa fa-pause" id="pausetwo" style="display: none;"></i>
+                                    </button>
                                 </div>
-                                <br>
-                                <div class="d-flex justify-content-evenly">
-                                    <form action="/action_page.php">
-                                        <label for="Channels" class="dropdown fs-5">Choose Channel:
-                                            <select id="secondChannels" name="cars">
-                                                <!-- <option value="Channel1" >Channel1</option> -->
-                                                <!-- <option value="Channel">Channel2</option> -->
-                                            </select>
-                                        </label>
-                                    </form>
-                                    <!-- <br> -->
-                                    <!-- <div class="d-flex justify-content-evenly">
-                                    <button onclick="zoomIn(secondSignalGraph.layout)" type="button" class="btn btn-outline-light" id="zoom-btn">Zoom in</button>
-                                    <button onclick="zoomOut(secondSignalGraph.layout)" type="button" class="btn btn-outline-light" id="zoom-btn">Zoom out</button>
-                                </div><br> -->
-                                    <!-- <div class="input-group mb-3 w-50">
-                                    <span class="input-group-text" id="basic-addon1">Edit Label:</span>
-                                    <input type="text" class="form-control" id="secondeditlabel" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
-                                  </div> -->
-                                    <div class="fs-5">
-                                        Change Color: <input type="color" name="Color" id="secondcolor">
-                                    </div>
-                                </div>
-
-                                <!-- <label for="Scrolling" class="fs-5">Scrolling: </label>
-                                <div class='rangeWrap'>
-                                    <input type="range" name="Scrolling" min="0" max="100" step="10" value="40" />
-                                    <div class='ticks'>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div><br> -->
-                                <br>
-                                <div class="d-flex justify-content-evenly">
-                                <label for="Cine Speed" class="fs-5">Cine Speed: </label>
-                                <div class='rangeWrap'>
-                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="0"
+                                <div class='rangeWrap d-inline-block w-100'>
+                                    <input type="range" name="Cine Speed" min="0" max="100" step="10" value="50"
                                         id="secondcinespeed" />
                                     <div class='ticks'>
                                         <div></div>
@@ -274,23 +124,23 @@
                                         <div></div>
                                         <div></div>
                                     </div>
-                                </div></div><br>
-                                <div class="d-flex justify-content-evenly">
-                                    <!-- <div class="input-group mx-auto mt-3 w-auto"> -->
-                                    <!-- <form action="/" method="post" enctype="multipart/form-data" id="secondsignalform">
-                                            <div class="input-group">
-                                                <input type="file" class="form-control" id="secondsignalinput" name="secondsignalinput"
-                                                    aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                            </div>
-                                        </form> -->
-                                    <!-- </div>  -->
+                                </div>
+                                <br><br>
+                                <div class="input-group w-100">
+                                    <select class="form-select " id="secondChannels">
+                                        <option selected>Channels</option>
+                                    </select>
+                                    <button class="btn btn-outline-secondary" type="button" style="width: 25%; padding: 0%;"><input
+                                            type="color" class="form-control form-control-color w-100" id="secondcolor"
+                                            style="border-radius: 0%;"></button>
+                                </div>
+                                <div class=" w-100">
                                     <div class="input-group mx-auto mt-3 mb-5 w-auto">
-                                        <form action="/" method="post" enctype="multipart/form-data"
-                                            id="secondsignalform">
+                                        <form action="/" method="post" enctype="multipart/form-data" id="secondsignalform">
                                             <div class="input-group">
                                                 <input type="file" class="form-control" id="secondsignaladdchannelinput"
-                                                    name="secondsignaladdchannelinput"
-                                                    aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                                    name="secondsignaladdchannelinput" aria-describedby="inputGroupFileAddon04"
+                                                    aria-label="Upload">
                                             </div>
                                         </form>
                                     </div>
@@ -300,12 +150,7 @@
                     </form>
                 </div>
             </div>
-        </div>
     </div>
-    <!-- <div class="d-grid gap-2 col-6 mx-auto">
-                        <button type="button" class="btn btn-secondary btn-lg " id="linksignal">Link signals</button>
-                    </div> -->
-
     <script src="app.js"></script>
 </body>
 

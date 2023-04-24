@@ -50,6 +50,8 @@ addFirstSignalChannelInput.addEventListener("change", (submission) => {
     formDataObject.append("firstsignaladdchannelinput", file);
     //fetch the data from backend
     handleChannelFetch(formDataObject,firstSignalGraph,firstGraphChannelCounter,1);
+    document.getElementById("playone").style.display = "none";
+    document.getElementById("pauseone").style.display = "block";
     //add channel to dropdown
     addToDropdown(firstDropdown, firstGraphChannelCounter);
     firstGraphChannelCounter++;
@@ -66,6 +68,8 @@ addSecondSignalChannelInput.addEventListener("change", (submission) => {
     formDataObject.append("secondsignaladdchannelinput", file);
     //fetch the data from backend
     handleChannelFetch(formDataObject,secondSignalGraph,secondGraphChannelCounter,2);
+    document.getElementById("playtwo").style.display = "none";
+    document.getElementById("pausetwo").style.display = "block";
     //add channel to dropdown
     addToDropdown(secondDropdown, secondGraphChannelCounter);
     secondGraphChannelCounter++;
@@ -108,11 +112,11 @@ secondGraphColor.addEventListener("change", () => {
 //UI button to play/pause first graph
 PlayPauseone.addEventListener("click", function () {
   if (isFirstPlaying) {
-    document.getElementById("playone").style.display = "none";
-    document.getElementById("pauseone").style.display = "block";
-  } else {
     document.getElementById("playone").style.display = "block";
     document.getElementById("pauseone").style.display = "none";
+  } else {
+    document.getElementById("playone").style.display = "none";
+    document.getElementById("pauseone").style.display = "block";
   }
   //flag initially set to true
   isFirstPlaying = !isFirstPlaying;
@@ -123,12 +127,12 @@ PlayPauseone.addEventListener("click", function () {
 
 //UI button to play/pause second graph
 PlayPausetwo.addEventListener("click", function () {
-  if (isFirstPlaying) {
-    document.getElementById("playtwo").style.display = "none";
-    document.getElementById("pausetwo").style.display = "block";
-  } else {
+  if (isSecondPlaying) {
     document.getElementById("playtwo").style.display = "block";
     document.getElementById("pausetwo").style.display = "none";
+  } else {
+    document.getElementById("playtwo").style.display = "none";
+    document.getElementById("pausetwo").style.display = "block";
   }
   //flag initially set to true
   isSecondPlaying = !isSecondPlaying;

@@ -120,12 +120,18 @@ app.post("/download", async (req, res) => {
   if (req.body.img1) {
     doc.y = 300;
     doc.x = 0;
-    doc.image(req.body.img1, { width: 300 });
+    doc.save(); // Save the current graphics state
+    doc.rect(doc.x, doc.y, 235, 177).clip(); // Clip the rectangular region
+    doc.image(req.body.img1, { width: 300 });//keep this only if u dont need to crop
+    doc.restore(); // Restore the graphics state to remove the clip
   }
   if (req.body.img2) {
     doc.y = 300;
     doc.x += 295;
-    doc.image(req.body.img2, { width: 300 });
+    doc.save(); // Save the current graphics state
+    doc.rect(doc.x, doc.y, 235, 177).clip(); // Clip the rectangular region
+    doc.image(req.body.img2, { width: 300 }); //keep this only if u dont need to crop
+    doc.restore(); // Restore the gr
   }
   // End the document to save it to a file
   doc.end();

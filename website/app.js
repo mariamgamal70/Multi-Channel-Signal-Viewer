@@ -256,9 +256,12 @@ createPDFButton.addEventListener("click", async () => {
 
 //----------------------------------------------FUNCTIONS---------------------------------------------------
 
-//create initial empty plots
-document.onload = createPlot(firstSignalGraph);
-Plotly.relayout(firstSignalGraph, {
+  //apply changes from second graph onto the first graph in case of zooming and panning
+
+
+window.addEventListener("load", function () {
+  createPlot(firstSignalGraph);
+  Plotly.relayout(firstSignalGraph, {
   title: {
     text: "<b>First Graph</b>",
     font: {
@@ -266,7 +269,7 @@ Plotly.relayout(firstSignalGraph, {
     },
   },
 });
-document.onload = createPlot(secondSignalGraph);
+createPlot(secondSignalGraph);
 Plotly.relayout(secondSignalGraph, {
   title: {
     text: "<b>Second Graph</b>",
@@ -275,6 +278,38 @@ Plotly.relayout(secondSignalGraph, {
     },
   },
 });
+
+  firstSignalGraph.on("plotly_relayout", (eventData) => {
+    checkBoundaries(firstSignalGraph, firstCurrentIndex, eventData);
+  });
+
+  secondSignalGraph.on("plotly_relayout", (eventData) => {
+    checkBoundaries(secondSignalGraph, secondCurrentIndex, eventData);
+  });
+})
+
+function checkBoundaries(graphElement,maxTime,eventData) {
+  if (maxTime) {
+    var xMin = eventData["xaxis.range[0]"];
+    var xMax = eventData["xaxis.range[1]"];
+
+    if (xMin > graphElement.data[0].x[graphElement.data[0].x.length-1]|| xMin < 0) {
+      Plotly.relayout(graphElement, {
+        xaxis: {
+          range: [minTick, maxTick],
+          rangeslider: {
+            range: [0, 1],
+            visible: true,
+            dragmode: false,
+            zoom: false,
+          },
+        },
+        yaxis: { fixedrange: true },
+      });
+    }
+  }
+}
+
 
 //function to create plot
 function createPlot(graphElement,title) {

@@ -24,8 +24,8 @@ let firstsignalsecondchannel;
 let firstGraphChannelCounter = 0;
 let secondGraphChannelCounter = 0;
 let linkFlag = false;
-let firstIntervalTime = 0;
-let secondIntervalTime = 0;
+let firstIntervalTime = 50;
+let secondIntervalTime = 50;
 let isFirstPlaying = true;
 let isSecondPlaying = true;
 let firstGraphFinish = false;
@@ -88,15 +88,7 @@ linkingButton.addEventListener("click", () => {
   secondSignalGraph.on("plotly_relayout", () => {
     linking(secondSignalGraph, firstSignalGraph, linkFlag);
   });
-  // if(linkFlag){
-  //     //link speed
-  //   linkSpeed();
-  // }
-  // else{//unlink speed
-  //   secondIntervalTime = parseInt(secondCineSpeed.value);
-  //   console.log(secondCineSpeed.value);
-  //   firstIntervalTime = parseInt(firstCineSpeed.value);
-  // }
+  secondCineSpeed.value = firstCineSpeed.value;
 });
 
 //UI button to change color of first graph
@@ -254,10 +246,6 @@ createPDFButton.addEventListener("click", async () => {
   await createPDF(allFirstGraphTraces,allSecondGraphTraces,imgData1,imgData2);
 }); 
 
-//----------------------------------------------FUNCTIONS---------------------------------------------------
-
-  //apply changes from second graph onto the first graph in case of zooming and panning
-
 
 window.addEventListener("load", function () {
   createPlot(firstSignalGraph);
@@ -287,6 +275,7 @@ Plotly.relayout(secondSignalGraph, {
     checkBoundaries(secondSignalGraph, secondCurrentIndex, eventData);
   });
 })
+//----------------------------------------------FUNCTIONS---------------------------------------------------
 
 function checkBoundaries(graphElement,maxTime,eventData) {
   if (maxTime) {
@@ -438,6 +427,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
        //link speed
        firstIntervalTime = parseInt(firstCineSpeed.value);
        secondIntervalTime = parseInt(firstCineSpeed.value); 
+       secondCineSpeed.value=firstCineSpeed.value
      } else {
        //unlink speed
        firstIntervalTime = parseInt(firstCineSpeed.value);
@@ -451,6 +441,7 @@ function plotSignal(data, graphElement, graphNum, channelCounter = 0) {
        //link speed
        firstIntervalTime = parseInt(secondCineSpeed.value);
        secondIntervalTime = parseInt(secondCineSpeed.value);
+       firstCineSpeed.value = secondCineSpeed.value;
      } else {
        //unlink speed
        firstIntervalTime = parseInt(firstCineSpeed.value);
@@ -502,19 +493,6 @@ function handleChannelFetch(formObject, graphElement, channelCounter, graphNum) 
   .catch((error) => console.error(error));
 }
 
-//function that links speed slider 
-// function linkSpeed() {
-//   firstCineSpeed.addEventListener("change", () => {
-//     firstIntervalTime = parseInt(firstCineSpeed.value);
-//     secondIntervalTime = firstIntervalTime;
-//   });
-
-//   secondCineSpeed.addEventListener("change", () => {
-//     secondIntervalTime = parseInt(secondCineSpeed.value);
-//     firstIntervalTime = secondIntervalTime;
-//   });
-// }
-
 //linking function
 function linking(firstGraph, secondGraph, linkFlag) {
   if (linkFlag == true) {
@@ -532,8 +510,6 @@ function linking(firstGraph, secondGraph, linkFlag) {
       },
     };
     Plotly.update(secondGraph, {}, update);
-  //   //link speed
-  //   linkSpeed();
    }
 }
 

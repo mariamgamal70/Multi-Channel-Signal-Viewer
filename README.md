@@ -19,7 +19,7 @@
     <img src="/data/gifs/colorchange.gif" alt="gif">
     <li>Adding a label/title for each signal</li>
     <img src="/data/gifs/labelchange.gif" alt="gif">
-    <li>Pausing/playing/rewinding</li>
+    <li>Pausing/playing/rewinding/Change speed</li>
     <img src="/data/gifs/rewind.gif" alt="gif">
     <li>Exporting & Reporting ( PDF that has data statistics such as mean, std, duration, min and max values for each signal ) </li>
     <img src="/data/gifs/statistics.gif" alt="gif">

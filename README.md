@@ -18,7 +18,9 @@
     <li>panning through the mouse movements</li>
     <li>Scrolling through sliders</li>
     <li>Changing color</li>
-    ![](/data/gifs/colorchange.gif)
+    <img src="/data/gifs/colorchange.gif" alt="gif">
+
+<!--     ![](/data/gifs/colorchange.gif) -->
     <li>Adding a label/title for each signal</li>
         
     <li>Pausing/playing/rewinding</li>

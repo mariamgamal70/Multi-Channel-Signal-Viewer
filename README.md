@@ -19,15 +19,16 @@
     <li>Scrolling through sliders</li>
     <li>Changing color</li>
     <img src="/data/gifs/colorchange.gif" alt="gif">
-
-<!--     ![](/data/gifs/colorchange.gif) -->
     <li>Adding a label/title for each signal</li>
-        
+    <img src="/data/gifs/labelchange.gif" alt="gif">
     <li>Pausing/playing/rewinding</li>
+    <img src="/data/gifs/rewind.gif" alt="gif">
     <li>Exporting & Reporting ( PDF that has data statistics such as mean, std, duration, min and max values for each signal ) </li>
+    <img src="/data/gifs/statistics.gif" alt="gif">
     </ul>
     </li>
     <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>
+    <img src="/data/gifs/linking.gif" alt="gif">
 </ul>
 <h3 id="projectfeatures">Project Features</h3>
 

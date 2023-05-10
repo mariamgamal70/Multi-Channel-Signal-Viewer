@@ -15,6 +15,7 @@
     <li>Each graph has to have its own UI controls such as:
     <ul> 
     <li>Zooming, panning through the mouse movements, Scrolling through sliders</li>
+    <img src="/data/gifs/zoomingpanning.gif" alt="gif">
     <li>Changing color</li>
     <img src="/data/gifs/colorchange.gif" alt="gif">
     <li>Adding a label/title for each signal</li>

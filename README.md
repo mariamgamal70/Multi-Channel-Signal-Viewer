@@ -18,7 +18,9 @@
     <li>panning through the mouse movements</li>
     <li>Scrolling through sliders</li>
     <li>Changing color</li>
+        ![](data/readme%20data/feature%20gifs/color%20change%20gif)
     <li>Adding a label/title for each signal</li>
+        
     <li>Pausing/playing/rewinding</li>
     <li>Exporting & Reporting ( PDF that has data statistics such as mean, std, duration, min and max values for each signal ) </li>
     </ul>

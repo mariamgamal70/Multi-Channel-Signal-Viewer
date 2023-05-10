@@ -1,15 +1,15 @@
 <h1> Multi-Channel Signal Viewer</h1>
 <h3>Table of contents</h3>
 <a href="#introduction">Introduction</a><br>
-<a href="#requirements">Requirements</a><br>
-<a href="#projectstructure">Project Structure</a><br>
+<!-- <a href="#requirements">Requirements</a><br> -->
 <a href="#projectfeatures">Project Features</a><br>
+<a href="#projectstructure">Project Structure</a><br>
 <a href="#runtheproject">Run the project</a><br>
 <a href="#team">Team members</a><br>
 
 <h3 id="introduction">Introduction</h3>
 <p> A web application that illustrates a real time signal using a multi-channel signal viewer.</p>
-<h3 id="requirements">Requirements</h3>
+<h3 id="projectfeatures">Project Features</h3>
     <ul>
     <li>Contain two main identical graphs. The user can open different signals in each graph</li>
     <li>Each graph has to have its own UI controls such as:
@@ -30,10 +30,6 @@
     <li>Link both graphs via a button in the UI. When the graphs are linked, the two graphs must display the same time frames, signal speed</li>
     <img src="/data/gifs/linking.gif" alt="gif">
 </ul>
-<h3 id="projectfeatures">Project Features</h3>
-
-
-https://user-images.githubusercontent.com/104398513/230252169-5cfad823-3deb-488c-958c-54e23758562d.mp4
 
 
 <h3 id="projectstructure">Project Structure</h3>

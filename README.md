@@ -18,7 +18,7 @@
     <li>panning through the mouse movements</li>
     <li>Scrolling through sliders</li>
     <li>Changing color</li>
-    ![](https://github.com/Multi-Channel-Signal-Viewer/colorchange.gif)
+    ![](https://github.com/Multi-Channel-Signal-Viewer/data/gifs/colorchange.gif)
     <li>Adding a label/title for each signal</li>
         
     <li>Pausing/playing/rewinding</li>

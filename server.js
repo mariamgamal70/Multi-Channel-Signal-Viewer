@@ -84,12 +84,12 @@ app.post("/download", async (req, res) => {
     ],
     rows: signalsArr.flatMap((signals) =>
       signals.map((signal) => [
-        signal.min.toFixed(3),
-        signal.max.toFixed(3),
-        signal.var.toFixed(3),
-        signal.std.toFixed(3),
-        signal.avg.toFixed(3),
-        signal.duration.toFixed(3),
+        signal.min.toFixed(2),
+        signal.max.toFixed(2),
+        signal.var.toFixed(2),
+        signal.std.toFixed(2),
+        signal.avg.toFixed(2),
+        signal.duration.toFixed(2),
       ])
     ),
   };
